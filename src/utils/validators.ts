@@ -1,6 +1,6 @@
 export function validateEmail(email: string): string | undefined {
 	if (!email.trim()) return 'El email es obligatorio.'
-	if (!/^\S+@\S+\.\S+$/.test(email)) return 'Ingresá un email válido.'
+	if (!/^\S+@\S+\.\S+$/.test(email.trim())) return 'Ingresá un email válido.'
 	return undefined
 }
 
