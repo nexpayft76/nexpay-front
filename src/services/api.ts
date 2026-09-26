@@ -11,6 +11,12 @@ export const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('nexpay_access_token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
+
 export type ApiErrorKind = 'network' | 'timeout' | 'http'
 
 // Error normalizado: las pantallas solo leen `message` y no conocen detalles de axios.

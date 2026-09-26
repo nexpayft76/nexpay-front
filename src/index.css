@@ -139,3 +139,56 @@ body {
 .backend-status--error {
   color: var(--color-danger);
 }
+
+.dashboard-page {
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem max(1rem, calc((100vw - 1120px) / 2));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-content {
+  width: min(100% - 2rem, 900px);
+  margin: 0 auto;
+  padding-block: 4rem;
+}
+
+.dashboard-eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dashboard-content h1 {
+  margin: 0 0 0.75rem;
+}
+
+.dashboard-content > p:not(.dashboard-eyebrow) {
+  color: var(--color-text-muted);
+}
+
+.dashboard-placeholder {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.dashboard-placeholder h2 {
+  margin-top: 0;
+}
+
+.dashboard-placeholder p {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+}
