@@ -1,10 +1,14 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react'
-import { getCurrentUser, logout as logoutRequest } from '../services/auth.service'
+import { getCurrentUser, login as loginRequest, logout as logoutRequest, register as registerRequest } from '../services/auth.service'
 import type { AuthUser } from '../types/auth'
+import type { LoginPayload, RegisterPayload } from '../types/auth'
+import type { AuthResult } from '../types/auth'
 
 interface AuthContextValue {
 	user: AuthUser | null
 	isLoading: boolean
+	login: (payload: LoginPayload) => Promise<void>
+	register: (payload: RegisterPayload) => Promise<void>
 	logout: () => Promise<void>
 }
 
@@ -38,5 +42,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		}
 	}
 
-	return <AuthContext.Provider value={{ user, isLoading, logout }}>{children}</AuthContext.Provider>
+	async function login(payload: LoginPayload) {
+		const result: AuthResult = await loginRequest(payload)
+		localStorage.setItem('nexpay_access_token', result.token)
+		setUser(result.user)
+	}
+
+	async function register(payload: RegisterPayload) {
+		const result: AuthResult = await registerRequest(payload)
+		localStorage.setItem('nexpay_access_token', result.token)
+		setUser(result.user)
+	}
+
+	return <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>{children}</AuthContext.Provider>
 }

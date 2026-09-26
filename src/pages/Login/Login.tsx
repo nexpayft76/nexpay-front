@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../services/api'
-import { login } from '../../services/auth.service'
 import { validateEmail, validatePassword } from '../../utils/validators'
+import { useAuth } from '../../hooks/useAuth'
 import '../Auth/Auth.css'
 
 function Login() {
   const navigate = useNavigate()
+  const { user, isLoading, login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -24,8 +25,7 @@ function Login() {
     setError('')
     setIsSubmitting(true)
     try {
-      const result = await login({ email: email.trim(), password })
-      localStorage.setItem('nexpay_access_token', result.token)
+      await login({ email: email.trim(), password })
       navigate('/dashboard')
     } catch (requestError: unknown) {
       setError(requestError instanceof ApiError ? requestError.message : 'No se pudo iniciar sesión.')
@@ -33,6 +33,9 @@ function Login() {
       setIsSubmitting(false)
     }
   }
+
+  if (isLoading) return <main className="placeholder-page"><p>Verificando sesión...</p></main>
+  if (user) return <Navigate to="/dashboard" replace />
 
   return (
     <main className="auth-page">
