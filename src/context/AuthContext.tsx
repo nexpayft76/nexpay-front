@@ -5,6 +5,7 @@ import type { AuthUser } from '../types/auth'
 interface AuthContextValue {
 	user: AuthUser | null
 	isLoading: boolean
+	setAuthenticatedUser: (user: AuthUser) => void
 	logout: () => Promise<void>
 }
 
@@ -38,5 +39,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		}
 	}
 
-	return <AuthContext.Provider value={{ user, isLoading, logout }}>{children}</AuthContext.Provider>
+	function setAuthenticatedUser(authenticatedUser: AuthUser) {
+		setUser(authenticatedUser)
+	}
+
+	return <AuthContext.Provider value={{ user, isLoading, setAuthenticatedUser, logout }}>{children}</AuthContext.Provider>
 }

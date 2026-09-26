@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import BackendStatus from '../../components/common/BackendStatus'
 import { formatCurrency } from '../../utils/formatCurrency'
+import { useAuth } from '../../hooks/useAuth'
 import './Landing.css'
 
 const FEATURES = [
@@ -45,6 +46,12 @@ const SAMPLE_BALANCES = [
 ]
 
 function Landing() {
+  const { user, logout } = useAuth()
+
+  async function handleLogout() {
+    await logout()
+  }
+
   return (
     <div className="landing">
       <header className="landing-header">
@@ -53,12 +60,17 @@ function Landing() {
             NexPay
           </Link>
           <nav className="landing-header__actions" aria-label="Cuenta">
-            <Link to="/login" className="btn btn--ghost">
-              Iniciar sesión
-            </Link>
-            <Link to="/register" className="btn btn--primary">
-              Crear cuenta
-            </Link>
+            {user ? (
+              <>
+                <Link to="/dashboard" className="btn btn--ghost">Mi dashboard</Link>
+                <button type="button" className="btn btn--primary" onClick={handleLogout}>Cerrar sesión</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="btn btn--ghost">Iniciar sesión</Link>
+                <Link to="/register" className="btn btn--primary">Crear cuenta</Link>
+              </>
+            )}
           </nav>
         </div>
       </header>
