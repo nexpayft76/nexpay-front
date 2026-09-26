@@ -2,13 +2,9 @@ import axios, { AxiosError } from 'axios'
 
 const baseURL = import.meta.env.VITE_API_URL
 
-if (!baseURL) {
-  throw new Error('Falta VITE_API_URL. Copiá .env.example a .env.local y completala.')
-}
-
 // Cliente HTTP único para hablar con el backend de NexPay.
 export const api = axios.create({
-  baseURL,
+  baseURL: baseURL ?? '',
   timeout: 10_000,
   // El backend responde con Access-Control-Allow-Credentials: true (cookies de sesión).
   withCredentials: true,
