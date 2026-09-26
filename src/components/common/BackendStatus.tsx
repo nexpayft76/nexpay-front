@@ -11,7 +11,7 @@ function BackendStatus() {
     return (
       <p className="backend-status backend-status--error" role="alert">
         {health.message}{' '}
-        <button type="button" onClick={health.retry}>
+        <button type="button" className="btn btn--ghost btn--sm" onClick={health.retry}>
           Reintentar
         </button>
       </p>
