@@ -10,8 +10,6 @@ if (!baseURL) {
 export const api = axios.create({
   baseURL,
   timeout: 10_000,
-  // El backend responde con Access-Control-Allow-Credentials: true (cookies de sesión).
-  withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 })
 
