@@ -1,12 +1,7 @@
-import BackendStatus from './components/common/BackendStatus'
+import AppRouter from './routes/AppRouter'
 
 function App() {
-  return (
-    <main>
-      <h1>NexPay</h1>
-      <BackendStatus />
-    </main>
-  )
+  return <AppRouter />
 }
 
 export default App
