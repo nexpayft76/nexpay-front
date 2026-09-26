@@ -32,7 +32,7 @@ function Register() {
     try {
       const result = await register({ full_name: name.trim(), email: email.trim(), password })
       localStorage.setItem('nexpay_access_token', result.token)
-      navigate('/')
+      navigate('/dashboard')
     } catch (requestError: unknown) {
       setError(requestError instanceof ApiError ? requestError.message : 'No se pudo crear la cuenta.')
     } finally {
