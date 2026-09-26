@@ -1,14 +1,73 @@
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { ApiError } from '../../services/api'
+import { register } from '../../services/auth.service'
+import { validateEmail, validateName, validatePassword } from '../../utils/validators'
+import '../Auth/Auth.css'
 
-// Placeholder: el formulario real llega en feat/auth.
 function Register() {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
+  const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const validationError = validateName(name) ?? validateEmail(email) ?? validatePassword(password)
+    if (validationError) {
+      setError(validationError)
+      return
+    }
+    if (password !== passwordConfirmation) {
+      setError('Las contraseñas no coinciden.')
+      return
+    }
+
+    setError('')
+    setIsSubmitting(true)
+    try {
+      await register({ name: name.trim(), email: email.trim(), password })
+    } catch (requestError: unknown) {
+      setError(requestError instanceof ApiError ? requestError.message : 'No se pudo crear la cuenta.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
-    <main className="placeholder-page">
-      <h1>Crear cuenta</h1>
-      <p>Esta pantalla está en construcción.</p>
-      <Link to="/" className="btn btn--ghost">
-        Volver al inicio
-      </Link>
+    <main className="auth-page">
+      <section className="auth-card" aria-labelledby="register-title">
+        <Link to="/" className="auth-card__brand">NexPay</Link>
+        <h1 id="register-title">Crear cuenta</h1>
+        <p className="auth-card__intro">Registrate para empezar a gestionar tus divisas.</p>
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <label className="auth-field">
+            Nombre completo
+            <input type="text" value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" required />
+          </label>
+          <label className="auth-field">
+            Email
+            <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" required />
+          </label>
+          <label className="auth-field">
+            Contraseña
+            <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="new-password" required />
+          </label>
+          <label className="auth-field">
+            Repetir contraseña
+            <input type="password" value={passwordConfirmation} onChange={(event) => setPasswordConfirmation(event.target.value)} autoComplete="new-password" required />
+          </label>
+          {error && <p className="auth-error" role="alert">{error}</p>}
+          <button className="btn btn--primary btn--lg auth-form__submit" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Creando cuenta...' : 'Crear cuenta'}
+          </button>
+        </form>
+        <p className="auth-card__footer">¿Ya tenés cuenta? <Link to="/login">Iniciar sesión</Link></p>
+        <Link to="/" className="auth-card__back">Volver al inicio</Link>
+      </section>
     </main>
   )
 }
