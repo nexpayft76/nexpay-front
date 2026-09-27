@@ -145,14 +145,24 @@
   --l-bg: #0a0a0a;
   --l-bg-raised: #0e0d0b;
   --l-surface: #12110e;
-  --l-gold: #e3b32f;
-  --l-gold-light: #f3d27a;
-  --l-gold-deep: #9c7420;
+  --l-gold: #d4a64a;
+  --l-gold-light: #f6e3a9;
+  --l-gold-deep: #8a6424;
+  /* Dorado metálico: reflejo champán, cuerpo dorado y sombra bronce. */
+  --l-gold-metal: linear-gradient(
+    135deg,
+    #f6e3a9 0%,
+    #dcb461 28%,
+    #b9893a 52%,
+    #ecd08a 74%,
+    #a97d31 100%
+  );
+  --l-gold-glow: 0 0 0 1px rgb(246 227 169 / 0.25) inset, 0 8px 24px rgb(212 166 74 / 0.22);
   --l-cream: #eee2c0;
   --l-text: #b3a888;
   --l-muted: #7a7160;
-  --l-line: rgb(227 179 47 / 0.16);
-  --l-line-strong: rgb(227 179 47 / 0.45);
+  --l-line: rgb(212 166 74 / 0.16);
+  --l-line-strong: rgb(212 166 74 / 0.45);
 
   --color-bg: var(--l-bg);
   --color-surface: var(--l-surface);
@@ -161,7 +171,7 @@
   --color-text-muted: var(--l-text);
   --color-primary: var(--l-gold);
   --color-primary-hover: var(--l-gold-light);
-  --color-primary-soft: rgb(227 179 47 / 0.12);
+  --color-primary-soft: rgb(212 166 74 / 0.12);
   --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
 
   background: var(--l-bg);
@@ -171,7 +181,15 @@
 }
 
 .landing .btn--primary {
-  color: #0a0a0a;
+  background: var(--l-gold-metal);
+  background-size: 180% 180%;
+  box-shadow: var(--l-gold-glow);
+  color: #1a1206;
+  transition: background-position 0.5s ease, box-shadow 0.2s;
+}
+
+.landing .btn--primary:hover {
+  background-position: 100% 50%;
 }
 
 .landing-header {
@@ -270,10 +288,31 @@
 }
 
 .gold-text {
-  background: linear-gradient(100deg, var(--l-gold-light), var(--l-gold) 45%, var(--l-gold-deep));
+  background: linear-gradient(
+    100deg,
+    #b9893a 0%,
+    #e6c577 22%,
+    #f8e9b8 38%,
+    #d4a64a 55%,
+    #a97d31 75%,
+    #e6c577 100%
+  );
+  background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: gold-shine 9s ease-in-out infinite;
+}
+
+@keyframes gold-shine {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .display,
@@ -318,12 +357,17 @@
 }
 
 .btn-gold {
-  background: var(--l-gold);
-  color: #0a0a0a;
+  background: var(--l-gold-metal);
+  background-size: 180% 180%;
+  background-position: 0% 50%;
+  box-shadow: var(--l-gold-glow);
+  color: #1a1206;
+  transition: background-position 0.5s ease, box-shadow 0.2s;
 }
 
 .btn-gold:hover {
-  background: var(--l-gold-light);
+  background-position: 100% 50%;
+  box-shadow: 0 0 0 1px rgb(246 227 169 / 0.4) inset, 0 10px 32px rgb(212 166 74 / 0.38);
 }
 
 .btn-outline {
@@ -362,7 +406,7 @@
   gap: 2rem;
   padding-block: 6rem 5rem;
   text-align: center;
-  background: radial-gradient(ellipse 60% 55% at 50% 40%, rgb(227 179 47 / 0.07), transparent 70%);
+  background: radial-gradient(ellipse 60% 55% at 50% 40%, rgb(212 166 74 / 0.07), transparent 70%);
 }
 
 .hero h1 {
@@ -564,12 +608,19 @@
 
 .quote-card--nexpay {
   border-color: var(--l-line-strong);
-  background: rgb(227 179 47 / 0.06);
+  background: rgb(212 166 74 / 0.06);
+}
+
+.quote-card__value,
+.wallet__total {
+  background: linear-gradient(100deg, #f6e3a9 0%, #d4a64a 45%, #b9893a 70%, #e6c577 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .quote-card__value {
   margin: 0.5rem 0 0;
-  color: var(--l-gold);
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(1.8rem, 3.5vw, 2.4rem);
   font-style: italic;
@@ -578,6 +629,7 @@
 }
 
 .quote-card__value--muted {
+  background: none;
   color: var(--l-text);
   font-size: clamp(1.5rem, 3vw, 1.9rem);
 }
@@ -674,7 +726,7 @@
 }
 
 .quote__swap:hover {
-  background: rgb(227 179 47 / 0.12);
+  background: rgb(212 166 74 / 0.12);
 }
 
 .quote__types li.is-main {
@@ -729,14 +781,13 @@
 
 .wallet__bases button[aria-pressed='true'],
 .chart__pairs button[aria-pressed='true'] {
-  border-color: var(--l-gold);
-  background: var(--l-gold);
-  color: #0a0a0a;
+  border-color: transparent;
+  background: var(--l-gold-metal);
+  color: #1a1206;
 }
 
 .wallet__total {
   margin: 1.25rem 0 1.5rem;
-  color: var(--l-gold);
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(2.2rem, 4vw, 3rem);
   font-style: italic;
@@ -945,6 +996,7 @@
 
 .chart__dot {
   fill: var(--l-gold-light);
+  filter: drop-shadow(0 0 6px rgb(246 227 169 / 0.7));
 }
 
 .chart__label {
@@ -969,7 +1021,7 @@
 
 .chart__loading {
   border-radius: 8px;
-  background: rgb(227 179 47 / 0.05);
+  background: rgb(212 166 74 / 0.05);
   animation: landing-pulse 1.4s ease-in-out infinite;
 }
 
@@ -1115,6 +1167,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .gold-text,
   .chart__loading,
   .quote__results .is-updating {
     animation: none;
