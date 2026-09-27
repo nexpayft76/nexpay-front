@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ARS_RATE_TYPES, useQuote } from '../../hooks/useQuote'
 import type { ArsRateType, Conversion } from '../../types/rates'
+import { parseAmount } from '../../utils/amount'
 import { formatCurrency } from '../../utils/formatCurrency'
 import RateSources from './RateSources'
 import './QuoteCard.css'
@@ -13,12 +14,6 @@ const CURRENCIES = ['COP', 'ARS', 'USD', 'EUR']
 const ARS_LABEL: Record<ArsRateType, string> = { oficial: 'Oficial', mep: 'MEP', blue: 'Blue' }
 
 const SOURCE_LABEL = { live: 'en vivo', cache: 'actualizada', fallback: 'última tasa válida' } as const
-
-/** Acepta "1.000.000", "1000000" o "1000,50" (formato local) y devuelve el número. */
-function parseAmount(text: string): number {
-  const normalized = text.replace(/\./g, '').replace(',', '.').trim()
-  return normalized === '' ? NaN : Number(normalized)
-}
 
 function formatRate(rate: number): string {
   return new Intl.NumberFormat('es-AR', { maximumSignificantDigits: 6 }).format(rate)

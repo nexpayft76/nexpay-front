@@ -22,6 +22,18 @@ export interface WalletValuation {
   warnings: string[]
 }
 
+/** Respuesta de POST /api/wallets/me/deposits. */
+export interface DepositResult {
+  transaction_id: string
+  type: 'DEPOSIT'
+  currency: string
+  /** Monto recargado (texto exacto). */
+  amount: string
+  /** Saldo de esa moneda después de la recarga (texto exacto). */
+  new_balance: string
+  created_at: string
+}
+
 export interface MyWallet {
   wallet_id: string
   created_at: string

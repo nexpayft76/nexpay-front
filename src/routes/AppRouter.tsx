@@ -5,6 +5,7 @@ import Landing from '../pages/Landing/Landing'
 import Login from '../pages/Login/Login'
 import Register from '../pages/Register/Register'
 import Dashboard from '../pages/Dashboard/Dashboard'
+import DepositPage from '../pages/Operations/DepositPage'
 import QuotePage from '../pages/Quote/QuotePage'
 import ProtectedRoute from './ProtectedRoute'
 
@@ -27,16 +28,21 @@ function AppRouter() {
         >
           <Route index element={<Dashboard />} />
           <Route path="cotizador" element={<QuotePage />} />
-          <Route
-            path="transacciones"
-            element={
-              <ComingSoon
-                icon="transactions"
-                title="Mis transacciones"
-                description="El historial de tus compras, ventas, intercambios y recargas, con la tasa usada en cada operación."
-              />
-            }
-          />
+          {/* Operaciones: submenú del menú lateral. Más adelante: venta, intercambio e historial. */}
+          <Route path="operaciones">
+            <Route index element={<Navigate to="recarga" replace />} />
+            <Route path="recarga" element={<DepositPage />} />
+            <Route
+              path="compra"
+              element={
+                <ComingSoon
+                  icon="cart"
+                  title="Compra"
+                  description="Comprá dólares, euros o pesos con el saldo de tu billetera, a la tasa del momento y con la comisión visible antes de confirmar."
+                />
+              }
+            />
+          </Route>
           <Route
             path="p2p"
             element={
