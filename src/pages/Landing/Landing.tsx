@@ -66,7 +66,7 @@ function Landing() {
                 id="menu-launcher"
                 checked={isMenuOpen}
                 onChange={(event) => setIsMenuOpen(event.target.checked)}
-                aria-label="Abrir menú de navegación"
+                aria-label={isMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
               />
               <label htmlFor="menu-launcher" aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}>
                 <span className="menu-activator-line" />
