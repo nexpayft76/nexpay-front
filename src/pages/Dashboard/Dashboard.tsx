@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import RatesPanel from '../../components/rates/RatesPanel'
 
 function Dashboard() {
 	const { user, logout } = useAuth()
@@ -24,6 +25,7 @@ function Dashboard() {
 					<h2>Tu wallet está lista</h2>
 					<p>Próximamente vas a poder consultar tus balances y movimientos desde acá.</p>
 				</div>
+				<RatesPanel />
 			</section>
 		</main>
 	)
