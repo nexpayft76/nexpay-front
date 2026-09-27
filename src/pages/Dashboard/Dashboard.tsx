@@ -1,31 +1,21 @@
-import { Link, useNavigate } from 'react-router-dom'
+import QuoteCard from '../../components/quote/QuoteCard'
+import WalletCard from '../../components/wallet/WalletCard'
 import { useAuth } from '../../hooks/useAuth'
 
+/** "Mi wallet": el encabezado y el menú los pone Layout. */
 function Dashboard() {
-	const { user, logout } = useAuth()
-	const navigate = useNavigate()
-
-	async function handleLogout() {
-		await logout()
-		navigate('/', { replace: true })
-	}
+	const { user } = useAuth()
 
 	return (
-		<main className="dashboard-page">
-			<header className="dashboard-header">
-				<Link to="/" className="brand">NexPay</Link>
-				<button type="button" className="btn btn--ghost" onClick={handleLogout}>Cerrar sesión</button>
-			</header>
-			<section className="dashboard-content" aria-labelledby="dashboard-title">
-				<p className="dashboard-eyebrow">Cuenta activa</p>
-				<h1 id="dashboard-title">Hola, {user?.full_name}</h1>
-				<p>Tu sesión está iniciada con {user?.email}.</p>
-				<div className="dashboard-placeholder">
-					<h2>Tu wallet está lista</h2>
-					<p>Próximamente vas a poder consultar tus balances y movimientos desde acá.</p>
-				</div>
-			</section>
-		</main>
+		<section className="dashboard-content" aria-labelledby="dashboard-title">
+			<p className="dashboard-eyebrow">Cuenta activa</p>
+			<h1 id="dashboard-title">Hola, {user?.full_name}</h1>
+			<p>Tu sesión está iniciada con {user?.email}.</p>
+			<div className="dashboard-grid">
+				<WalletCard />
+				<QuoteCard />
+			</div>
+		</section>
 	)
 }
 

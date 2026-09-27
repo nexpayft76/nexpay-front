@@ -1,0 +1,405 @@
+/* Mobile first. Usa las variables de color de index.css (tema claro y oscuro). */
+
+.quote-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+}
+
+.quote-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.quote-card__header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.quote-card__hint {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+/* Campos */
+.quote-card__form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.quote-field {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.quote-field__label {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.quote-field__row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.quote-field__row--end {
+  justify-content: flex-end;
+}
+
+.quote-field input,
+.quote-field select {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.quote-field input {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.quote-field input[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+.quote-field select {
+  font-weight: 700;
+}
+
+.quote-field input:focus-visible,
+.quote-field select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.quote-card__swap {
+  justify-self: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.quote-card__swap:hover {
+  background: var(--color-primary-soft);
+}
+
+/* Selector de tipo de dólar */
+.quote-card__ars {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 0.25rem;
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.segmented__option {
+  min-height: 2.5rem;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.segmented__option--active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+}
+
+.segmented__option:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.quote-card__note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+/* Resultado */
+.quote-result {
+  display: grid;
+  gap: 0.25rem;
+  min-height: 6.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--color-primary-soft);
+}
+
+.quote-result--loading {
+  background: linear-gradient(90deg, var(--color-primary-soft) 25%, var(--color-bg) 50%, var(--color-primary-soft) 75%);
+  background-size: 200% 100%;
+  animation: quote-shimmer 1.2s infinite;
+}
+
+@keyframes quote-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.quote-result__label {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.quote-result__amount {
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.quote-result__meta {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.quote-card__message {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.quote-card__message--error {
+  color: var(--color-danger);
+}
+
+.quote-card__warnings {
+  margin: 0;
+  padding: 0.75rem 1rem 0.75rem 2rem;
+  border: 1px solid #e8b44a;
+  border-radius: var(--radius);
+  background: #fff6e0;
+  color: #7a5200;
+  font-size: 0.875rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .quote-card__warnings {
+    border-color: #8a6a1f;
+    background: #2e2410;
+    color: #f2cf7a;
+  }
+}
+
+/* Comparación entre tipos de dólar */
+.quote-compare h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.quote-compare ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quote-compare li {
+  display: grid;
+  grid-template-columns: 4rem 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  font-variant-numeric: tabular-nums;
+}
+
+.quote-compare li:last-child {
+  border-bottom: 0;
+}
+
+.quote-compare__row--selected {
+  border-radius: var(--radius);
+  background: var(--color-primary-soft);
+}
+
+.quote-compare__type {
+  font-weight: 700;
+}
+
+.quote-compare__diff {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  text-align: right;
+}
+
+.quote-compare__diff.is-negative {
+  color: var(--color-danger);
+}
+
+.quote-compare__diff.is-positive {
+  color: var(--color-success);
+}
+
+@media (min-width: 640px) {
+  .quote-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quote-result--loading {
+    animation: none;
+  }
+}
+
+/* Sugerencia de tipo de dólar (ARS) */
+.quote-suggestion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-success) 45%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+}
+
+.quote-suggestion p {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.quote-suggestion__extra {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+/* Fuentes de las tasas */
+.rate-sources {
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.rate-sources__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rate-sources__header h3 {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rate-sources__badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-success) 14%, transparent);
+  color: var(--color-success);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.rate-sources__badge--stale {
+  background: #fff6e0;
+  color: #7a5200;
+}
+
+.rate-sources ul {
+  display: grid;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rate-sources li {
+  display: flex;
+  gap: 0.625rem;
+}
+
+.rate-sources p {
+  margin: 0;
+}
+
+.rate-sources__dot {
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-success);
+}
+
+.rate-sources li.is-stale .rate-sources__dot {
+  background: #e8b44a;
+}
+
+.rate-sources__name {
+  font-size: 0.875rem;
+}
+
+.rate-sources__detail {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.rate-sources li.is-stale .rate-sources__detail {
+  color: #9a6700;
+}
+
+.rate-sources__note {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.rate-sources__error {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .rate-sources__badge--stale {
+    background: #2e2410;
+    color: #f2cf7a;
+  }
+
+  .rate-sources li.is-stale .rate-sources__detail {
+    color: #f2cf7a;
+  }
+}
