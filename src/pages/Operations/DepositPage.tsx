@@ -1,5 +1,6 @@
 import { useState, type CSSProperties, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import WalletCard from '../../components/wallet/WalletCard'
 import { useMyWallet } from '../../hooks/useMyWallet'
 import { ApiError } from '../../services/api'
 import { depositToMyWallet } from '../../services/wallet.service'
@@ -28,6 +29,10 @@ function DepositPage() {
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<DepositResult | null>(null)
   const wallet = useMyWallet('USD')
+  // Billetera al lado del formulario: sigue a la moneda que se recarga (se puede cambiar desde su selector).
+  const [walletCurrency, setWalletCurrency] = useState('COP')
+  // Cambiar la key vuelve a montar la billetera para que pida los saldos nuevos después de recargar.
+  const [walletVersion, setWalletVersion] = useState(0)
 
   const info = currencyInfo(currency)
   const amount = parseAmount(amountText)
@@ -35,6 +40,7 @@ function DepositPage() {
 
   function chooseCurrency(code: string) {
     setCurrency(code)
+    setWalletCurrency(code)
     setAmountText('')
     setError(null)
   }
@@ -52,6 +58,7 @@ function DepositPage() {
       setResult(await depositToMyWallet(currency, amount))
       setAmountText('')
       wallet.reload()
+      setWalletVersion((n) => n + 1)
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'No se pudo hacer la recarga.')
     } finally {
@@ -65,7 +72,7 @@ function DepositPage() {
       <h1 id="deposit-title">Recargar mi billetera</h1>
       <p>Agregá saldo para comprar, vender o intercambiar monedas.</p>
 
-      <div className="dashboard-grid">
+      <div className="op-layout">
         {result ? (
           <DepositSuccess result={result} onAnother={() => setResult(null)} />
         ) : (
@@ -146,6 +153,10 @@ function DepositPage() {
             </button>
           </form>
         )}
+
+        <aside className="op-layout__wallet" aria-label="Tu billetera">
+          <WalletCard key={walletVersion} valuedIn={walletCurrency} onValuedInChange={setWalletCurrency} />
+        </aside>
       </div>
     </section>
   )

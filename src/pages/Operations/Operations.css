@@ -173,3 +173,30 @@
     padding: 1.5rem;
   }
 }
+
+/* Recarga + billetera. Mobile first: apiladas (primero el formulario); desde 1024px, lado a lado. */
+.op-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.op-layout .op-card {
+  max-width: none;
+}
+
+@media (min-width: 1024px) {
+  .op-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  /* La billetera queda a la vista mientras se completa el formulario. */
+  .op-layout__wallet {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
