@@ -42,8 +42,8 @@ body {
 
 /* Títulos con la serif itálica de la marca */
 h1,
-h2 {
-  font-family: var(--font-display);
+h2,
+h3 {
   font-style: italic;
   font-weight: 500;
   letter-spacing: -0.005em;
