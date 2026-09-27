@@ -10,6 +10,8 @@
 
 /* Header */
 .landing-header {
+  position: relative;
+  z-index: 10;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -21,9 +23,116 @@
   padding-block: 1rem;
 }
 
+.landing-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.menu-activator {
+  width: 1.875rem;
+  height: 1.25rem;
+}
+
+.menu-activator input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.menu-activator label {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  cursor: pointer;
+}
+
+.menu-activator-line {
+  height: 2px;
+  border-radius: 2px;
+  background-color: var(--color-text);
+  opacity: 1;
+  transform: translateY(0) rotate(0);
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.menu-activator input:checked + label .menu-activator-line:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.menu-activator input:checked + label .menu-activator-line:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-activator input:checked + label .menu-activator-line:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+.menu-activator input:focus-visible + label {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
 .landing-header__actions {
   display: flex;
   gap: 0.5rem;
+}
+
+.landing-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: min(20rem, 90vw);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  box-shadow: var(--shadow);
+  animation: menu-slide-in 0.25s ease-out;
+}
+
+.landing-menu a {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.landing-menu a:hover {
+  color: var(--color-primary);
+}
+
+.landing-menu__logout {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.landing-menu__logout:hover {
+  color: var(--color-primary);
+}
+
+@keyframes menu-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Hero */
