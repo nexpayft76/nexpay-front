@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import BackendStatus from '../../components/common/BackendStatus'
 import { formatCurrency } from '../../utils/formatCurrency'
@@ -46,24 +47,54 @@ const SAMPLE_BALANCES = [
 ]
 
 function Landing() {
-  const { user, logout } = useAuth()
+  const { user, isLoading, logout } = useAuth()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   async function handleLogout() {
     await logout()
+    setIsMenuOpen(false)
   }
 
   return (
     <div className="landing">
       <header className="landing-header">
         <div className="container landing-header__inner">
-          <Link to="/" className="brand">
-            NexPay
-          </Link>
+          <div className="landing-header__brand">
+            <div className="menu-activator">
+              <input
+                type="checkbox"
+                id="menu-launcher"
+                checked={isMenuOpen}
+                onChange={(event) => setIsMenuOpen(event.target.checked)}
+                aria-label={isMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
+              />
+              <label htmlFor="menu-launcher" aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}>
+                <span className="menu-activator-line" />
+                <span className="menu-activator-line" />
+                <span className="menu-activator-line" />
+              </label>
+            </div>
+            <Link to="/" className="brand" onClick={() => setIsMenuOpen(false)}>
+              NexPay
+            </Link>
+          </div>
           <nav className="landing-header__actions" aria-label="Cuenta">
-            {user ? (
+            {isLoading ? null : user ? (
               <>
                 <Link to="/dashboard" className="btn btn--ghost">Mi dashboard</Link>
-                <button type="button" className="btn btn--primary" onClick={handleLogout}>Cerrar sesión</button>
+                <button
+                  type="button"
+                  className="btn btn--primary btn--icon"
+                  onClick={handleLogout}
+                  aria-label="Cerrar sesión"
+                  title="Cerrar sesión"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5" />
+                    <path d="m15 8 4 4-4 4" />
+                    <path d="M9 12h10" />
+                  </svg>
+                </button>
               </>
             ) : (
               <>
@@ -73,6 +104,18 @@ function Landing() {
             )}
           </nav>
         </div>
+        {isMenuOpen && (
+          <nav className="landing-menu container" aria-label="Navegación principal">
+            <Link to="/" onClick={() => setIsMenuOpen(false)}>Inicio</Link>
+            <a href="#features-title" onClick={() => setIsMenuOpen(false)}>Funcionalidades</a>
+            <a href="#steps-title" onClick={() => setIsMenuOpen(false)}>Cómo funciona</a>
+            {!isLoading && user && (
+              <button type="button" className="landing-menu__logout" onClick={handleLogout}>
+                Cerrar sesión
+              </button>
+            )}
+          </nav>
+        )}
       </header>
 
       <main>
@@ -83,14 +126,16 @@ function Landing() {
               NexPay es una billetera digital multimoneda para consultar balances, comprar, vender e
               intercambiar divisas con tasas transparentes y un historial claro de cada movimiento.
             </p>
-            <div className="hero__cta">
-              <Link to="/register" className="btn btn--primary btn--lg">
-                Crear cuenta gratis
-              </Link>
-              <Link to="/login" className="btn btn--ghost btn--lg">
-                Ya tengo cuenta
-              </Link>
-            </div>
+            {!isLoading && !user && (
+              <div className="hero__cta">
+                <Link to="/register" className="btn btn--primary btn--lg">
+                  Crear cuenta gratis
+                </Link>
+                <Link to="/login" className="btn btn--ghost btn--lg">
+                  Ya tengo cuenta
+                </Link>
+              </div>
+            )}
           </div>
 
           <aside className="wallet-preview" aria-label="Ejemplo de wallet">
