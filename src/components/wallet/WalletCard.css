@@ -1,9 +1,17 @@
+/* Mobile first: menos relleno en celular para aprovechar el ancho. */
 .wallet-card {
-  padding: 1.5rem;
+  min-width: 0;
+  padding: 1rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   box-shadow: var(--shadow);
+}
+
+@media (min-width: 640px) {
+  .wallet-card {
+    padding: 1.5rem;
+  }
 }
 
 .wallet-card__header {
@@ -90,7 +98,8 @@
 /* Saldos */
 .wallet-card__balances {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  /* min(100%, 240px): en pantallas angostas cada saldo ocupa el ancho completo sin desbordar. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
   gap: 0.75rem;
   margin: 0;
   padding: 0;
@@ -144,8 +153,10 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  min-width: 0;
   font-variant-numeric: tabular-nums;
   text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .balance-tile__amounts span {

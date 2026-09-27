@@ -38,6 +38,37 @@ export interface RatesTable {
   warnings: string[]
 }
 
+export type HistoryRange = '1w' | '1m' | '3m' | '6m' | '1y'
+
+export interface HistoryPoint {
+  date: string
+  value: number
+}
+
+export interface HistorySeries {
+  /** "COP-USD" para un par simple, o el tipo de dólar si participa ARS ("oficial", "mep", "blue"). */
+  key: string
+  label: string
+  points: HistoryPoint[]
+  stats: { first: number; last: number; change_pct: number; min: number; max: number } | null
+}
+
+/** Respuesta de GET /api/rates/history?from=&to=&range=: la serie es "1 {from} = X {to}". */
+export interface RateHistory {
+  from: string
+  to: string
+  range: HistoryRange
+  /** Primer y último día del rango (el último es la última tasa válida). */
+  start: string
+  end: string
+  providers: Array<'frankfurter' | 'argentinadatos'>
+  source: RatesSource
+  stale: boolean
+  fetched_at: string
+  series: HistorySeries[]
+  warnings: string[]
+}
+
 export interface Conversion {
   from: string
   to: string

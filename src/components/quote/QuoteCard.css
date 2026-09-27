@@ -4,7 +4,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.25rem;
+  min-width: 0;
+  padding: 1rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
@@ -401,5 +402,22 @@
 
   .rate-sources li.is-stale .rate-sources__detail {
     color: #f2cf7a;
+  }
+}
+
+/* Tablet y desktop: "Tengo ⇄ Quiero" en una misma fila (en su pantalla propia el cotizador es ancho). */
+@media (min-width: 768px) {
+  .quote-card__form {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: end;
+    gap: 0.75rem;
+  }
+
+  .quote-card__swap {
+    transform: rotate(90deg);
+  }
+
+  .quote-field__row--end select {
+    flex: 1;
   }
 }

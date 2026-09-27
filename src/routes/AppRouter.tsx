@@ -5,6 +5,7 @@ import Landing from '../pages/Landing/Landing'
 import Login from '../pages/Login/Login'
 import Register from '../pages/Register/Register'
 import Dashboard from '../pages/Dashboard/Dashboard'
+import QuotePage from '../pages/Quote/QuotePage'
 import ProtectedRoute from './ProtectedRoute'
 
 function AppRouter() {
@@ -25,6 +26,7 @@ function AppRouter() {
           }
         >
           <Route index element={<Dashboard />} />
+          <Route path="cotizador" element={<QuotePage />} />
           <Route
             path="transacciones"
             element={

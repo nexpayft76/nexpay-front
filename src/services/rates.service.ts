@@ -1,5 +1,11 @@
 import { api } from './api'
-import type { ArsRateType, Conversion, RatesTable } from '../types/rates'
+import type { ArsRateType, Conversion, HistoryRange, RateHistory, RatesTable } from '../types/rates'
+
+/** Historial del par "1 {from} = X {to}" para el gráfico (si participa ARS: 3 series, oficial, MEP y blue). */
+export async function getRateHistory(from: string, to: string, range: HistoryRange): Promise<RateHistory> {
+  const { data } = await api.get<{ data: RateHistory }>('/api/rates/history', { params: { from, to, range } })
+  return data.data
+}
 
 /** Tabla de tasas + estado de cada proveedor (de dónde salió cada tasa y cuándo). */
 export async function getRates(base = 'USD'): Promise<RatesTable> {

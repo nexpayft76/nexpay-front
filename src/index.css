@@ -153,9 +153,9 @@ body {
   border-bottom: 1px solid var(--color-border);
 }
 
-/* Mobile first: ancho completo menos márgenes; en desktop usa el 90% del ancho disponible. */
+/* Mobile first: 95% del ancho en móvil y tablet; 90% en desktop. */
 .dashboard-content {
-  width: calc(100% - 2rem);
+  width: 95%;
   margin: 0 auto;
   padding-block: 1.5rem 3rem;
 }
@@ -211,17 +211,31 @@ body {
   color: var(--color-primary);
 }
 
-/* Mobile first: tarjetas apiladas; en pantallas anchas, billetera y cotizador lado a lado. */
+/* Tarjetas apiladas (gráfico arriba, billetera abajo).
+   minmax(0, 1fr): la columna nunca crece más que la pantalla aunque un contenido sea ancho. */
 .dashboard-grid {
   display: grid;
-  gap: 1.5rem;
-  align-items: start;
-  margin-top: 2rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1024px) {
   .dashboard-grid {
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+}
+
+/* Desktop ancho: billetera y cotizador lado a lado; lo marcado como __full ocupa las dos columnas. */
+@media (min-width: 1200px) {
+  .dashboard-grid--split {
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .dashboard-grid--split .dashboard-grid__full {
+    grid-column: 1 / -1;
   }
 }
 
@@ -257,4 +271,12 @@ body {
 .dashboard-placeholder p {
   margin-bottom: 0;
   color: var(--color-text-muted);
+}
+
+/* Mientras se descarga el código del gráfico (carga diferida). */
+.chart-loading {
+  height: 22rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
 }

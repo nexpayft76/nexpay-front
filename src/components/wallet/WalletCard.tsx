@@ -1,18 +1,13 @@
-import { useState } from 'react'
 import { useMyWallet } from '../../hooks/useMyWallet'
 import type { RatesSource, WalletBalance } from '../../types/wallet'
+import { CURRENCIES, CURRENCY_CODES } from '../../utils/currencies'
 import { formatCurrency } from '../../utils/formatCurrency'
 import './WalletCard.css'
 
-/** Orden y color de cada moneda: primero el corredor COP ↔ ARS, después USD y EUR. */
-const CURRENCY_META: Record<string, { order: number; country: string }> = {
-  COP: { order: 0, country: 'Colombia' },
-  ARS: { order: 1, country: 'Argentina' },
-  USD: { order: 2, country: 'Estados Unidos' },
-  EUR: { order: 3, country: 'Zona euro' },
-}
-
-const VALUATION_CURRENCIES = ['USD', 'COP', 'ARS', 'EUR']
+/** Orden (el del corredor: COP, ARS, USD, EUR) y país de cada moneda, compartidos con el selector de arriba. */
+const CURRENCY_META: Record<string, { order: number; country: string }> = Object.fromEntries(
+  CURRENCIES.map((c, order) => [c.code, { order, country: c.country }]),
+)
 
 const SOURCE_LABEL: Record<RatesSource, string> = {
   live: 'Tasas en vivo',
@@ -26,8 +21,13 @@ function sortBalances(balances: WalletBalance[]): WalletBalance[] {
   )
 }
 
-function WalletCard() {
-  const [valuedIn, setValuedIn] = useState('USD')
+interface WalletCardProps {
+  /** Moneda del total; la controla el Dashboard porque también define el gráfico de arriba. */
+  valuedIn: string
+  onValuedInChange: (currency: string) => void
+}
+
+function WalletCard({ valuedIn, onValuedInChange }: WalletCardProps) {
   const wallet = useMyWallet(valuedIn)
 
   return (
@@ -36,8 +36,8 @@ function WalletCard() {
         <h2 id="wallet-title">Mi billetera</h2>
         <label className="wallet-card__select">
           Ver total en
-          <select value={valuedIn} onChange={(event) => setValuedIn(event.target.value)}>
-            {VALUATION_CURRENCIES.map((code) => (
+          <select value={valuedIn} onChange={(event) => onValuedInChange(event.target.value)}>
+            {CURRENCY_CODES.map((code) => (
               <option key={code} value={code}>
                 {code}
               </option>

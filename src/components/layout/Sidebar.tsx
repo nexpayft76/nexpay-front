@@ -12,6 +12,7 @@ interface MenuItem {
 
 const MENU: MenuItem[] = [
   { to: '/dashboard', label: 'Mi wallet', icon: 'wallet' },
+  { to: '/dashboard/cotizador', label: 'Cotizador', icon: 'calculator' },
   { to: '/dashboard/transacciones', label: 'Mis transacciones', icon: 'transactions', soon: true },
   { to: '/dashboard/p2p', label: 'P2P', icon: 'p2p', soon: true },
   { to: '/dashboard/configuracion', label: 'Configuración', icon: 'settings', soon: true },
