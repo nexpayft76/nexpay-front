@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from 'react'
 import QuoteCard from '../../components/quote/QuoteCard'
+import BalanceSummary from '../../components/wallet/BalanceSummary'
 import WalletCard from '../../components/wallet/WalletCard'
 import { useAuth } from '../../hooks/useAuth'
 
@@ -36,9 +37,15 @@ function Dashboard() {
 
 	return (
 		<section className="dashboard-content" aria-labelledby="dashboard-title">
-			<p className="dashboard-eyebrow">Cuenta activa</p>
-			<h1 id="dashboard-title">Hola, {user?.full_name}</h1>
-			<p>Tu sesión está iniciada con {user?.email}.</p>
+			{/* Saludo a la izquierda y saldo total a la derecha (en celular, el saldo va debajo). */}
+			<header className="dashboard-hero">
+				<div>
+					<p className="dashboard-eyebrow">Cuenta activa</p>
+					<h1 id="dashboard-title">Hola, {user?.full_name}</h1>
+					<p className="dashboard-hero__subtitle">Tu sesión está iniciada con {user?.email}.</p>
+				</div>
+				<BalanceSummary />
+			</header>
 			{/* Móvil y tablet: todo apilado. Desktop: gráfico a lo ancho; billetera y cotizador lado a lado. */}
 			<div className="dashboard-grid dashboard-grid--split">
 				<div className="dashboard-grid__full">

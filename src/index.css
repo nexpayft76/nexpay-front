@@ -211,6 +211,29 @@ body {
   color: var(--color-primary);
 }
 
+/* Encabezado del dashboard: saludo + saldo total. Mobile first: apilados; desde tablet, lado a lado. */
+.dashboard-hero {
+  display: grid;
+  gap: 1rem;
+}
+
+.dashboard-hero h1 {
+  overflow-wrap: anywhere;
+}
+
+.dashboard-hero__subtitle {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 768px) {
+  .dashboard-hero {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.5rem;
+  }
+}
+
 /* Tarjetas apiladas (gráfico arriba, billetera abajo).
    minmax(0, 1fr): la columna nunca crece más que la pantalla aunque un contenido sea ancho. */
 .dashboard-grid {

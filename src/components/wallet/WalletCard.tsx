@@ -22,7 +22,10 @@ function sortBalances(balances: WalletBalance[]): WalletBalance[] {
 }
 
 interface WalletCardProps {
-  /** Moneda del total; la controla el Dashboard porque también define el gráfico de arriba. */
+  /**
+   * Moneda elegida: arriba se ve su saldo REAL y abajo el total estimado de todo, expresado en ella.
+   * La controla el Dashboard porque también es el destino del gráfico.
+   */
   valuedIn: string
   onValuedInChange: (currency: string) => void
 }
@@ -35,7 +38,7 @@ function WalletCard({ valuedIn, onValuedInChange }: WalletCardProps) {
       <header className="wallet-card__header">
         <h2 id="wallet-title">Mi billetera</h2>
         <label className="wallet-card__select">
-          Ver total en
+          Moneda
           <select value={valuedIn} onChange={(event) => onValuedInChange(event.target.value)}>
             {CURRENCY_CODES.map((code) => (
               <option key={code} value={code}>
@@ -59,47 +62,31 @@ function WalletCard({ valuedIn, onValuedInChange }: WalletCardProps) {
 
       {wallet.status === 'ok' && (
         <>
+          {/* Arriba: lo que REALMENTE hay en la moneda elegida (sin conversión). */}
           <div className="wallet-card__total">
-            {wallet.data.valuation ? (
-              <>
-                <span className="wallet-card__total-label">Saldo total estimado</span>
-                <strong className="wallet-card__total-amount">
-                  {formatCurrency(wallet.data.valuation.total, wallet.data.valuation.currency)}
-                </strong>
-                <span className="wallet-card__total-meta">
-                  {SOURCE_LABEL[wallet.data.valuation.rates_source]} · {wallet.data.valuation.rates_date}
-                </span>
-              </>
-            ) : (
-              <span className="wallet-card__total-meta">
-                Las tasas no están disponibles: se muestran solo tus saldos.
-              </span>
-            )}
+            <span className="wallet-card__total-label">Saldo en {valuedIn}</span>
+            <strong className="wallet-card__total-amount">
+              {formatCurrency(Number(wallet.data.balances.find((b) => b.currency === valuedIn)?.amount ?? 0), valuedIn)}
+            </strong>
           </div>
-
-          {wallet.data.valuation && wallet.data.valuation.warnings.length > 0 && (
-            <ul className="wallet-card__warnings" role="status">
-              {wallet.data.valuation.warnings.map((warning) => (
-                <li key={warning}>{warning}</li>
-              ))}
-            </ul>
-          )}
 
           <ul className="wallet-card__balances">
             {sortBalances(wallet.data.balances).map((balance) => (
-              <li key={balance.currency} className="balance-tile">
-                <span className={`balance-tile__badge balance-tile__badge--${balance.currency.toLowerCase()}`}>
-                  {balance.currency}
-                </span>
-                <div className="balance-tile__info">
-                  <span className="balance-tile__name">{balance.name}</span>
-                  <span className="balance-tile__country">{CURRENCY_META[balance.currency]?.country}</span>
-                </div>
-                <div className="balance-tile__amounts">
-                  <strong>{formatCurrency(Number(balance.amount), balance.currency)}</strong>
-                  {balance.currency !== valuedIn && balance.value_in_target !== null && (
-                    <span>≈ {formatCurrency(balance.value_in_target, valuedIn)}</span>
-                  )}
+              <li key={balance.currency} className="balance-tile-wrap">
+                <div className="balance-tile">
+                  <span className={`balance-tile__badge balance-tile__badge--${balance.currency.toLowerCase()}`}>
+                    {balance.currency}
+                  </span>
+                  <div className="balance-tile__info">
+                    <span className="balance-tile__name">{balance.name}</span>
+                    <span className="balance-tile__country">{CURRENCY_META[balance.currency]?.country}</span>
+                  </div>
+                  <div className="balance-tile__amounts">
+                    <strong>{formatCurrency(Number(balance.amount), balance.currency)}</strong>
+                    {balance.currency !== valuedIn && balance.value_in_target !== null && (
+                      <span>≈ {formatCurrency(balance.value_in_target, valuedIn)}</span>
+                    )}
+                  </div>
                 </div>
               </li>
             ))}
@@ -109,6 +96,34 @@ function WalletCard({ valuedIn, onValuedInChange }: WalletCardProps) {
             <p className="wallet-card__empty">
               Todavía no tenés saldo. Cuando hagas tu primera recarga, lo vas a ver acá en las 4 monedas.
             </p>
+          )}
+
+          {/* Abajo de todo: la suma de TODOS los balances convertida a la moneda elegida (estimación). */}
+          <div className="wallet-card__estimate">
+            <span className="wallet-card__total-label">Total estimado de todos tus balances (en {valuedIn})</span>
+            {wallet.data.valuation ? (
+              <>
+                <strong className="wallet-card__estimate-amount">
+                  {formatCurrency(wallet.data.valuation.total, wallet.data.valuation.currency)}
+                </strong>
+                <span className="wallet-card__total-meta">
+                  {SOURCE_LABEL[wallet.data.valuation.rates_source]} · {wallet.data.valuation.rates_date}
+                  {' · ARS al dólar MEP, igual que el cotizador'}
+                  {wallet.data.valuation.missing_currencies.length > 0 &&
+                    ` · sin incluir ${wallet.data.valuation.missing_currencies.join(', ')} (tasa no disponible)`}
+                </span>
+              </>
+            ) : (
+              <span className="wallet-card__total-meta">Las tasas no están disponibles en este momento.</span>
+            )}
+          </div>
+
+          {wallet.data.valuation && wallet.data.valuation.warnings.length > 0 && (
+            <ul className="wallet-card__warnings" role="status">
+              {wallet.data.valuation.warnings.map((warning) => (
+                <li key={warning}>{warning}</li>
+              ))}
+            </ul>
           )}
         </>
       )}
