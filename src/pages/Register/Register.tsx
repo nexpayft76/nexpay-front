@@ -2,12 +2,13 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../services/api'
-import { register } from '../../services/auth.service'
+import { useAuth } from '../../hooks/useAuth'
 import { validateEmail, validateName, validatePassword } from '../../utils/validators'
 import '../Auth/Auth.css'
 
 function Register() {
   const navigate = useNavigate()
+  const { register } = useAuth()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -30,8 +31,7 @@ function Register() {
     setError('')
     setIsSubmitting(true)
     try {
-      const result = await register({ full_name: name.trim(), email: email.trim(), password })
-      localStorage.setItem('nexpay_access_token', result.token)
+      await register({ full_name: name.trim(), email: email.trim(), password })
       navigate('/dashboard')
     } catch (requestError: unknown) {
       setError(requestError instanceof ApiError ? requestError.message : 'No se pudo crear la cuenta.')
