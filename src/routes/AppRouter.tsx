@@ -6,6 +6,7 @@ import Login from '../pages/Login/Login'
 import Register from '../pages/Register/Register'
 import Dashboard from '../pages/Dashboard/Dashboard'
 import DepositPage from '../pages/Operations/DepositPage'
+import ExchangePage from '../pages/Operations/ExchangePage'
 import QuotePage from '../pages/Quote/QuotePage'
 import ProtectedRoute from './ProtectedRoute'
 
@@ -32,16 +33,7 @@ function AppRouter() {
           <Route path="operaciones">
             <Route index element={<Navigate to="recarga" replace />} />
             <Route path="recarga" element={<DepositPage />} />
-            <Route
-              path="compra"
-              element={
-                <ComingSoon
-                  icon="cart"
-                  title="Compra"
-                  description="Comprá dólares, euros o pesos con el saldo de tu billetera, a la tasa del momento y con la comisión visible antes de confirmar."
-                />
-              }
-            />
+            <Route path="compra" element={<ExchangePage />} />
           </Route>
           <Route
             path="p2p"

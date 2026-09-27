@@ -30,7 +30,7 @@ const MENU: MenuItem[] = [
     // Más adelante: Venta, Intercambio e Historial.
     children: [
       { to: '/dashboard/operaciones/recarga', label: 'Recarga', icon: 'plus' },
-      { to: '/dashboard/operaciones/compra', label: 'Compra', icon: 'cart', soon: true },
+      { to: '/dashboard/operaciones/compra', label: 'Compra', icon: 'cart' },
     ],
   },
   { to: '/dashboard/p2p', label: 'P2P', icon: 'p2p', soon: true },

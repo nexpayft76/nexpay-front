@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import WalletCard from '../../components/wallet/WalletCard'
 import { useMyWallet } from '../../hooks/useMyWallet'
@@ -6,8 +6,9 @@ import { ApiError } from '../../services/api'
 import { depositToMyWallet } from '../../services/wallet.service'
 import type { DepositResult } from '../../types/wallet'
 import { hasAtMostDecimals, parseAmount } from '../../utils/amount'
-import { CURRENCIES, currencyInfo } from '../../utils/currencies'
+import { currencyInfo } from '../../utils/currencies'
 import { formatCurrency } from '../../utils/formatCurrency'
+import CurrencyPicker from './CurrencyPicker'
 import './Operations.css'
 
 /** Mismas reglas que el back: mayor que 0, hasta 2 decimales y hasta el límite de la moneda. */
@@ -84,22 +85,7 @@ function DepositPage() {
 
             <fieldset className="op-field">
               <legend className="op-field__label">Moneda</legend>
-              <div className="currency-picker" role="radiogroup" aria-label="Moneda a recargar">
-                {CURRENCIES.map((c) => (
-                  <button
-                    key={c.code}
-                    type="button"
-                    role="radio"
-                    aria-checked={currency === c.code}
-                    className={`currency-picker__option${currency === c.code ? ' currency-picker__option--active' : ''}`}
-                    style={{ '--currency-color': c.color } as CSSProperties}
-                    onClick={() => chooseCurrency(c.code)}
-                  >
-                    <span className="currency-picker__dot" aria-hidden="true" />
-                    <span className="currency-picker__code">{c.code}</span>
-                  </button>
-                ))}
-              </div>
+              <CurrencyPicker value={currency} onChange={chooseCurrency} label="Moneda a recargar" />
               {currentBalance !== undefined && (
                 <p className="op-hint">
                   Saldo actual en {currency}: <strong>{formatCurrency(Number(currentBalance), currency)}</strong>
