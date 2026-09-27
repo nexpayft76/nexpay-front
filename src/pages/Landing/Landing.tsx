@@ -47,24 +47,54 @@ const SAMPLE_BALANCES = [
 ]
 
 function Landing() {
-  const { user, logout } = useAuth()
+  const { user, isLoading, logout } = useAuth()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   async function handleLogout() {
     await logout()
+    setIsMenuOpen(false)
   }
 
   return (
     <div className="landing">
       <header className="landing-header">
         <div className="container landing-header__inner">
-          <Link to="/" className="brand">
-            NexPay
-          </Link>
+          <div className="landing-header__brand">
+            <div className="menu-activator">
+              <input
+                type="checkbox"
+                id="menu-launcher"
+                checked={isMenuOpen}
+                onChange={(event) => setIsMenuOpen(event.target.checked)}
+                aria-label="Abrir menú de navegación"
+              />
+              <label htmlFor="menu-launcher" aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}>
+                <span className="menu-activator-line" />
+                <span className="menu-activator-line" />
+                <span className="menu-activator-line" />
+              </label>
+            </div>
+            <Link to="/" className="brand" onClick={() => setIsMenuOpen(false)}>
+              NexPay
+            </Link>
+          </div>
           <nav className="landing-header__actions" aria-label="Cuenta">
-            {user ? (
+            {isLoading ? null : user ? (
               <>
                 <Link to="/dashboard" className="btn btn--ghost">Mi dashboard</Link>
-                <button type="button" className="btn btn--primary" onClick={handleLogout}>Cerrar sesión</button>
+                <button
+                  type="button"
+                  className="btn btn--primary btn--icon"
+                  onClick={handleLogout}
+                  aria-label="Cerrar sesión"
+                  title="Cerrar sesión"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5" />
+                    <path d="m15 8 4 4-4 4" />
+                    <path d="M9 12h10" />
+                  </svg>
+                </button>
               </>
             ) : (
               <>
