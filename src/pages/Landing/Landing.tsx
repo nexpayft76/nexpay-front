@@ -2,48 +2,54 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import BackendStatus from '../../components/common/BackendStatus'
 import { useAuth } from '../../hooks/useAuth'
-import CorridorChart from './CorridorChart'
-import CorridorQuote from './CorridorQuote'
+import CurrencyQuote from './CurrencyQuote'
 import NexpayLogo from './NexpayLogo'
+import RateChart from './RateChart'
+import WalletPreview from './WalletPreview'
 import './Landing.css'
 
 const SECTION_LINKS = [
+  { href: '#billetera', label: 'Billetera' },
   { href: '#cotizador', label: 'Cotizador' },
-  { href: '#problema', label: 'El problema' },
-  { href: '#mercado-p2p', label: 'Mercado P2P' },
+  { href: '#mercado-p2p', label: 'Nuestro diferencial' },
   { href: '#seguridad', label: 'Seguridad' },
 ]
 
 const PROBLEMS = [
   {
-    title: 'Dos conversiones, dos comisiones',
-    text: 'No hay ruta directa de COP a ARS: el dinero pasa por dólares y cada banco cobra su parte.',
+    title: 'Tasas que no se ven',
+    text: 'Casi nunca te muestran la tasa real antes de confirmar: el costo va escondido en el tipo de cambio.',
   },
   {
-    title: 'Tres dólares, tres resultados',
-    text: 'En Argentina conviven el dólar oficial, el MEP y el blue. Lo que llega cambia mucho según cuál se use.',
+    title: 'Conversiones de más',
+    text: 'Entre monedas sin ruta directa, como COP y ARS, el dinero pasa por dólares: dos conversiones en lugar de una.',
   },
   {
-    title: 'El costo va escondido en la tasa',
-    text: 'Nadie te dice cuánto perdiste: la comisión real está en el tipo de cambio que te aplican.',
+    title: 'Tres dólares en Argentina',
+    text: 'Conviven el dólar oficial, el MEP y el blue. Lo que recibís cambia mucho según cuál se use.',
   },
 ]
 
 const SOLUTION = [
   {
-    tag: 'A / Cotizador transparente',
-    title: 'Sabés cuánto llega antes de enviar',
-    text: '«Enviás 1.000.000 COP, reciben X ARS; frente al dólar oficial te ahorrás Y». Un solo vistazo, sin letra chica.',
+    tag: 'A / Billetera multimoneda',
+    title: 'Un saldo por moneda',
+    text: 'USD, EUR, COP y ARS en una sola billetera, con el total valorizado en la moneda que elijas.',
   },
   {
-    tag: 'B / Mercado P2P con propósito',
-    title: 'Dos flujos opuestos, un cruce',
-    text: 'El colombiano que necesita ARS se cruza con el argentino que tiene ARS y necesita COP. Fee pequeño, sin bancos de por medio.',
+    tag: 'B / Compra, venta e intercambio',
+    title: 'Cualquier par, un solo paso',
+    text: 'Comprá, vendé o intercambiá entre las 4 monedas: 12 combinaciones, con la tasa visible antes de confirmar.',
   },
   {
-    tag: 'C / Vista de presupuesto',
-    title: 'La familia envía, el estudiante ve el rendimiento',
-    text: 'Quien envía en Colombia ve su monto en COP; quien recibe en Argentina ve cuánto le rinde hoy en ARS.',
+    tag: 'C / Cotizador transparente',
+    title: 'Sabés cuánto recibís antes de operar',
+    text: '«Tenés 1.000.000 COP y recibís X ARS; con el dólar oficial serían Y». Un solo vistazo, sin letra chica.',
+  },
+  {
+    tag: 'D / Nuestro diferencial',
+    title: 'Puente directo COP ↔ ARS',
+    text: 'El colombiano que necesita ARS se cruza con el argentino que necesita COP, sin pasar por dólares ni bancos.',
   },
 ]
 
@@ -55,6 +61,7 @@ const SECURITY = [
 ]
 
 const FOOTER_CHIPS = [
+  '4 monedas · 12 pares',
   'Tasas en tiempo real',
   'Confirmación por email',
   'Historial 100% trazable',
@@ -144,18 +151,18 @@ function Landing() {
 
       <main>
         <section className="hero container">
-          <p className="chip">Corredor Colombia ↔ Argentina · COP ↔ ARS</p>
+          <p className="chip">Billetera multimoneda · USD · EUR · COP · ARS</p>
           <h1>
-            Cada envío esconde un costo.
+            Cada cambio de moneda esconde un costo.
             <br />
             <em className="gold-text">Nosotros lo mostramos.</em>
           </h1>
           <p className="hero__lead">
-            Si estudiás o vivís en Argentina y tu familia te envía desde Colombia, tu dinero pasa por
-            dólares, dos conversiones y dos comisiones, y en Argentina conviven el dólar oficial, el MEP
-            y el blue. <strong>NexPay cruza tu envío directo con alguien que necesita hacer el camino
-            contrario</strong>, con una sola tasa clara y un fee mínimo. Operaciones simuladas, sin dinero
-            real.
+            NexPay es tu billetera en dólares, euros, pesos colombianos y pesos argentinos: comprás,
+            vendés e intercambiás entre las 4 monedas viendo la tasa real antes de confirmar. Y si vivís
+            entre Colombia y Argentina, tenés algo más: <strong>un puente directo COP ↔ ARS que te cruza
+            con alguien que necesita hacer el camino contrario</strong>, sin pasar por dólares. Operaciones
+            simuladas, sin dinero real.
           </p>
           <div className="hero__cta">
             <a href="#cotizador" className="btn-gold">
@@ -174,9 +181,30 @@ function Landing() {
           </div>
         </section>
 
-        <section id="cotizador" className="band" aria-label="Cotizador">
+        <section id="billetera" className="band band--line" aria-labelledby="wallet-title">
+          <div className="container split">
+            <div>
+              <p className="eyebrow">Tu billetera</p>
+              <h2 id="wallet-title" className="display">
+                Cuatro monedas, <em className="gold-text">un solo lugar.</em>
+              </h2>
+              <p className="band__text">
+                Un saldo independiente para cada moneda y el total de tu billetera en la que prefieras,
+                valorizado con las tasas del momento. Cambiá la moneda del total y mirá cómo se recalcula.
+              </p>
+              <ul className="bullets">
+                <li>Saldos en USD, EUR, COP y ARS</li>
+                <li>Total valorizado con tasas en vivo</li>
+                <li>Compra, venta e intercambio entre cualquier par</li>
+              </ul>
+            </div>
+            <WalletPreview />
+          </div>
+        </section>
+
+        <section id="cotizador" className="band band--line" aria-label="Cotizador">
           <div className="container container--narrow">
-            <CorridorQuote />
+            <CurrencyQuote />
           </div>
         </section>
 
@@ -184,7 +212,7 @@ function Landing() {
           <div className="container">
             <p className="eyebrow">01 / El problema</p>
             <h2 id="problem-title" className="display">
-              Mandar pesos de Colombia a Argentina <em className="gold-text">no debería costar tanto.</em>
+              Cambiar de moneda no debería ser <em className="gold-text">un misterio.</em>
             </h2>
             <div className="columns">
               {PROBLEMS.map((p, i) => (
@@ -202,9 +230,9 @@ function Landing() {
           <div className="container">
             <p className="eyebrow">02 / La solución</p>
             <h2 id="features-title" className="display">
-              Puente <span className="gold-text">COP ↔ ARS</span>: un cruce, una tasa, cero rodeos.
+              Una billetera para <span className="gold-text">4 monedas</span>, con un puente que nadie más tiene.
             </h2>
-            <div className="columns">
+            <div className="columns columns--4">
               {SOLUTION.map((s) => (
                 <article key={s.title} className="column">
                   <p className="eyebrow">{s.tag}</p>
@@ -218,7 +246,7 @@ function Landing() {
 
         <section id="mercado-p2p" className="band band--line" aria-labelledby="steps-title">
           <div className="container container--narrow">
-            <p className="eyebrow eyebrow--center">03 / Mercado P2P</p>
+            <p className="eyebrow eyebrow--center">03 / Nuestro diferencial · Mercado P2P</p>
             <h2 id="steps-title" className="display display--center">
               El puente funciona porque los dos lados se necesitan.
             </h2>
@@ -239,7 +267,7 @@ function Landing() {
               <div className="p2p__cross" aria-hidden="true">
                 <span className="p2p__icon">⇄</span>
                 <span className="mono-label">Cruce directo</span>
-                <span className="chip chip--sm">fee 0,5%</span>
+                <span className="chip chip--sm">sin pasar por USD</span>
               </div>
               <article className="p2p__side">
                 <header className="p2p__person">
@@ -281,7 +309,7 @@ function Landing() {
                 <li>Historial 100% trazable de cada envío recibido</li>
               </ul>
             </div>
-            <CorridorChart />
+            <RateChart />
           </div>
         </section>
 
