@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Landing from '../src/pages/Landing/Landing'
-import { AuthProvider } from '../src/context/AuthContext'
+import { AuthProvider } from '../src/context/AuthProvider'
 import type { AuthUser } from '../src/types/auth'
 import { getCurrentUser, logout } from '../src/services/auth.service'
 
@@ -64,35 +64,31 @@ describe('Landing', () => {
     expect(screen.queryByRole('link', { name: 'Ya tengo cuenta' })).not.toBeInTheDocument()
   })
 
-  it('abre el drawer lateral con las tres opciones públicas sin sesión', async () => {
-    const user = userEvent.setup()
+  it('no muestra un menú lateral en la landing', async () => {
     renderLanding()
 
-    await user.click(await screen.findByRole('checkbox', { name: 'Abrir menú de navegación' }))
-
-    expect(screen.getByRole('link', { name: 'Inicio' })).toHaveAttribute('href', '/')
-    expect(screen.getByRole('link', { name: 'Funcionalidades' })).toHaveAttribute('href', '#features-title')
-    expect(screen.getByRole('link', { name: 'Cómo funciona' })).toHaveAttribute('href', '#steps-title')
-    expect(screen.queryByRole('button', { name: 'Cerrar sesión' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('checkbox', { name: /menú/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: 'Navegación principal' })).not.toBeInTheDocument()
   })
 
-  it('muestra Cerrar sesión como última opción y ejecuta logout', async () => {
-    const user = userEvent.setup()
+  it('muestra el logo NexPay y mantiene el enlace al inicio', async () => {
     localStorage.setItem('nexpay_access_token', 'token')
     renderLanding()
 
     await waitFor(() => expect(screen.getByRole('link', { name: 'Mi dashboard' })).toBeInTheDocument())
-    await user.click(screen.getByRole('checkbox', { name: 'Abrir menú de navegación' }))
+    const brand = screen.getByRole('link', { name: /NexPay/i })
+    expect(brand).toHaveAttribute('href', '/')
+    expect(brand.querySelector('svg')).toBeInTheDocument()
+  })
 
-    const logoutButtons = screen.getAllByRole('button', { name: 'Cerrar sesión' })
-    expect(logoutButtons).toHaveLength(2)
-    expect(screen.getByRole('navigation', { name: 'Navegación principal' }).lastElementChild).toHaveTextContent('Cerrar sesión')
+  it('lleva el scroll al inicio al pulsar NexPay', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined)
+    renderLanding()
 
-    await user.click(logoutButtons[1])
+    await userEvent.click(await screen.findByRole('link', { name: /NexPay/i }))
 
-    await waitFor(() => expect(screen.getByRole('link', { name: 'Iniciar sesión' })).toBeInTheDocument())
-    expect(mockedLogout).toHaveBeenCalledOnce()
-    expect(localStorage.getItem('nexpay_access_token')).toBeNull()
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'auto' })
+    scrollTo.mockRestore()
   })
 
   it('representa el cierre de sesión del header como un botón de icono sin texto visible', async () => {
