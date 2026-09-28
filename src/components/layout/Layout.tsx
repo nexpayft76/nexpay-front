@@ -15,8 +15,8 @@ function Layout() {
   const navigate = useNavigate()
   const isDesktop = useMediaQuery(DESKTOP_QUERY)
 
-  // Estados separados: en desktop el menú arranca abierto; en móvil, cerrado.
-  const [desktopExpanded, setDesktopExpanded] = useState(true)
+  // Estados separados: en desktop el menú arranca contraído; en móvil, cerrado.
+  const [desktopExpanded, setDesktopExpanded] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const isOpen = isDesktop ? desktopExpanded : mobileOpen
 

@@ -64,14 +64,37 @@
   outline-offset: 2px;
 }
 
-/* En pantallas muy angostas se oculta la etiqueta para no apretar el logo. */
-.navbar .prototype-badge {
-  display: none;
+.navbar__menu-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 1.375rem;
+  height: 1.125rem;
 }
 
-@media (min-width: 480px) {
-  .navbar .prototype-badge {
-    display: inline-block;
+.navbar__menu-icon span {
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transform: translateY(0) rotate(0);
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.icon-btn[aria-expanded='true'] .navbar__menu-icon span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.icon-btn[aria-expanded='true'] .navbar__menu-icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.icon-btn[aria-expanded='true'] .navbar__menu-icon span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar__menu-icon span {
+    transition: none;
   }
 }
 

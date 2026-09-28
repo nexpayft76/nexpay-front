@@ -25,18 +25,19 @@ const Navbar = forwardRef<HTMLButtonElement, NavbarProps>(function Navbar(
           aria-controls="app-sidebar"
           aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
         >
-          <Icon name="menu" size={22} />
+          <span className="navbar__menu-icon" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </span>
         </button>
       </div>
 
-      <Link to="/dashboard" className="navbar__brand">
+      <Link to="/" className="navbar__brand">
         NEXPAY
       </Link>
 
       <div className="navbar__end">
-        <span className="prototype-badge" title="Rama prototipo/dashboard: referencia de diseño, no se publica en main">
-          Prototipo
-        </span>
         <button type="button" className="icon-btn" onClick={onLogout} aria-label="Cerrar sesión" title="Cerrar sesión">
           <Icon name="logout" size={22} />
         </button>
