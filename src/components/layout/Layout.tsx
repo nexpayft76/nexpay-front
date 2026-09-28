@@ -73,7 +73,7 @@ function Layout() {
         isDesktop={isDesktop}
         onClose={closeMobile}
         onNavigate={() => {
-          if (!isDesktop) setMobileOpen(false)
+          if (!isDesktop) closeMobile()
         }}
         onLogout={handleLogout}
       />
