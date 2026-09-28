@@ -1,9 +1,8 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import BackendStatus from '../../components/common/BackendStatus'
+import NexpayLogo from '../../components/common/NexpayLogo'
 import { useAuth } from '../../hooks/useAuth'
 import CurrencyQuote from './CurrencyQuote'
-import NexpayLogo from './NexpayLogo'
 import RateChart from './RateChart'
 import WalletPreview from './WalletPreview'
 import './Landing.css'
@@ -71,11 +70,9 @@ const FOOTER_CHIPS = [
 
 function Landing() {
   const { user, isLoading, logout } = useAuth()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   async function handleLogout() {
     await logout()
-    setIsMenuOpen(false)
   }
 
   return (
@@ -83,21 +80,7 @@ function Landing() {
       <header className="landing-header">
         <div className="container landing-header__inner">
           <div className="landing-header__brand">
-            <div className="menu-activator">
-              <input
-                type="checkbox"
-                id="menu-launcher"
-                checked={isMenuOpen}
-                onChange={(event) => setIsMenuOpen(event.target.checked)}
-                aria-label={isMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
-              />
-              <label htmlFor="menu-launcher" aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}>
-                <span className="menu-activator-line" />
-                <span className="menu-activator-line" />
-                <span className="menu-activator-line" />
-              </label>
-            </div>
-            <Link to="/" className="brand" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/" className="brand">
               <NexpayLogo />
               NexPay
             </Link>
@@ -135,18 +118,6 @@ function Landing() {
             )}
           </nav>
         </div>
-        {isMenuOpen && (
-          <nav className="landing-menu container" aria-label="Navegación principal">
-            <Link to="/" onClick={() => setIsMenuOpen(false)}>Inicio</Link>
-            <a href="#features-title" onClick={() => setIsMenuOpen(false)}>Funcionalidades</a>
-            <a href="#steps-title" onClick={() => setIsMenuOpen(false)}>Cómo funciona</a>
-            {!isLoading && user && (
-              <button type="button" className="landing-menu__logout" onClick={handleLogout}>
-                Cerrar sesión
-              </button>
-            )}
-          </nav>
-        )}
       </header>
 
       <main>

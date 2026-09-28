@@ -34,6 +34,9 @@
 }
 
 .navbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--color-text);
   font-size: 1.125rem;
   font-weight: 800;
@@ -90,6 +93,18 @@
 
 .icon-btn[aria-expanded='true'] .navbar__menu-icon span:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
+}
+
+.navbar__logout {
+  background: var(--gold-metal);
+  box-shadow: var(--gold-glow);
+  color: #1a1206;
+}
+
+.navbar__logout:hover {
+  background: var(--gold-metal);
+  background-position: 100% 50%;
+  color: #1a1206;
 }
 
 @media (prefers-reduced-motion: reduce) {
