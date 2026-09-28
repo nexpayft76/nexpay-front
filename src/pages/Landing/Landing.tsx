@@ -71,6 +71,10 @@ const FOOTER_CHIPS = [
 function Landing() {
   const { user, isLoading, logout } = useAuth()
 
+  function goToLandingTop() {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }
+
   async function handleLogout() {
     await logout()
   }
@@ -80,7 +84,7 @@ function Landing() {
       <header className="landing-header">
         <div className="container landing-header__inner">
           <div className="landing-header__brand">
-            <Link to="/" className="brand">
+            <Link to="/" className="brand" onClick={goToLandingTop}>
               <NexpayLogo />
               NexPay
             </Link>

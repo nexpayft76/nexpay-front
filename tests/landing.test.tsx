@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Landing from '../src/pages/Landing/Landing'
@@ -78,6 +79,16 @@ describe('Landing', () => {
     const brand = screen.getByRole('link', { name: /NexPay/i })
     expect(brand).toHaveAttribute('href', '/')
     expect(brand.querySelector('svg')).toBeInTheDocument()
+  })
+
+  it('lleva el scroll al inicio al pulsar NexPay', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined)
+    renderLanding()
+
+    await userEvent.click(await screen.findByRole('link', { name: /NexPay/i }))
+
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'auto' })
+    scrollTo.mockRestore()
   })
 
   it('representa el cierre de sesión del header como un botón de icono sin texto visible', async () => {
