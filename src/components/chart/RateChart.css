@@ -1,0 +1,304 @@
+/* Mobile first. */
+
+.rate-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+}
+
+.rate-chart__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rate-chart__header h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.rate-chart__subtitle {
+  margin: 0.125rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.rate-chart__controls {
+  display: grid;
+  gap: 0.625rem;
+}
+
+/* Selector de par: De [COP] ⇄ a [USD] */
+.pair-select {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.pair-select label {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.pair-select select {
+  min-height: 2.5rem;
+  padding: 0.375rem 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.pair-select select:focus-visible,
+.pair-select__swap:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.pair-select__swap {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 1.125rem;
+  cursor: pointer;
+}
+
+.pair-select__swap:hover {
+  background: var(--color-primary-soft);
+}
+
+/* Selector de rango */
+.range-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 0.25rem;
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.range-tabs__option {
+  min-height: 2.5rem;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.range-tabs__option--active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+}
+
+.range-tabs__option:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+/* Valor principal (una sola serie) */
+.rate-chart__headline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+}
+
+.rate-chart__headline strong {
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.rate-chart__headline > span {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.rate-chart__explain {
+  display: block;
+}
+
+.rate-chart__change {
+  color: var(--color-text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chips de ARS (oficial, MEP, blue) */
+.rate-chart__chips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rate-chart__chips li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid;
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  font-variant-numeric: tabular-nums;
+}
+
+.rate-chart__chips strong {
+  font-size: 0.9375rem;
+  overflow-wrap: anywhere;
+}
+
+.rate-chart__chips .rate-chart__change {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.rate-chart__chip-name {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.rate-chart__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+/* Gráfico: colores de grilla y ejes según el tema */
+.rate-chart__figure {
+  min-width: 0;
+  margin: 0;
+}
+
+.rate-chart .recharts-cartesian-grid line {
+  stroke: var(--color-border);
+}
+
+.rate-chart .recharts-cartesian-axis-tick-value {
+  fill: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.rate-chart .recharts-tooltip-cursor {
+  stroke: var(--color-text-muted);
+}
+
+.rate-chart__skeleton {
+  height: 17rem;
+  border-radius: var(--radius);
+  background: linear-gradient(90deg, var(--color-border) 25%, var(--color-bg) 50%, var(--color-border) 75%);
+  background-size: 200% 100%;
+  animation: chart-shimmer 1.2s infinite;
+}
+
+@keyframes chart-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.rate-chart__error {
+  margin: 0;
+  color: var(--color-danger);
+}
+
+.rate-chart__warnings {
+  margin: 0;
+  padding: 0.75rem 1rem 0.75rem 2rem;
+  border: 1px solid #e8b44a;
+  border-radius: var(--radius);
+  background: #fff6e0;
+  color: #7a5200;
+  font-size: 0.875rem;
+}
+
+.rate-chart__footer {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .rate-chart {
+    padding: 1.5rem;
+  }
+
+  .rate-chart__header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .rate-chart__controls {
+    min-width: 17rem;
+  }
+
+  .range-tabs {
+    min-width: 17rem;
+  }
+
+  .rate-chart__explain {
+    display: inline;
+  }
+
+  .rate-chart__chips li {
+    padding: 0.625rem 0.875rem;
+  }
+
+  .rate-chart__chips strong {
+    font-size: 1.125rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .rate-chart__warnings {
+    border-color: #8a6a1f;
+    background: #2e2410;
+    color: #f2cf7a;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rate-chart__skeleton {
+    animation: none;
+  }
+}
+
+/* Desktop: el par y el rango en una misma fila, alineados abajo. */
+@media (min-width: 1024px) {
+  .rate-chart__controls {
+    grid-auto-flow: column;
+    align-items: end;
+  }
+
+  .pair-select {
+    min-width: 15rem;
+  }
+}
