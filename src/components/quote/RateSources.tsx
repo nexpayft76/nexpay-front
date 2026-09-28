@@ -16,8 +16,7 @@ function RateSources() {
   }
   if (!providers) return null
 
-  const allFresh = providers.every((p) => !p.stale)
-
+  const allFresh = !failed && providers.every((p) => !p.stale)
   return (
     <div className="rate-sources">
       <div className="rate-sources__header">
