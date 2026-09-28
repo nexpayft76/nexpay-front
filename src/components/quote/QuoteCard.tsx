@@ -2,14 +2,13 @@ import { useState } from 'react'
 import { ARS_RATE_TYPES, useQuote } from '../../hooks/useQuote'
 import type { ArsRateType, Conversion } from '../../types/rates'
 import { parseAmount } from '../../utils/amount'
+import { CURRENCY_CODES } from '../../utils/currencies'
 import { formatCurrency } from '../../utils/formatCurrency'
 import RateSources from './RateSources'
 import './QuoteCard.css'
 
 /** Tipos de dólar legales: la sugerencia solo recomienda estos (el blue es mercado informal). */
 const LEGAL_ARS_TYPES: ArsRateType[] = ['oficial', 'mep']
-
-const CURRENCIES = ['COP', 'ARS', 'USD', 'EUR']
 
 const ARS_LABEL: Record<ArsRateType, string> = { oficial: 'Oficial', mep: 'MEP', blue: 'Blue' }
 
@@ -53,7 +52,7 @@ function QuoteCard() {
               aria-invalid={amountText !== '' && !(amount > 0)}
             />
             <select value={from} onChange={(event) => setFrom(event.target.value)} aria-label="Moneda que tengo">
-              {CURRENCIES.map((code) => (
+              {CURRENCY_CODES.map((code) => (
                 <option key={code} value={code}>
                   {code}
                 </option>
@@ -70,7 +69,7 @@ function QuoteCard() {
           <span className="quote-field__label">Quiero</span>
           <div className="quote-field__row quote-field__row--end">
             <select value={to} onChange={(event) => setTo(event.target.value)} aria-label="Moneda que quiero">
-              {CURRENCIES.map((code) => (
+              {CURRENCY_CODES.map((code) => (
                 <option key={code} value={code}>
                   {code}
                 </option>

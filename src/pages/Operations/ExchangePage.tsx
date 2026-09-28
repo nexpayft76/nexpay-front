@@ -65,6 +65,7 @@ function ExchangePage() {
   }
 
   function validate(): string | null {
+    if (wallet.status !== 'ok') return 'Esperá a que tu billetera esté disponible para operar.'
     if (!Number.isFinite(amount) || amount <= 0) return 'Ingresá un monto mayor que 0.'
     if (!hasAtMostDecimals(amount, 2)) return 'El monto admite como máximo 2 decimales.'
     if (available !== undefined && amount > available) {
@@ -95,7 +96,7 @@ function ExchangePage() {
   }
 
   const overBalance = available !== undefined && amount > available
-  const canSubmit = !submitting && quote.status === 'ok' && !overBalance
+  const canSubmit = wallet.status === 'ok' && !submitting && quote.status === 'ok' && !overBalance
 
   return (
     <section className="dashboard-content" aria-labelledby="exchange-title">

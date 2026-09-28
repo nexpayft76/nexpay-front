@@ -33,9 +33,6 @@ const MENU: MenuItem[] = [
       { to: '/dashboard/operaciones/compra', label: 'Compra', icon: 'cart' },
     ],
   },
-  { to: '/dashboard/p2p', label: 'P2P', icon: 'p2p', soon: true },
-  { to: '/dashboard/configuracion', label: 'Configuración', icon: 'settings', soon: true },
-  { to: '/dashboard/usuario', label: 'Usuario', icon: 'user', soon: true },
 ]
 
 function isGroup(item: MenuItem): item is MenuGroup {
