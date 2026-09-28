@@ -34,6 +34,9 @@ const Navbar = forwardRef<HTMLButtonElement, NavbarProps>(function Navbar(
       </Link>
 
       <div className="navbar__end">
+        <span className="prototype-badge" title="Rama prototipo/dashboard: referencia de diseño, no se publica en main">
+          Prototipo
+        </span>
         <button type="button" className="icon-btn" onClick={onLogout} aria-label="Cerrar sesión" title="Cerrar sesión">
           <Icon name="logout" size={22} />
         </button>
