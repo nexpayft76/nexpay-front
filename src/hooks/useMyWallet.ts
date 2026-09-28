@@ -16,7 +16,7 @@ export function useMyWallet(valuedIn: string) {
   useEffect(() => {
     setState({ status: 'loading' })
     let cancelled = false
-      .then((data) => {
+    getMyWallet(valuedIn)
         if (!cancelled) setState({ status: 'ok', data })
       })
       .catch((error: unknown) => {
