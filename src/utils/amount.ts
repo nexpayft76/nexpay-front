@@ -1,7 +1,8 @@
 /** Acepta "1.000.000", "1000000" o "1000,50" (formato local) y devuelve el número (NaN si no es válido). */
 export function parseAmount(text: string): number {
-  const normalized = text.replace(/\./g, '').replace(',', '.').trim()
-  return normalized === '' ? NaN : Number(normalized)
+  const trimmed = text.trim()
+  if (!/^(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$/.test(trimmed)) return NaN
+  return Number(trimmed.replace(/\./g, '').replace(',', '.'))
 }
 
 /** true si `value` tiene como máximo `decimals` decimales (evita errores de redondeo tipo 0.1 + 0.2). */
