@@ -201,20 +201,13 @@
 .quote-card__warnings {
   margin: 0;
   padding: 0.75rem 1rem 0.75rem 2rem;
-  border: 1px solid #e8b44a;
+  border: 1px solid var(--color-warning-border);
   border-radius: var(--radius);
-  background: #fff6e0;
-  color: #7a5200;
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
   font-size: 0.875rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .quote-card__warnings {
-    border-color: #8a6a1f;
-    background: #2e2410;
-    color: #f2cf7a;
-  }
-}
 
 /* Comparación entre tipos de dólar */
 .quote-compare h3 {
@@ -335,8 +328,8 @@
 }
 
 .rate-sources__badge--stale {
-  background: #fff6e0;
-  color: #7a5200;
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
 }
 
 .rate-sources ul {
@@ -379,7 +372,7 @@
 }
 
 .rate-sources li.is-stale .rate-sources__detail {
-  color: #9a6700;
+  color: var(--color-warning-text);
 }
 
 .rate-sources__note {
@@ -394,16 +387,6 @@
   font-size: 0.8125rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .rate-sources__badge--stale {
-    background: #2e2410;
-    color: #f2cf7a;
-  }
-
-  .rate-sources li.is-stale .rate-sources__detail {
-    color: #f2cf7a;
-  }
-}
 
 /* "Tengo" y "Quiero" siempre en filas separadas: el cotizador del dashboard vive en una columna
    angosta, y en una sola fila el selector de moneda de "Tengo" quedaba tapado. */

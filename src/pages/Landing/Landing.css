@@ -36,54 +36,34 @@
 
 
 /* ------------------------------------------------------------------
-   Identidad NexPay: negro y dorado. Las variables se redefinen solo
-   dentro de .landing, así el header y el menú de arriba (y los .btn
-   globales) toman los colores nuevos sin tocar el resto de la app.
+   Identidad NexPay en la landing. Las variables --l-* apuntan a las del
+   tema (styles/theme.css), así la landing cambia con el modo claro/oscuro.
    ------------------------------------------------------------------ */
 .landing {
-  --l-bg: #0a0a0a;
-  --l-bg-raised: #0e0d0b;
-  --l-surface: #12110e;
-  --l-gold: #d4a64a;
-  --l-gold-light: #f6e3a9;
-  --l-gold-deep: #8a6424;
-  /* Dorado metálico: reflejo champán, cuerpo dorado y sombra bronce. */
-  --l-gold-metal: linear-gradient(
-    135deg,
-    #f6e3a9 0%,
-    #dcb461 28%,
-    #b9893a 52%,
-    #ecd08a 74%,
-    #a97d31 100%
-  );
-  --l-gold-glow: 0 0 0 1px rgb(246 227 169 / 0.25) inset, 0 8px 24px rgb(212 166 74 / 0.22);
-  --l-cream: #eee2c0;
-  --l-text: #b3a888;
-  --l-muted: #7a7160;
-  --l-line: rgb(212 166 74 / 0.16);
-  --l-line-strong: rgb(212 166 74 / 0.45);
-
-  --color-bg: var(--l-bg);
-  --color-surface: var(--l-surface);
-  --color-border: var(--l-line);
-  --color-text: var(--l-cream);
-  --color-text-muted: var(--l-text);
-  --color-primary: var(--l-gold);
-  --color-primary-hover: var(--l-gold-light);
-  --color-primary-soft: rgb(212 166 74 / 0.12);
-  --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
+  --l-bg: var(--color-bg);
+  --l-bg-raised: var(--color-surface-raised);
+  --l-surface: var(--color-surface);
+  --l-gold: var(--color-primary);
+  --l-gold-light: var(--gold-light);
+  --l-gold-deep: var(--gold-deep);
+  --l-gold-metal: var(--gold-metal);
+  --l-gold-glow: var(--gold-glow);
+  --l-cream: var(--color-text);
+  --l-text: var(--color-text-muted);
+  --l-muted: var(--color-text-subtle);
+  --l-line: var(--color-border);
+  --l-line-strong: var(--color-border-strong);
 
   background: var(--l-bg);
   color: var(--l-text);
-  color-scheme: dark;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-body);
 }
 
 .landing .btn--primary {
   background: var(--l-gold-metal);
   background-size: 180% 180%;
   box-shadow: var(--l-gold-glow);
-  color: #1a1206;
+  color: var(--color-on-primary);
   transition: background-position 0.5s ease, box-shadow 0.2s;
 }
 
@@ -94,7 +74,7 @@
 .landing-header {
   position: sticky;
   top: 0;
-  background: rgb(10 10 10 / 0.88);
+  background: var(--color-header-bg);
   backdrop-filter: blur(10px);
 }
 
@@ -103,7 +83,7 @@
   align-items: center;
   gap: 0.6rem;
   color: var(--l-cream);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
   font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 0.3em;
@@ -134,7 +114,7 @@
 .mono-label,
 .mono-note,
 .chip {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
 }
 
 .eyebrow {
@@ -187,15 +167,7 @@
 }
 
 .gold-text {
-  background: linear-gradient(
-    100deg,
-    #b9893a 0%,
-    #e6c577 22%,
-    #f8e9b8 38%,
-    #d4a64a 55%,
-    #a97d31 75%,
-    #e6c577 100%
-  );
+  background: var(--gold-text);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -218,15 +190,15 @@
 .hero h1 {
   margin: 0;
   color: var(--l-cream);
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
+  font-family: var(--font-display);
+  font-stretch: expanded;
   font-weight: 500;
   line-height: 1.1;
 }
 
 .display {
   max-width: 40rem;
-  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-size: clamp(1.7rem, 3.2vw, 2.6rem);
 }
 
 .display--center {
@@ -237,7 +209,7 @@
 
 .display em,
 .hero h1 em {
-  font-style: italic;
+  font-style: normal;
 }
 
 /* Botones de la landing */
@@ -260,7 +232,7 @@
   background-size: 180% 180%;
   background-position: 0% 50%;
   box-shadow: var(--l-gold-glow);
-  color: #1a1206;
+  color: var(--color-on-primary);
   transition: background-position 0.5s ease, box-shadow 0.2s;
 }
 
@@ -309,7 +281,7 @@
 }
 
 .hero h1 {
-  font-size: clamp(2.6rem, 6vw, 5rem);
+  font-size: clamp(2.1rem, 4.8vw, 4rem);
   letter-spacing: -0.01em;
   text-wrap: balance;
 }
@@ -391,9 +363,9 @@
 .p2p__side h3 {
   margin: 0 0 1rem;
   color: var(--l-cream);
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.7rem;
-  font-style: italic;
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-size: 1.2rem;
   font-weight: 500;
   line-height: 1.2;
 }
@@ -446,7 +418,7 @@
 }
 
 .quote__amount-code {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
   font-size: 0.85rem;
   letter-spacing: 0.12em;
 }
@@ -456,9 +428,9 @@
   border: 0;
   background: transparent;
   color: var(--l-cream);
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 2.2rem;
-  font-style: italic;
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-size: 1.8rem;
   font-weight: 600;
   outline: none;
 }
@@ -512,7 +484,7 @@
 
 .quote-card__value,
 .wallet__total {
-  background: linear-gradient(100deg, #f6e3a9 0%, #d4a64a 45%, #b9893a 70%, #e6c577 100%);
+  background: var(--gold-text);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -520,9 +492,9 @@
 
 .quote-card__value {
   margin: 0.5rem 0 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-  font-style: italic;
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -545,7 +517,7 @@
 
 .quote__savings strong {
   color: var(--l-gold);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
 }
 
 .quote__fine {
@@ -639,7 +611,7 @@
 .quote-card__rate {
   margin: 0.5rem 0 0;
   color: var(--l-text);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
   font-size: 0.8rem;
 }
 
@@ -673,7 +645,7 @@
   border-radius: 999px;
   background: transparent;
   color: var(--l-text);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
   font-size: 0.72rem;
   cursor: pointer;
 }
@@ -682,14 +654,14 @@
 .chart__pairs button[aria-pressed='true'] {
   border-color: transparent;
   background: var(--l-gold-metal);
-  color: #1a1206;
+  color: var(--color-on-primary);
 }
 
 .wallet__total {
   margin: 1.25rem 0 1.5rem;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(2.2rem, 4vw, 3rem);
-  font-style: italic;
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-size: clamp(1.8rem, 3.4vw, 2.5rem);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -715,7 +687,7 @@
   grid-area: code;
   align-self: center;
   color: var(--l-gold);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
   font-size: 0.85rem;
 }
 
@@ -783,7 +755,7 @@
   border: 1px solid var(--l-line-strong);
   border-radius: 50%;
   color: var(--l-gold);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
   font-size: 0.7rem;
 }
 
@@ -844,7 +816,7 @@
   padding: 1.5rem;
   border: 1px solid var(--l-line-strong);
   border-radius: 14px;
-  background: #050505;
+  background: var(--color-sunken);
 }
 
 .chart svg {
@@ -874,7 +846,7 @@
 .chart__delta {
   margin-left: 0.5rem;
   color: var(--l-gold);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
   font-size: 0.78rem;
 }
 
@@ -900,7 +872,7 @@
 
 .chart__label {
   fill: var(--l-muted);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
   font-size: 11px;
 }
 
@@ -953,7 +925,7 @@
   padding: 0;
   list-style: none;
   color: var(--l-muted);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-label);
   font-size: 0.66rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1072,4 +1044,9 @@
     animation: none;
     transition: none;
   }
+}
+
+/* El botón de modo claro/oscuro queda alineado con los botones de cuenta */
+.landing-header__actions {
+  align-items: center;
 }

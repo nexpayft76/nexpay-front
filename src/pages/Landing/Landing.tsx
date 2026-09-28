@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import BackendStatus from '../../components/common/BackendStatus'
+import ThemeToggle from '../../components/common/ThemeToggle'
 import NexpayLogo from '../../components/common/NexpayLogo'
 import { useAuth } from '../../hooks/useAuth'
 import CurrencyQuote from './CurrencyQuote'
@@ -97,6 +98,7 @@ function Landing() {
             ))}
           </nav>
           <nav className="landing-header__actions" aria-label="Cuenta">
+            <ThemeToggle />
             {isLoading ? null : user ? (
               <>
                 <Link to="/dashboard" className="btn btn--ghost">Mi dashboard</Link>

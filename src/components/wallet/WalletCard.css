@@ -95,20 +95,13 @@
 .wallet-card__warnings {
   margin: 0.75rem 0 0;
   padding: 0.75rem 1rem 0.75rem 2rem;
-  border: 1px solid #e8b44a;
+  border: 1px solid var(--color-warning-border);
   border-radius: var(--radius);
-  background: #fff6e0;
-  color: #7a5200;
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
   font-size: 0.875rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .wallet-card__warnings {
-    border-color: #8a6a1f;
-    background: #2e2410;
-    color: #f2cf7a;
-  }
-}
 
 /* Saldos */
 .wallet-card__balances {

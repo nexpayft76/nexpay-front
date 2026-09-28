@@ -266,15 +266,11 @@
 }
 
 .op-segmented__option--active {
-  background: var(--color-primary);
-  color: #fff;
+  background: var(--gold-metal);
+  box-shadow: var(--gold-glow);
+  color: var(--color-on-primary);
 }
 
-@media (prefers-color-scheme: dark) {
-  .op-segmented__option--active {
-    color: #0f121a;
-  }
-}
 
 .op-segmented__option:focus-visible {
   outline: 2px solid var(--color-primary);
