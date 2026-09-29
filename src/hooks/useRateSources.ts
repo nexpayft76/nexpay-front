@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getRates } from '../services/rates.service'
 import type { RateProvider } from '../types/rates'
+import { logLoad } from '../utils/logger'
 
 /** Cada cuánto se vuelve a pedir el estado de las fuentes al back. */
 const REFRESH_MS = 60_000
@@ -19,7 +20,7 @@ export function useRateSources() {
   useEffect(() => {
     let cancelled = false
     const load = () => {
-      getRates()
+      logLoad('tasas', 'fuentes de las tasas', () => getRates())
         .then((table) => {
           if (cancelled) return
           setProviders(table.providers)

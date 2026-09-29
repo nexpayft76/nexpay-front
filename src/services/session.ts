@@ -1,64 +1,36 @@
-// Token de sesión en localStorage y aviso de "sesión vencida" para toda la app.
+// Estado de la sesión en el navegador y aviso de "sesión vencida" para toda la app.
+//
+// El token ya NO se guarda acá: vive en una cookie HttpOnly que pone el back en el login.
+// El JavaScript de la página no puede leerla (un script inyectado no puede robar la sesión)
+// y el navegador la manda solo en cada petición a /api.
 
-const TOKEN_KEY = 'nexpay_access_token'
 const EXPIRED_EVENT = 'nexpay:session-expired'
-/** Margen para no mandar un token que vence en medio de la petición. */
-const EXPIRY_MARGIN_MS = 10_000
+/** Clave vieja de cuando el token se guardaba en localStorage: se borra si quedó de antes. */
+const LEGACY_TOKEN_KEY = 'nexpay_access_token'
 
-export function getToken(): string | null {
+let sessionActive = false
+
+export function setSessionActive(active: boolean): void {
+  sessionActive = active
+}
+
+export function isSessionActive(): boolean {
+  return sessionActive
+}
+
+/** Borra el token que versiones anteriores guardaban en localStorage. */
+export function removeLegacyToken(): void {
   try {
-    return localStorage.getItem(TOKEN_KEY)
+    localStorage.removeItem(LEGACY_TOKEN_KEY)
   } catch {
-    return null
+    // Sin acceso a localStorage (modo privado estricto): no hay nada que borrar.
   }
 }
 
-export function saveToken(token: string): void {
-  try {
-    localStorage.setItem(TOKEN_KEY, token)
-  } catch {
-    // Sin localStorage (modo privado estricto) la sesión dura hasta recargar.
-  }
-}
-
-export function clearToken(): void {
-  try {
-    localStorage.removeItem(TOKEN_KEY)
-  } catch {
-    // Nada que limpiar.
-  }
-}
-
-/**
- * true si el token no sirve: formato inválido o `exp` vencido.
- * Se revisa en el navegador (sin llamar al back) para no generar errores 401 en la consola
- * al recargar con una sesión vieja. La firma la sigue verificando el back en cada petición.
- */
-export function isTokenExpired(token: string, now = Date.now()): boolean {
-  const payload = token.split('.')[1]
-  if (!payload) return true
-  try {
-    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/')
-    const { exp } = JSON.parse(atob(base64)) as { exp?: unknown }
-    return typeof exp !== 'number' || exp * 1000 <= now + EXPIRY_MARGIN_MS
-  } catch {
-    return true
-  }
-}
-
-/** Token vigente, o null (y lo borra) si venció o es inválido. */
-export function getValidToken(): string | null {
-  const token = getToken()
-  if (token && isTokenExpired(token)) {
-    clearToken()
-    return null
-  }
-  return token
-}
-
-/** Avisa a la app que la sesión venció (el back respondió 401 a una petición con token). */
+/** El back respondió 401 con una sesión iniciada: se avisa a la app para cerrarla (solo una vez). */
 export function notifySessionExpired(): void {
-  clearToken()
+  if (!sessionActive) return
+  sessionActive = false
   window.dispatchEvent(new Event(EXPIRED_EVENT))
 }
 

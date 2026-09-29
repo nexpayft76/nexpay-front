@@ -37,9 +37,14 @@ function Layout() {
   // Panel móvil abierto: foco en "cerrar", Esc para cerrar y sin scroll de fondo.
   const mobilePanelOpen = !isDesktop && mobileOpen
 
+  // Al cambiar de pantalla, arriba de todo. Se hace en el próximo cuadro (no en medio del render, que
+  // obligaría al navegador a calcular el diseño dos veces) y solo si la página no está ya arriba.
   useEffect(() => {
-		window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-	}, [location.pathname])
+    const frame = requestAnimationFrame(() => {
+      if (window.scrollY > 0) window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [location.pathname])
 
   useEffect(() => {
     if (!mobilePanelOpen) return

@@ -52,6 +52,7 @@ function Dashboard() {
 				<div className="dashboard-grid__full">
 					{/* Si no se pudo descargar el gráfico, se avisa ahí mismo y el resto del dashboard sigue andando. */}
 					<ErrorBoundary
+						scope="gráfico"
 						fallback={
 							<div className="chart-loading chart-loading--error" role="alert">
 								<p>No se pudo cargar el gráfico.</p>
