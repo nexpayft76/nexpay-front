@@ -319,3 +319,11 @@ body {
   border-radius: var(--radius-lg);
   background: var(--color-surface);
 }
+
+.chart-loading--error {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+}

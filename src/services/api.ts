@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios'
+import { getValidToken, notifySessionExpired } from './session'
 
 const baseURL = import.meta.env.VITE_API_URL
 
@@ -9,8 +10,9 @@ export const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+// Solo se manda un token vigente: uno vencido se descarta antes, sin generar un 401 en la consola.
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('nexpay_access_token')
+  const token = getValidToken()
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
@@ -54,7 +56,14 @@ export function toApiError(error: unknown): ApiError {
 }
 
 // Todas las respuestas con error llegan a los services como ApiError.
+// Un 401 con token significa que la sesión ya no vale (revocada o firmada por otro servidor):
+// se cierra en toda la app y el login explica por qué.
 api.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(toApiError(error)),
+  (error) => {
+    const apiError = toApiError(error)
+    const sentToken = axios.isAxiosError(error) && Boolean(error.config?.headers?.Authorization)
+    if (apiError.status === 401 && sentToken) notifySessionExpired()
+    return Promise.reject(apiError)
+  },
 )

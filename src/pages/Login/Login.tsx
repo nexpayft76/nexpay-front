@@ -10,7 +10,7 @@ import '../Auth/Auth.css'
 
 function Login() {
   const navigate = useNavigate()
-  const { user, isLoading, login } = useAuth()
+  const { user, isLoading, sessionExpired, login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -51,6 +51,11 @@ function Login() {
         <Link to="/" className="auth-card__brand">NexPay</Link>
         <h1 id="login-title">Iniciar sesión</h1>
         <p className="auth-card__intro">Ingresá para consultar tus balances y operaciones.</p>
+        {sessionExpired && (
+          <p className="auth-notice" role="status">
+            Tu sesión expiró. Volvé a iniciar sesión para continuar.
+          </p>
+        )}
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="auth-field">
             <label htmlFor="login-email">Email</label>
