@@ -88,6 +88,16 @@
   font-weight: 700;
 }
 
+.quote-field__error {
+  color: var(--color-danger);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.quote-field__error:empty {
+  display: none;
+}
+
 .quote-field input:focus-visible,
 .quote-field select:focus-visible {
   outline: 2px solid var(--color-primary);
