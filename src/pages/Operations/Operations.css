@@ -79,6 +79,21 @@
   font-size: 0.8125rem;
 }
 
+/* Aviso del monto en tiempo real (recarga y compra), igual que en el registro. */
+.op-field-error {
+  color: var(--color-danger);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.op-field-error:empty {
+  display: none;
+}
+
+.op-input[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
 .op-quick {
   display: flex;
   flex-wrap: wrap;

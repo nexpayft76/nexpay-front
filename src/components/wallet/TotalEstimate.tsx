@@ -48,7 +48,7 @@ function TotalEstimate({ currency, onCurrencyChange }: TotalEstimateProps) {
         {wallet.status === 'ok' && !valuation && 'Las tasas no están disponibles en este momento.'}
         {valuation && (
           <>
-            {SOURCE_LABEL[valuation.rates_source]} · ARS al dólar MEP, igual que el cotizador
+            {SOURCE_LABEL[valuation.rates_source]} · USD, EUR y COP: tasa oficial del día · ARS: dólar MEP en vivo (cada 5 min)
             {valuation.missing_currencies.length > 0 &&
               ` · sin incluir ${valuation.missing_currencies.join(', ')} (tasa no disponible)`}
           </>

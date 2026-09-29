@@ -1,26 +1,29 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import AmountInput from '../../components/common/AmountInput'
+import ConfirmDialog from '../../components/common/ConfirmDialog'
 import WalletCard from '../../components/wallet/WalletCard'
 import { useMyWallet } from '../../hooks/useMyWallet'
 import { ApiError } from '../../services/api'
 import { depositToMyWallet } from '../../services/wallet.service'
 import type { DepositResult } from '../../types/wallet'
-import { hasAtMostDecimals, parseAmount } from '../../utils/amount'
+import { parseAmount, validateAmountText, visibleAmountError, type AmountIssue } from '../../utils/amount'
 import { currencyInfo } from '../../utils/currencies'
 import { formatCurrency } from '../../utils/formatCurrency'
 import CurrencyPicker from './CurrencyPicker'
 import './Operations.css'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 
-/** Mismas reglas que el back: mayor que 0, hasta 2 decimales y hasta el límite de la moneda. */
-function validate(amount: number, currency: string): string | null {
+/** Mismas reglas que el back: formato válido, mayor que 0, hasta 2 decimales y hasta el límite de la moneda. */
+function validateDeposit(text: string, currency: string): AmountIssue | undefined {
   const info = currencyInfo(currency)
-  if (!Number.isFinite(amount) || amount <= 0) return 'Ingresá un monto mayor que 0.'
-  if (!hasAtMostDecimals(amount, 2)) return 'El monto admite como máximo 2 decimales.'
-  if (info && amount > info.depositLimit) {
-    return `El máximo por recarga es ${formatCurrency(info.depositLimit, currency)}.`
-  }
-  return null
+  return validateAmountText(text, {
+    max: info && {
+      value: info.depositLimit,
+      message: `El máximo por recarga es ${formatCurrency(info.depositLimit, currency)}.`,
+    },
+  })
 }
 
 /** Operaciones → Recarga: agregar dinero ficticio a la billetera (modo demo). */
@@ -29,7 +32,12 @@ function DepositPage() {
   const [currency, setCurrency] = useState('COP')
   const [amountText, setAmountText] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  /** Error que devolvió el back al recargar (los del monto se calculan en tiempo real, abajo). */
   const [error, setError] = useState<string | null>(null)
+  /** Se intentó enviar o se salió del campo: ahí también se avisa si quedó vacío. */
+  const [touched, setTouched] = useState(false)
+  /** Ventana "¿Confirmás la recarga?" abierta. */
+  const [confirming, setConfirming] = useState(false)
   const [result, setResult] = useState<DepositResult | null>(null)
   const wallet = useMyWallet('USD')
   // Billetera al lado del formulario: sigue a la moneda que se recarga (se puede cambiar desde su selector).
@@ -39,6 +47,13 @@ function DepositPage() {
 
   const info = currencyInfo(currency)
   const amount = parseAmount(amountText)
+  // En tiempo real: decimales de más y límite se avisan al instante; "mayor que 0" y el formato,
+  // cuando el usuario hace una pausa al escribir (o enseguida si ya salió del campo).
+  const issue = validateDeposit(amountText, currency)
+  const settled = useDebouncedValue(amountText, 400) === amountText
+  const amountError =
+    visibleAmountError(issue, settled || touched) ?? (touched && !amountText.trim() ? 'Ingresá un monto.' : undefined)
+  const canSubmit = !submitting && amountText.trim() !== '' && issue === undefined
   const currentBalance = wallet.status === 'ok' ? wallet.data.balances.find((b) => b.currency === currency)?.amount : undefined
 
   function chooseCurrency(code: string) {
@@ -46,26 +61,31 @@ function DepositPage() {
     setWalletCurrency(code)
     setAmountText('')
     setError(null)
+    setTouched(false)
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  // Primero se pide confirmación: es dinero lo que se mueve.
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const problem = validate(amount, currency)
-    if (problem) {
-      setError(problem)
-      return
-    }
+    setTouched(true)
+    if (!canSubmit) return
     setError(null)
+    setConfirming(true)
+  }
+
+  async function confirmDeposit() {
     setSubmitting(true)
     try {
       setResult(await depositToMyWallet(currency, amount))
       setAmountText('')
+      setTouched(false)
       wallet.reload()
       setWalletVersion((n) => n + 1)
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'No se pudo hacer la recarga.')
     } finally {
       setSubmitting(false)
+      setConfirming(false)
     }
   }
 
@@ -95,21 +115,30 @@ function DepositPage() {
               )}
             </fieldset>
 
-            <label className="op-field">
-              <span className="op-field__label">Monto</span>
-              <input
+            <div className="op-field">
+              <label className="op-field__label" htmlFor="deposit-amount">
+                Monto
+              </label>
+              <AmountInput
+                id="deposit-amount"
                 className="op-input"
-                inputMode="decimal"
                 placeholder={info ? `Ej. ${info.quickAmounts[1].toLocaleString('es-AR')}` : 'Monto'}
                 value={amountText}
-                onChange={(event) => setAmountText(event.target.value)}
-                aria-invalid={error !== null}
-                aria-describedby="deposit-limit"
+                onValueChange={(text) => {
+                  setAmountText(text)
+                  setError(null)
+                }}
+                onBlur={() => setTouched(true)}
+                aria-invalid={amountError !== undefined}
+                aria-describedby="deposit-amount-hint deposit-limit"
               />
+              <span id="deposit-amount-hint" className="op-field-error" aria-live="polite">
+                {amountError}
+              </span>
               <span id="deposit-limit" className="op-hint">
                 Máximo por recarga: {info ? formatCurrency(info.depositLimit, currency) : '—'}
               </span>
-            </label>
+            </div>
 
             {info && (
               <div className="op-quick" aria-label="Montos rápidos">
@@ -118,7 +147,10 @@ function DepositPage() {
                     key={quick}
                     type="button"
                     className="btn btn--ghost btn--sm"
-                    onClick={() => setAmountText(quick.toLocaleString('es-AR'))}
+                    onClick={() => {
+                      setAmountText(quick.toLocaleString('es-AR'))
+                      setError(null)
+                    }}
                   >
                     {formatCurrency(quick, currency)}
                   </button>
@@ -135,7 +167,7 @@ function DepositPage() {
             <button type="submit" className="btn btn--primary btn--lg op-submit" disabled={submitting}>
               {submitting
                 ? 'Recargando…'
-                : amount > 0
+                : amountError === undefined && amount > 0
                   ? `Recargar ${formatCurrency(amount, currency)}`
                   : 'Recargar'}
             </button>
@@ -146,6 +178,26 @@ function DepositPage() {
           <WalletCard key={walletVersion} valuedIn={walletCurrency} onValuedInChange={setWalletCurrency} />
         </aside>
       </div>
+
+      <ConfirmDialog
+        open={confirming}
+        title="¿Confirmás la recarga?"
+        confirmLabel="Sí, recargar"
+        busy={submitting}
+        onConfirm={confirmDeposit}
+        onCancel={() => setConfirming(false)}
+      >
+        <p>
+          Vas a agregar <strong>{formatCurrency(Number.isNaN(amount) ? 0 : amount, currency)}</strong> a tu billetera.
+        </p>
+        {currentBalance !== undefined && !Number.isNaN(amount) && (
+          <p>
+            Tu saldo en {currency} pasará de {formatCurrency(Number(currentBalance), currency)} a{' '}
+            <strong>{formatCurrency(Number(currentBalance) + amount, currency)}</strong>.
+          </p>
+        )}
+        <p className="confirm-dialog__note">Dinero ficticio · modo demo.</p>
+      </ConfirmDialog>
     </section>
   )
 }
