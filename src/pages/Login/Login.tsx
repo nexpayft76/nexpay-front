@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { ApiError } from '../../services/api'
 import { validateEmail, validateLoginPassword } from '../../utils/validators'
 import { useAuth } from '../../hooks/useAuth'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import PasswordInput from '../../components/common/PasswordInput'
 import '../Auth/Auth.css'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 
 function Login() {
-  const navigate = useNavigate()
+  useDocumentTitle('Iniciar sesión')
   const { user, isLoading, sessionExpired, login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -33,8 +34,8 @@ function Login() {
     setError('')
     setIsSubmitting(true)
     try {
+      // Al guardar el usuario, esta pantalla redirige sola al dashboard (<Navigate> de abajo).
       await login({ email: email.trim(), password })
-      navigate('/dashboard')
     } catch (requestError: unknown) {
       setError(requestError instanceof ApiError ? requestError.message : 'No se pudo iniciar sesión.')
     } finally {

@@ -4,7 +4,7 @@
    estilos base, así todas las pantallas (login, registro, dashboard)
    toman la identidad nueva sin tocar sus archivos.
    ------------------------------------------------------------------ */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Las fuentes (Cormorant Garamond, Inter y JetBrains Mono) se cargan una sola vez en index.html. */
 
 /* Como este archivo se importa después de index.css, estas variables pisan
    tanto su modo claro como su bloque de prefers-color-scheme: dark. */

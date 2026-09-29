@@ -10,6 +10,7 @@ import { hasAtMostDecimals, parseAmount } from '../../utils/amount'
 import { formatCurrency } from '../../utils/formatCurrency'
 import CurrencyPicker from './CurrencyPicker'
 import './Operations.css'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 
 const TYPE_LABEL: Record<ExchangeType, string> = { BUY: 'Compra', SELL: 'Venta', EXCHANGE: 'Intercambio' }
 
@@ -29,6 +30,7 @@ function toInputText(value: number): string {
 
 /** Operaciones → Compra: comprar, vender o intercambiar monedas con el saldo de la billetera. */
 function ExchangePage() {
+  useDocumentTitle('Comprar monedas')
   const [from, setFrom] = useState('COP')
   const [to, setTo] = useState('USD')
   const [arsRate, setArsRate] = useState<ExchangeArsRate>('mep')

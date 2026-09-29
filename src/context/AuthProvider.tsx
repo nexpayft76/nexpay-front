@@ -5,6 +5,7 @@ import {
 	logout as logoutRequest,
 	register as registerRequest,
 } from '../services/auth.service'
+import { ApiError } from '../services/api'
 import { onSessionExpired, removeLegacyToken, setSessionActive } from '../services/session'
 import type { AuthResult, AuthUser, LoginPayload, RegisterPayload } from '../types/auth'
 import { logger } from '../utils/logger'
@@ -66,19 +67,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		return () => clearTimeout(timer)
 	}, [expiresAt])
 
-	function startSession(result: AuthResult) {
+	/**
+	 * Después del login o registro, confirma con /session que el navegador guardó la cookie.
+	 * Si no (navegador que bloquea cookies, o un back sin la cookie todavía), se avisa en el login
+	 * en lugar de entrar al dashboard y rebotar con errores 401.
+	 */
+	async function startSession(result: AuthResult) {
+		const session = await getSession()
+		if (!session) {
+			logger.warn('sesión', 'El login respondió bien pero la cookie de sesión no quedó guardada')
+			throw new ApiError(
+				'http',
+				'No se pudo guardar la sesión en este navegador. Revisá que las cookies estén habilitadas para este sitio.',
+			)
+		}
 		setSessionActive(true)
 		setSessionExpired(false)
-		setUser(result.user)
-		setExpiresAt(Date.now() + result.expires_in * 1000)
+		setUser(session.user)
+		setExpiresAt(Date.parse(session.expires_at) || Date.now() + result.expires_in * 1000)
 	}
 
 	async function login(payload: LoginPayload) {
-		startSession(await loginRequest(payload))
+		await startSession(await loginRequest(payload))
 	}
 
 	async function register(payload: RegisterPayload) {
-		startSession(await registerRequest(payload))
+		await startSession(await registerRequest(payload))
 	}
 
 	/** Cierra la sesión. El back borra la cookie y no responde 401 aunque ya haya vencido. */

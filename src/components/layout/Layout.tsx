@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
@@ -83,7 +83,10 @@ function Layout() {
         onLogout={handleLogout}
       />
       <main className="app-shell__main">
-        <Outlet />
+        {/* Las pantallas se descargan al entrar: mientras tanto, la barra y el menú siguen en su lugar. */}
+        <Suspense fallback={<p className="app-shell__loading" aria-busy="true">Cargando…</p>}>
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   )

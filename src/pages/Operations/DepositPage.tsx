@@ -10,6 +10,7 @@ import { currencyInfo } from '../../utils/currencies'
 import { formatCurrency } from '../../utils/formatCurrency'
 import CurrencyPicker from './CurrencyPicker'
 import './Operations.css'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 
 /** Mismas reglas que el back: mayor que 0, hasta 2 decimales y hasta el límite de la moneda. */
 function validate(amount: number, currency: string): string | null {
@@ -24,6 +25,7 @@ function validate(amount: number, currency: string): string | null {
 
 /** Operaciones → Recarga: agregar dinero ficticio a la billetera (modo demo). */
 function DepositPage() {
+  useDocumentTitle('Recargar')
   const [currency, setCurrency] = useState('COP')
   const [amountText, setAmountText] = useState('')
   const [submitting, setSubmitting] = useState(false)

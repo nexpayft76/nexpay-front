@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import PasswordInput from '../../components/common/PasswordInput'
 import { useAuth } from '../../hooks/useAuth'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
@@ -8,6 +8,7 @@ import { useEmailAvailability } from '../../hooks/useEmailAvailability'
 import { ApiError } from '../../services/api'
 import { PASSWORD_RULES, validateEmail, validateName, validatePassword } from '../../utils/validators'
 import '../Auth/Auth.css'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 
 type Field = 'name' | 'email' | 'password' | 'confirmation'
 
@@ -15,7 +16,7 @@ const NOT_TOUCHED: Record<Field, boolean> = { name: false, email: false, passwor
 const ALL_TOUCHED: Record<Field, boolean> = { name: true, email: true, password: true, confirmation: true }
 
 function Register() {
-  const navigate = useNavigate()
+  useDocumentTitle('Crear cuenta')
   const { user, isLoading, register } = useAuth()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -64,8 +65,8 @@ function Register() {
     setError('')
     setIsSubmitting(true)
     try {
+      // Al guardar el usuario, esta pantalla redirige sola al dashboard (<Navigate> de abajo).
       await register({ full_name: name.trim(), email: email.trim(), password })
-      navigate('/dashboard')
     } catch (requestError: unknown) {
       setError(requestError instanceof ApiError ? requestError.message : 'No se pudo crear la cuenta.')
     } finally {

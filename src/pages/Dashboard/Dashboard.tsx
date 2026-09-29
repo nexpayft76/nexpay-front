@@ -4,6 +4,7 @@ import QuoteCard from '../../components/quote/QuoteCard'
 import TotalEstimate from '../../components/wallet/TotalEstimate'
 import WalletCard from '../../components/wallet/WalletCard'
 import { useAuth } from '../../hooks/useAuth'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 
 // Recharts pesa bastante: se descarga solo al entrar al dashboard, no en la landing ni en el login.
 const RateChart = lazy(() => import('../../components/chart/RateChart'))
@@ -17,6 +18,7 @@ const RateChart = lazy(() => import('../../components/chart/RateChart'))
  * Si origen y destino coinciden, se intercambian para no graficar "COP → COP".
  */
 function Dashboard() {
+	useDocumentTitle('Mi billetera')
 	const { user } = useAuth()
 	const [currency, setCurrency] = useState('USD')
 	const [chartFrom, setChartFrom] = useState('COP')
