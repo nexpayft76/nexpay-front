@@ -19,3 +19,9 @@ export async function getCurrentUser(): Promise<AuthUser> {
 export async function logout(): Promise<void> {
 	await api.post('/api/auth/logout')
 }
+
+/** Para validar el registro en tiempo real: true si el email todavía no tiene cuenta. */
+export async function checkEmailAvailable(email: string): Promise<boolean> {
+	const { data } = await api.get<{ data: { available: boolean } }>('/api/auth/email-available', { params: { email } })
+	return data.data.available
+}
