@@ -37,7 +37,7 @@
   --color-border-strong: rgb(212 166 74 / 0.45);
   --color-text: #eee2c0;
   --color-text-muted: #b3a888;
-  --color-text-subtle: #8a8070;
+  --color-text-subtle: #a09683;
   --color-primary: #d4a64a;
   --color-primary-hover: #e6c577;
   --color-primary-soft: rgb(212 166 74 / 0.12);
@@ -63,14 +63,14 @@
   --color-surface: #ffffff;
   --color-surface-raised: #fffdf8;
   --color-sunken: #f3eee2;
-  --color-border: rgb(138 100 36 / 0.16);
-  --color-border-strong: rgb(138 100 36 / 0.38);
-  --color-text: #1d1a14;
-  --color-text-muted: #5c5446;
-  --color-text-subtle: #766c5c;
-  --color-primary: #8a6424;
-  --color-primary-hover: #6f4f18;
-  --color-primary-soft: rgb(212 166 74 / 0.16);
+  --color-border: rgb(122 85 16 / 0.22);
+  --color-border-strong: rgb(122 85 16 / 0.55);
+  --color-text: #17140e;
+  --color-text-muted: #4a4234;
+  --color-text-subtle: #5e5545;
+  --color-primary: #7a5510;
+  --color-primary-hover: #5e400a;
+  --color-primary-soft: rgb(196 145 40 / 0.18);
   --color-success: #1a7f4b;
   --color-danger: #b3261e;
   --color-warning-bg: #fff6e0;
@@ -79,9 +79,12 @@
   --color-header-bg: rgb(250 247 240 / 0.9);
   --color-overlay: rgb(29 26 20 / 0.35);
   --shadow: 0 12px 32px rgb(60 45 15 / 0.1);
-  --gold-text: linear-gradient(100deg, #6f4f18 0%, #9a7128 30%, #c1923f 45%, #8a6424 65%, #5c4214 100%);
-  --gold-light: #c89a3e;
-  --gold-deep: #6f4f18;
+  --gold-text: linear-gradient(100deg, #6b4a0c 0%, #8f6212 30%, #a8761a 45%, #7a5510 65%, #5a3d08 100%);
+  --gold-light: #b8852e;
+  --gold-deep: #5a3d08;
+  /* Botones: metal más intenso para que resalte sobre el fondo claro. */
+  --gold-metal: linear-gradient(135deg, #f1d27f 0%, #d6a441 30%, #b07c22 55%, #deb458 78%, #a06d18 100%);
+  --gold-glow: 0 0 0 1px rgb(255 240 200 / 0.35) inset, 0 8px 22px rgb(160 110 24 / 0.28);
 
   color-scheme: light;
 }

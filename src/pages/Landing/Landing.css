@@ -97,9 +97,9 @@
 
 .landing-sections a {
   color: var(--l-text);
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   text-decoration: none;
   text-transform: uppercase;
   transition: color 0.15s;
@@ -120,8 +120,8 @@
 .eyebrow {
   margin: 0 0 0.75rem;
   color: var(--l-gold);
-  font-size: 0.7rem;
-  letter-spacing: 0.28em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -132,8 +132,8 @@
 .mono-label {
   margin: 0;
   color: var(--l-muted);
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -144,7 +144,7 @@
 .mono-note {
   margin: 0;
   color: var(--l-muted);
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
 }
 
 .chip {
@@ -154,8 +154,8 @@
   border: 1px solid var(--l-line-strong);
   border-radius: 999px;
   color: var(--l-gold);
-  font-size: 0.66rem;
-  letter-spacing: 0.18em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -219,9 +219,9 @@
   align-items: center;
   justify-content: center;
   padding: 1rem 2.4rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
-  letter-spacing: 0.26em;
+  letter-spacing: 0.12em;
   text-decoration: none;
   text-transform: uppercase;
   transition: background-color 0.15s, color 0.15s, border-color 0.15s;
@@ -246,7 +246,7 @@
   background: transparent;
   color: var(--l-cream);
   font: inherit;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -258,7 +258,7 @@
 
 .btn-outline--sm {
   padding: 0.5rem 1.1rem;
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
 }
 
 .btn-gold:focus-visible,
@@ -309,7 +309,7 @@
 
 .hero__login {
   color: var(--l-text);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   text-underline-offset: 4px;
 }
 
@@ -419,7 +419,7 @@
 
 .quote__amount-code {
   font-family: var(--font-label);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   letter-spacing: 0.12em;
 }
 
@@ -524,7 +524,7 @@
   margin: 0;
   padding-inline: 1.5rem;
   color: var(--l-muted);
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   line-height: 1.6;
 }
 
@@ -612,7 +612,7 @@
   margin: 0.5rem 0 0;
   color: var(--l-text);
   font-family: var(--font-label);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
 }
 
 /* Billetera de ejemplo */
@@ -646,7 +646,7 @@
   background: transparent;
   color: var(--l-text);
   font-family: var(--font-label);
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   cursor: pointer;
 }
 
@@ -688,7 +688,7 @@
   align-self: center;
   color: var(--l-gold);
   font-family: var(--font-label);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 .wallet__name {
@@ -708,7 +708,7 @@
 .wallet__equiv {
   grid-area: equiv;
   color: var(--l-muted);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
@@ -756,7 +756,7 @@
   border-radius: 50%;
   color: var(--l-gold);
   font-family: var(--font-label);
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
 }
 
 .p2p__name {
@@ -847,7 +847,7 @@
   margin-left: 0.5rem;
   color: var(--l-gold);
   font-family: var(--font-label);
-  font-size: 0.78rem;
+  font-size: 0.875rem;
 }
 
 .chart__grid {
@@ -873,7 +873,7 @@
 .chart__label {
   fill: var(--l-muted);
   font-family: var(--font-label);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .chart__pairs {
@@ -926,8 +926,8 @@
   list-style: none;
   color: var(--l-muted);
   font-family: var(--font-label);
-  font-size: 0.66rem;
-  letter-spacing: 0.18em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -945,7 +945,7 @@
 
 .landing-footer__muted {
   color: var(--l-muted);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 /* Responsive */
@@ -992,7 +992,7 @@
   }
 
   .landing .brand {
-    letter-spacing: 0.18em;
+    letter-spacing: 0.12em;
   }
 
   .hero {
