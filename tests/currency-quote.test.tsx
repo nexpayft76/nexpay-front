@@ -65,8 +65,8 @@ describe('CurrencyQuote', () => {
     render(<CurrencyQuote />)
     await screen.findByText('466.728 ARS', { selector: '.quote-card__value' })
 
-    await user.selectOptions(screen.getByLabelText('Tenés'), 'USD')
-    await user.selectOptions(screen.getByLabelText('Recibís en'), 'EUR')
+    await user.selectOptions(screen.getByLabelText('Tienes'), 'USD')
+    await user.selectOptions(screen.getByLabelText('Recibes en'), 'EUR')
     mockedConvert.mockClear()
 
     expect(await screen.findByText('219,35 EUR')).toBeInTheDocument()
@@ -77,14 +77,14 @@ describe('CurrencyQuote', () => {
   it('invierte el par con el botón ⇄', async () => {
     const user = userEvent.setup()
     render(<CurrencyQuote />)
-    await user.selectOptions(screen.getByLabelText('Tenés'), 'USD')
-    await user.selectOptions(screen.getByLabelText('Recibís en'), 'EUR')
+    await user.selectOptions(screen.getByLabelText('Tienes'), 'USD')
+    await user.selectOptions(screen.getByLabelText('Recibes en'), 'EUR')
     await screen.findByText('219,35 EUR')
 
     await user.click(screen.getByRole('button', { name: 'Invertir monedas' }))
 
-    expect(screen.getByLabelText('Tenés')).toHaveValue('EUR')
-    expect(screen.getByLabelText('Recibís en')).toHaveValue('USD')
+    expect(screen.getByLabelText('Tienes')).toHaveValue('EUR')
+    expect(screen.getByLabelText('Recibes en')).toHaveValue('USD')
     expect(await screen.findByText('284,95 USD')).toBeInTheDocument()
   })
 
@@ -105,7 +105,7 @@ describe('CurrencyQuote', () => {
 
     await userEvent.clear(screen.getByLabelText('Monto en COP'))
 
-    expect(await screen.findByText('Ingresá un monto en COP.')).toBeInTheDocument()
+    expect(await screen.findByText('Ingresa un monto en COP.')).toBeInTheDocument()
     expect(mockedConvert).not.toHaveBeenCalled()
   })
 })

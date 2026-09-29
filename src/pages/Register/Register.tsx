@@ -48,7 +48,7 @@ function Register() {
       <section className="auth-card" aria-labelledby="register-title">
         <Link to="/" className="auth-card__brand">NexPay</Link>
         <h1 id="register-title">Crear cuenta</h1>
-        <p className="auth-card__intro">Registrate para empezar a gestionar tus divisas.</p>
+        <p className="auth-card__intro">Regístrate para empezar a gestionar tus divisas.</p>
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <label className="auth-field">
             Nombre completo
@@ -71,7 +71,7 @@ function Register() {
             {isSubmitting ? 'Creando cuenta...' : 'Crear cuenta'}
           </button>
         </form>
-        <p className="auth-card__footer">¿Ya tenés cuenta? <Link to="/login">Iniciar sesión</Link></p>
+        <p className="auth-card__footer">¿Ya tienes cuenta? <Link to="/login">Iniciar sesión</Link></p>
         <Link to="/" className="auth-card__back">Volver al inicio</Link>
       </section>
     </main>

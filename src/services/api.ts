@@ -37,16 +37,16 @@ export function toApiError(error: unknown): ApiError {
     const err = error as AxiosError<{ message?: string }>
 
     if (err.code === 'ECONNABORTED' || err.code === 'ETIMEDOUT') {
-      return new ApiError('timeout', 'El servidor tardó demasiado en responder. Intentá de nuevo.')
+      return new ApiError('timeout', 'El servidor tardó demasiado en responder. Inténtalo de nuevo.')
     }
     if (!err.response) {
-      return new ApiError('network', 'No se pudo conectar con el servidor. Revisá tu conexión.')
+      return new ApiError('network', 'No se pudo conectar con el servidor. Revisa tu conexión.')
     }
 
     const status = err.response.status
     const message =
       err.response.data?.message ??
-      (status >= 500 ? 'Error del servidor. Intentá más tarde.' : 'No se pudo completar la solicitud.')
+      (status >= 500 ? 'Error del servidor. Inténtalo más tarde.' : 'No se pudo completar la solicitud.')
     return new ApiError('http', message, status)
   }
 

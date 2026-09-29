@@ -65,11 +65,11 @@ function ExchangePage() {
   }
 
   function validate(): string | null {
-    if (wallet.status !== 'ok') return 'Esperá a que tu billetera esté disponible para operar.'
-    if (!Number.isFinite(amount) || amount <= 0) return 'Ingresá un monto mayor que 0.'
+    if (wallet.status !== 'ok') return 'Espera a que tu billetera esté disponible para operar.'
+    if (!Number.isFinite(amount) || amount <= 0) return 'Ingresa un monto mayor que 0.'
     if (!hasAtMostDecimals(amount, 2)) return 'El monto admite como máximo 2 decimales.'
     if (available !== undefined && amount > available) {
-      return `Saldo insuficiente: tenés ${formatCurrency(available, from)}.`
+      return `Saldo insuficiente: tienes ${formatCurrency(available, from)}.`
     }
     return null
   }
@@ -102,7 +102,7 @@ function ExchangePage() {
     <section className="dashboard-content" aria-labelledby="exchange-title">
       <p className="dashboard-eyebrow">Operaciones</p>
       <h1 id="exchange-title">Comprar monedas</h1>
-      <p>Comprá, vendé o intercambiá monedas con el saldo de tu billetera, a la tasa del momento.</p>
+      <p>Compra, vende o intercambia monedas con el saldo de tu billetera, a la tasa del momento.</p>
 
       <div className="op-layout">
         {result ? (
@@ -122,7 +122,7 @@ function ExchangePage() {
 
             <fieldset className="op-field">
               <legend className="op-field__label">Pago con</legend>
-              <CurrencyPicker value={from} onChange={chooseFrom} label="Moneda con la que pagás" />
+              <CurrencyPicker value={from} onChange={chooseFrom} label="Moneda con la que pagas" />
             </fieldset>
 
             <label className="op-field">
@@ -154,7 +154,7 @@ function ExchangePage() {
 
             <fieldset className="op-field">
               <legend className="op-field__label">Recibo</legend>
-              <CurrencyPicker value={to} onChange={setTo} label="Moneda que recibís" disabledCode={from} />
+              <CurrencyPicker value={to} onChange={setTo} label="Moneda que recibes" disabledCode={from} />
             </fieldset>
 
             {involvesArs && (
@@ -181,7 +181,7 @@ function ExchangePage() {
 
             {overBalance && !error && (
               <p className="op-error" role="alert">
-                Saldo insuficiente: tenés {formatCurrency(available ?? 0, from)}.
+                Saldo insuficiente: tienes {formatCurrency(available ?? 0, from)}.
               </p>
             )}
             {error && (
@@ -212,7 +212,7 @@ function ExchangePage() {
 /** Detalle antes de confirmar: tipo de operación, tasa, comisión y lo que se recibe. */
 function ExchangeSummary({ state }: { state: ReturnType<typeof useExchangeQuote> }) {
   if (state.status === 'idle') {
-    return <p className="op-summary op-summary--empty">Ingresá un monto para ver cuánto recibís.</p>
+    return <p className="op-summary op-summary--empty">Ingresa un monto para ver cuánto recibes.</p>
   }
   if (state.status === 'loading') {
     return <p className="op-summary op-summary--empty" aria-busy="true">Calculando…</p>
@@ -254,7 +254,7 @@ function SummaryRows({ quote }: { quote: ExchangeQuote }) {
           <dd>{fee > 0 ? `${formatCurrency(fee, quote.from_currency)} (${quote.fee_percent}%)` : 'Sin comisión'}</dd>
         </div>
         <div className="op-summary__total">
-          <dt>Recibís</dt>
+          <dt>Recibes</dt>
           <dd>{formatCurrency(Number(quote.to_amount), quote.to_currency)}</dd>
         </div>
       </dl>

@@ -10,7 +10,7 @@ import './BalanceSummary.css'
  */
 function BalanceSummary() {
   const [currency, setCurrency] = useState('COP')
-  // La moneda de valorización no importa acá: se leen los saldos tal cual, sin convertir.
+  // La moneda de valorización no importa aquí: se leen los saldos tal cual, sin convertir.
   const wallet = useMyWallet('USD')
 
   let content: string

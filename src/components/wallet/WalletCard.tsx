@@ -94,7 +94,7 @@ function WalletCard({ valuedIn, onValuedInChange }: WalletCardProps) {
 
           {wallet.data.balances.every((b) => Number(b.amount) === 0) && (
             <p className="wallet-card__empty">
-              Todavía no tenés saldo. Cuando hagas tu primera recarga, lo vas a ver acá en las 4 monedas.
+              Todavía no tienes saldo. Cuando hagas tu primera recarga, lo verás aquí en las 4 monedas.
             </p>
           )}
 

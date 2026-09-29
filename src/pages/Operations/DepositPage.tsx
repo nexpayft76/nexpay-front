@@ -14,7 +14,7 @@ import './Operations.css'
 /** Mismas reglas que el back: mayor que 0, hasta 2 decimales y hasta el límite de la moneda. */
 function validate(amount: number, currency: string): string | null {
   const info = currencyInfo(currency)
-  if (!Number.isFinite(amount) || amount <= 0) return 'Ingresá un monto mayor que 0.'
+  if (!Number.isFinite(amount) || amount <= 0) return 'Ingresa un monto mayor que 0.'
   if (!hasAtMostDecimals(amount, 2)) return 'El monto admite como máximo 2 decimales.'
   if (info && amount > info.depositLimit) {
     return `El máximo por recarga es ${formatCurrency(info.depositLimit, currency)}.`
@@ -71,7 +71,7 @@ function DepositPage() {
     <section className="dashboard-content" aria-labelledby="deposit-title">
       <p className="dashboard-eyebrow">Operaciones</p>
       <h1 id="deposit-title">Recargar mi billetera</h1>
-      <p>Agregá saldo para comprar, vender o intercambiar monedas.</p>
+      <p>Agrega saldo para comprar, vender o intercambiar monedas.</p>
 
       <div className="op-layout">
         {result ? (
