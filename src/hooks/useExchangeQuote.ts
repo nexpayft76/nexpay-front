@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ApiError } from '../services/api'
 import { quoteExchange, type ExchangeParams } from '../services/wallet.service'
 import type { ExchangeQuote } from '../types/wallet'
+import { logLoad } from '../utils/logger'
 
 /** Espera a que el usuario deje de escribir antes de cotizar (evita una petición por tecla). */
 const DEBOUNCE_MS = 400
@@ -35,7 +36,7 @@ export function useExchangeQuote(params: ExchangeParams): ExchangeQuoteState {
 
     const timer = setTimeout(() => {
       setState({ status: 'loading' })
-      quoteExchange(request)
+      logLoad('operaciones', `cotización ${request.from_currency}→${request.to_currency}`, () => quoteExchange(request))
         .then((quote) => {
           if (!cancelled) setState({ status: 'ok', quote, params: request })
         })

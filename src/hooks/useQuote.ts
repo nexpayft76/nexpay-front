@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ApiError } from '../services/api'
 import { convert } from '../services/rates.service'
 import type { ArsRateType, Conversion } from '../types/rates'
+import { logLoad } from '../utils/logger'
 
 export const ARS_RATE_TYPES: ArsRateType[] = ['oficial', 'mep', 'blue']
 
@@ -43,7 +44,7 @@ export function useQuote({ from, to, amount, arsRate }: QuoteInput): QuoteState 
     const timer = setTimeout(() => {
       setState({ status: 'loading' })
       const types = involvesArs ? ARS_RATE_TYPES : [undefined]
-      Promise.all(types.map((type) => convert(from, to, amount, type)))
+      logLoad('cotizador', `cotización ${from}→${to}`, () => Promise.all(types.map((type) => convert(from, to, amount, type))))
         .then((results) => {
           if (!cancelled) setState({ status: 'ok', results })
         })

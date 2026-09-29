@@ -1,40 +1,36 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getValidToken, isTokenExpired, notifySessionExpired, onSessionExpired, saveToken } from '../src/services/session'
-
-function tokenWithExp(exp: unknown) {
-  return `header.${btoa(JSON.stringify({ sub: 'user-1', exp }))}.firma`
-}
+import {
+  isSessionActive,
+  notifySessionExpired,
+  onSessionExpired,
+  removeLegacyToken,
+  setSessionActive,
+} from '../src/services/session'
 
 describe('session', () => {
-  beforeEach(() => localStorage.clear())
-
-  it('reconoce un token vigente y uno vencido', () => {
-    const now = Date.now()
-    expect(isTokenExpired(tokenWithExp(Math.floor(now / 1000) + 3600), now)).toBe(false)
-    expect(isTokenExpired(tokenWithExp(Math.floor(now / 1000) - 1), now)).toBe(true)
+  beforeEach(() => {
+    localStorage.clear()
+    setSessionActive(false)
   })
 
-  it('trata como vencido un token sin formato JWT o sin exp', () => {
-    expect(isTokenExpired('token')).toBe(true)
-    expect(isTokenExpired('a.no-es-base64.c')).toBe(true)
-    expect(isTokenExpired(tokenWithExp('mañana'))).toBe(true)
-  })
-
-  it('getValidToken borra el token vencido sin llamar al back', () => {
-    saveToken(tokenWithExp(Math.floor(Date.now() / 1000) - 60))
-    expect(getValidToken()).toBeNull()
-    expect(localStorage.getItem('nexpay_access_token')).toBeNull()
-  })
-
-  it('notifySessionExpired borra el token y avisa a quien escucha', () => {
-    saveToken(tokenWithExp(Math.floor(Date.now() / 1000) + 3600))
+  it('avisa que la sesión venció solo si había una sesión activa, y una sola vez', () => {
     const listener = vi.fn()
     const stop = onSessionExpired(listener)
 
-    notifySessionExpired()
+    notifySessionExpired() // sin sesión (ej. login con contraseña incorrecta): no avisa
+    expect(listener).not.toHaveBeenCalled()
 
+    setSessionActive(true)
+    notifySessionExpired()
+    notifySessionExpired() // varias peticiones con 401 a la vez: un solo aviso
     expect(listener).toHaveBeenCalledTimes(1)
-    expect(localStorage.getItem('nexpay_access_token')).toBeNull()
+    expect(isSessionActive()).toBe(false)
     stop()
+  })
+
+  it('borra el token que versiones anteriores guardaban en localStorage', () => {
+    localStorage.setItem('nexpay_access_token', 'token-viejo')
+    removeLegacyToken()
+    expect(localStorage.getItem('nexpay_access_token')).toBeNull()
   })
 })

@@ -5,10 +5,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Landing from '../src/pages/Landing/Landing'
 import { AuthProvider } from '../src/context/AuthProvider'
 import type { AuthUser } from '../src/types/auth'
-import { getCurrentUser, logout } from '../src/services/auth.service'
+import { getSession, logout } from '../src/services/auth.service'
 
 vi.mock('../src/services/auth.service', () => ({
-  getCurrentUser: vi.fn(),
+  getSession: vi.fn(),
   login: vi.fn(),
   logout: vi.fn(),
   register: vi.fn(),
@@ -18,7 +18,7 @@ vi.mock('../src/components/common/BackendStatus', () => ({
   default: () => null,
 }))
 
-const mockedGetCurrentUser = vi.mocked(getCurrentUser)
+const mockedGetSession = vi.mocked(getSession)
 const mockedLogout = vi.mocked(logout)
 
 const authenticatedUser: AuthUser = {
@@ -29,10 +29,9 @@ const authenticatedUser: AuthUser = {
   created_at: '2026-01-01T00:00:00.000Z',
 }
 
-/** Token de prueba con el formato de un JWT y vencimiento dentro de 1 h (la app descarta los vencidos). */
-function fakeToken() {
-  const payload = btoa(JSON.stringify({ sub: 'user-1', exp: Math.floor(Date.now() / 1000) + 3600 }))
-  return `header.${payload}.firma`
+/** La sesión vive en una cookie HttpOnly: el test simula la respuesta de GET /api/auth/session. */
+function withSession() {
+  mockedGetSession.mockResolvedValue({ user: authenticatedUser, expires_at: new Date(Date.now() + 3_600_000).toISOString() })
 }
 
 function renderLanding() {
@@ -47,9 +46,8 @@ function renderLanding() {
 
 describe('Landing', () => {
   beforeEach(() => {
-    localStorage.clear()
     vi.clearAllMocks()
-    mockedGetCurrentUser.mockResolvedValue(authenticatedUser)
+    mockedGetSession.mockResolvedValue(null)
     mockedLogout.mockResolvedValue(undefined)
   })
 
@@ -61,7 +59,7 @@ describe('Landing', () => {
   })
 
   it('oculta los CTA cuando la sesión está iniciada', async () => {
-    localStorage.setItem('nexpay_access_token', fakeToken())
+    withSession()
     renderLanding()
 
     await waitFor(() => expect(screen.getByRole('link', { name: 'Mi dashboard' })).toBeInTheDocument())
@@ -78,7 +76,7 @@ describe('Landing', () => {
   })
 
   it('muestra el logo NexPay y mantiene el enlace al inicio', async () => {
-    localStorage.setItem('nexpay_access_token', fakeToken())
+    withSession()
     renderLanding()
 
     await waitFor(() => expect(screen.getByRole('link', { name: 'Mi dashboard' })).toBeInTheDocument())
@@ -98,7 +96,7 @@ describe('Landing', () => {
   })
 
   it('representa el cierre de sesión del header como un botón de icono sin texto visible', async () => {
-    localStorage.setItem('nexpay_access_token', fakeToken())
+    withSession()
     renderLanding()
 
     await waitFor(() => expect(screen.getByRole('link', { name: 'Mi dashboard' })).toBeInTheDocument())

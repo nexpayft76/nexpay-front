@@ -1,5 +1,5 @@
 import { api } from './api'
-import type { AuthResponse, AuthResult, AuthUser, LoginPayload, RegisterPayload } from '../types/auth'
+import type { AuthResponse, AuthResult, AuthSession, AuthUser, LoginPayload, RegisterPayload } from '../types/auth'
 
 export async function login(payload: LoginPayload): Promise<AuthResult> {
 	const { data } = await api.post<AuthResponse>('/api/auth/login', payload)
@@ -16,6 +16,13 @@ export async function getCurrentUser(): Promise<AuthUser> {
 	return data.data
 }
 
+/** ¿Hay una sesión iniciada (cookie válida)? Responde 200 siempre, así no hay un 401 en la consola. */
+export async function getSession(): Promise<AuthSession | null> {
+	const { data } = await api.get<{ data: AuthSession | null }>('/api/auth/session')
+	return data.data
+}
+
+/** Cierra la sesión: el back invalida el token y borra la cookie (no falla aunque ya haya vencido). */
 export async function logout(): Promise<void> {
 	await api.post('/api/auth/logout')
 }

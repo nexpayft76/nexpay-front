@@ -1,19 +1,26 @@
-import axios, { AxiosError } from 'axios'
-import { getValidToken, notifySessionExpired } from './session'
-
-const baseURL = import.meta.env.VITE_API_URL
+import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
+import { logger } from '../utils/logger'
+import { notifySessionExpired } from './session'
 
 // Cliente HTTP único para hablar con el backend de NexPay.
+//
+// Las peticiones van a /api en el MISMO dominio del front: en producción Vercel las reenvía al back
+// (vercel.json) y en desarrollo lo hace Vite (vite.config.ts). Así la cookie de sesión es "propia"
+// y funciona también en Safari, Brave y el modo incógnito, que bloquean cookies de otros dominios.
 export const api = axios.create({
-  baseURL: baseURL ?? '',
   timeout: 10_000,
   headers: { 'Content-Type': 'application/json' },
 })
 
-// Solo se manda un token vigente: uno vencido se descarta antes, sin generar un 401 en la consola.
+declare module 'axios' {
+  interface InternalAxiosRequestConfig {
+    /** Momento en que salió la petición, para medir cuánto tardó. */
+    startedAt?: number
+  }
+}
+
 api.interceptors.request.use((config) => {
-  const token = getValidToken()
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  config.startedAt = performance.now()
   return config
 })
 
@@ -23,12 +30,15 @@ export type ApiErrorKind = 'network' | 'timeout' | 'http'
 export class ApiError extends Error {
   readonly kind: ApiErrorKind
   readonly status?: number
+  /** Id de la petición en el back (cabecera X-Request-Id): se busca en los logs de Railway. */
+  readonly requestId?: string
 
-  constructor(kind: ApiErrorKind, message: string, status?: number) {
+  constructor(kind: ApiErrorKind, message: string, status?: number, requestId?: string) {
     super(message)
     this.name = 'ApiError'
     this.kind = kind
     this.status = status
+    this.requestId = requestId
   }
 }
 
@@ -49,21 +59,42 @@ export function toApiError(error: unknown): ApiError {
     const message =
       err.response.data?.message ??
       (status >= 500 ? 'Error del servidor. Intentá más tarde.' : 'No se pudo completar la solicitud.')
-    return new ApiError('http', message, status)
+    return new ApiError('http', message, status, requestIdOf(err.response))
   }
 
   return new ApiError('network', 'Ocurrió un error inesperado.')
 }
 
+function requestIdOf(response: AxiosResponse | undefined): string | undefined {
+  const id: unknown = response?.headers?.['x-request-id']
+  return typeof id === 'string' ? id : undefined
+}
+
+/** "GET /api/wallets/me" (sin los parámetros, que pueden traer datos del usuario). */
+function describe(config: InternalAxiosRequestConfig | undefined): string {
+  return `${(config?.method ?? 'get').toUpperCase()} ${config?.url ?? '?'}`
+}
+
+function elapsed(config: InternalAxiosRequestConfig | undefined): number | undefined {
+  return config?.startedAt === undefined ? undefined : Math.round(performance.now() - config.startedAt)
+}
+
+// Cada respuesta queda registrada en el logger (en desarrollo se ve en la consola con su tiempo).
 // Todas las respuestas con error llegan a los services como ApiError.
-// Un 401 con token significa que la sesión ya no vale (revocada o firmada por otro servidor):
-// se cierra en toda la app y el login explica por qué.
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    logger.debug('api', `${describe(response.config)} → ${response.status}`, { ms: elapsed(response.config) })
+    return response
+  },
   (error) => {
     const apiError = toApiError(error)
-    const sentToken = axios.isAxiosError(error) && Boolean(error.config?.headers?.Authorization)
-    if (apiError.status === 401 && sentToken) notifySessionExpired()
+    const config = axios.isAxiosError(error) ? error.config : undefined
+    logger.warn('api', `${describe(config)} → ${apiError.status ?? apiError.kind}: ${apiError.message}`, {
+      ms: elapsed(config),
+      request_id: apiError.requestId,
+    })
+    // Un 401 con la sesión iniciada: venció o fue cerrada en otro lado. Se cierra en toda la app.
+    if (apiError.status === 401) notifySessionExpired()
     return Promise.reject(apiError)
   },
 )

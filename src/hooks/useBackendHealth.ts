@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ApiError } from '../services/api'
 import { getHealth, type HealthStatus } from '../services/health.service'
+import { logLoad } from '../utils/logger'
 
 type State =
   | { status: 'loading' }
@@ -15,7 +16,7 @@ export function useBackendHealth() {
   useEffect(() => {
     let cancelled = false
 
-    getHealth()
+    logLoad('servidor', 'estado del servidor', getHealth)
       .then((data) => {
         if (!cancelled) setState({ status: 'ok', data })
       })
