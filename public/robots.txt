@@ -1,0 +1,7 @@
+# NexPay: se indexan las páginas públicas; las privadas (dashboard) requieren sesión.
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /api/
+
+Sitemap: https://nexpay-front.vercel.app/sitemap.xml
