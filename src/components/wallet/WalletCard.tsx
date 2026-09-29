@@ -23,7 +23,7 @@ function sortBalances(balances: WalletBalance[]): WalletBalance[] {
 
 interface WalletCardProps {
   /**
-   * Moneda elegida: arriba se ve su saldo REAL y abajo el total estimado de todo, expresado en ella.
+   * Moneda en la que se muestra el total estimado de arriba (y los "≈" de cada saldo).
    * La controla el Dashboard porque también es el destino del gráfico.
    */
   valuedIn: string
@@ -38,7 +38,7 @@ function WalletCard({ valuedIn, onValuedInChange }: WalletCardProps) {
       <header className="wallet-card__header">
         <h2 id="wallet-title">Mi billetera</h2>
         <label className="wallet-card__select">
-          Moneda
+          Ver total en
           <select value={valuedIn} onChange={(event) => onValuedInChange(event.target.value)}>
             {CURRENCY_CODES.map((code) => (
               <option key={code} value={code}>
@@ -62,13 +62,28 @@ function WalletCard({ valuedIn, onValuedInChange }: WalletCardProps) {
 
       {wallet.status === 'ok' && (
         <>
-          {/* Arriba: lo que REALMENTE hay en la moneda elegida (sin conversión). */}
+          {/* Arriba: la suma de TODOS los saldos convertida a la moneda elegida en "Ver total en". */}
           <div className="wallet-card__total">
-            <span className="wallet-card__total-label">Saldo en {valuedIn}</span>
-            <strong className="wallet-card__total-amount">
-              {formatCurrency(Number(wallet.data.balances.find((b) => b.currency === valuedIn)?.amount ?? 0), valuedIn)}
-            </strong>
+            <span className="wallet-card__total-label">Total estimado de todos tus balances</span>
+            {wallet.data.valuation ? (
+              <>
+                <strong className="wallet-card__total-amount">
+                  {formatCurrency(wallet.data.valuation.total, wallet.data.valuation.currency)}
+                </strong>
+                <span className="wallet-card__total-meta">
+                  {SOURCE_LABEL[wallet.data.valuation.rates_source]} · {wallet.data.valuation.rates_date}
+                  {' · ARS al dólar MEP, igual que el cotizador'}
+                  {wallet.data.valuation.missing_currencies.length > 0 &&
+                    ` · sin incluir ${wallet.data.valuation.missing_currencies.join(', ')} (tasa no disponible)`}
+                </span>
+              </>
+            ) : (
+              <span className="wallet-card__total-meta">Las tasas no están disponibles en este momento.</span>
+            )}
           </div>
+
+          {/* Abajo: lo que REALMENTE hay en cada moneda, y cuánto vale en la moneda elegida. */}
+          <h3 className="wallet-card__subtitle">Tus saldos por moneda</h3>
 
           <ul className="wallet-card__balances">
             {sortBalances(wallet.data.balances).map((balance) => (
@@ -97,26 +112,6 @@ function WalletCard({ valuedIn, onValuedInChange }: WalletCardProps) {
               Todavía no tenés saldo. Cuando hagas tu primera recarga, lo vas a ver acá en las 4 monedas.
             </p>
           )}
-
-          {/* Abajo de todo: la suma de TODOS los balances convertida a la moneda elegida (estimación). */}
-          <div className="wallet-card__estimate">
-            <span className="wallet-card__total-label">Total estimado de todos tus balances (en {valuedIn})</span>
-            {wallet.data.valuation ? (
-              <>
-                <strong className="wallet-card__estimate-amount">
-                  {formatCurrency(wallet.data.valuation.total, wallet.data.valuation.currency)}
-                </strong>
-                <span className="wallet-card__total-meta">
-                  {SOURCE_LABEL[wallet.data.valuation.rates_source]} · {wallet.data.valuation.rates_date}
-                  {' · ARS al dólar MEP, igual que el cotizador'}
-                  {wallet.data.valuation.missing_currencies.length > 0 &&
-                    ` · sin incluir ${wallet.data.valuation.missing_currencies.join(', ')} (tasa no disponible)`}
-                </span>
-              </>
-            ) : (
-              <span className="wallet-card__total-meta">Las tasas no están disponibles en este momento.</span>
-            )}
-          </div>
 
           {wallet.data.valuation && wallet.data.valuation.warnings.length > 0 && (
             <ul className="wallet-card__warnings" role="status">

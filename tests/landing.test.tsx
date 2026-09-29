@@ -29,6 +29,12 @@ const authenticatedUser: AuthUser = {
   created_at: '2026-01-01T00:00:00.000Z',
 }
 
+/** Token de prueba con el formato de un JWT y vencimiento dentro de 1 h (la app descarta los vencidos). */
+function fakeToken() {
+  const payload = btoa(JSON.stringify({ sub: 'user-1', exp: Math.floor(Date.now() / 1000) + 3600 }))
+  return `header.${payload}.firma`
+}
+
 function renderLanding() {
   return render(
     <MemoryRouter>
@@ -55,7 +61,7 @@ describe('Landing', () => {
   })
 
   it('oculta los CTA cuando la sesión está iniciada', async () => {
-    localStorage.setItem('nexpay_access_token', 'token')
+    localStorage.setItem('nexpay_access_token', fakeToken())
     renderLanding()
 
     await waitFor(() => expect(screen.getByRole('link', { name: 'Mi dashboard' })).toBeInTheDocument())
@@ -72,7 +78,7 @@ describe('Landing', () => {
   })
 
   it('muestra el logo NexPay y mantiene el enlace al inicio', async () => {
-    localStorage.setItem('nexpay_access_token', 'token')
+    localStorage.setItem('nexpay_access_token', fakeToken())
     renderLanding()
 
     await waitFor(() => expect(screen.getByRole('link', { name: 'Mi dashboard' })).toBeInTheDocument())
@@ -92,7 +98,7 @@ describe('Landing', () => {
   })
 
   it('representa el cierre de sesión del header como un botón de icono sin texto visible', async () => {
-    localStorage.setItem('nexpay_access_token', 'token')
+    localStorage.setItem('nexpay_access_token', fakeToken())
     renderLanding()
 
     await waitFor(() => expect(screen.getByRole('link', { name: 'Mi dashboard' })).toBeInTheDocument())
