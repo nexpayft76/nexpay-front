@@ -84,7 +84,7 @@
   gap: 0.6rem;
   color: var(--l-cream);
   font-family: var(--font-label);
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -97,7 +97,7 @@
 
 .landing-sections a {
   color: var(--l-text);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-decoration: none;
@@ -120,7 +120,7 @@
 .eyebrow {
   margin: 0 0 0.75rem;
   color: var(--l-gold);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -132,7 +132,7 @@
 .mono-label {
   margin: 0;
   color: var(--l-muted);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -144,7 +144,7 @@
 .mono-note {
   margin: 0;
   color: var(--l-muted);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
 }
 
 .chip {
@@ -154,7 +154,7 @@
   border: 1px solid var(--l-line-strong);
   border-radius: 999px;
   color: var(--l-gold);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -219,7 +219,7 @@
   align-items: center;
   justify-content: center;
   padding: 1rem 2.4rem;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-decoration: none;
@@ -246,7 +246,7 @@
   background: transparent;
   color: var(--l-cream);
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -258,7 +258,7 @@
 
 .btn-outline--sm {
   padding: 0.5rem 1.1rem;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
 }
 
 .btn-gold:focus-visible,
@@ -309,7 +309,7 @@
 
 .hero__login {
   color: var(--l-text);
-  font-size: 0.9rem;
+  font-size: 0.975rem;
   text-underline-offset: 4px;
 }
 
@@ -374,7 +374,7 @@
 .p2p__side > p {
   margin: 0;
   color: var(--l-text);
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.65;
 }
 
@@ -419,7 +419,7 @@
 
 .quote__amount-code {
   font-family: var(--font-label);
-  font-size: 0.9rem;
+  font-size: 0.975rem;
   letter-spacing: 0.12em;
 }
 
@@ -462,7 +462,7 @@
   justify-content: space-between;
   padding-block: 0.35rem;
   color: var(--l-text);
-  font-size: 0.9rem;
+  font-size: 0.975rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -512,7 +512,7 @@
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   color: var(--l-cream);
-  font-size: 0.9rem;
+  font-size: 0.975rem;
 }
 
 .quote__savings strong {
@@ -524,7 +524,7 @@
   margin: 0;
   padding-inline: 1.5rem;
   color: var(--l-muted);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   line-height: 1.6;
 }
 
@@ -572,7 +572,7 @@
   background: var(--l-bg);
   color: var(--l-cream);
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 0.975rem;
   cursor: pointer;
 }
 
@@ -612,7 +612,7 @@
   margin: 0.5rem 0 0;
   color: var(--l-text);
   font-family: var(--font-label);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 /* Billetera de ejemplo */
@@ -646,7 +646,7 @@
   background: transparent;
   color: var(--l-text);
   font-family: var(--font-label);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   cursor: pointer;
 }
 
@@ -688,14 +688,14 @@
   align-self: center;
   color: var(--l-gold);
   font-family: var(--font-label);
-  font-size: 0.9rem;
+  font-size: 0.975rem;
 }
 
 .wallet__name {
   grid-area: name;
   align-self: center;
   color: var(--l-text);
-  font-size: 0.9rem;
+  font-size: 0.975rem;
 }
 
 .wallet__balance {
@@ -708,7 +708,7 @@
 .wallet__equiv {
   grid-area: equiv;
   color: var(--l-muted);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
@@ -723,7 +723,7 @@
   padding: 0.75rem 1rem;
   border: 1px solid rgb(255 123 107 / 0.45);
   color: var(--l-text);
-  font-size: 0.9rem;
+  font-size: 0.975rem;
 }
 
 /* Mercado P2P */
@@ -756,7 +756,7 @@
   border-radius: 50%;
   color: var(--l-gold);
   font-family: var(--font-label);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
 }
 
 .p2p__name {
@@ -836,7 +836,7 @@
 
 .chart__now {
   color: var(--l-text);
-  font-size: 0.9rem;
+  font-size: 0.975rem;
 }
 
 .chart__now strong {
@@ -847,7 +847,7 @@
   margin-left: 0.5rem;
   color: var(--l-gold);
   font-family: var(--font-label);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 .chart__grid {
@@ -873,7 +873,7 @@
 .chart__label {
   fill: var(--l-muted);
   font-family: var(--font-label);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .chart__pairs {
@@ -926,7 +926,7 @@
   list-style: none;
   color: var(--l-muted);
   font-family: var(--font-label);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -945,7 +945,7 @@
 
 .landing-footer__muted {
   color: var(--l-muted);
-  font-size: 0.9rem;
+  font-size: 0.975rem;
 }
 
 /* Responsive */

@@ -100,7 +100,7 @@ body {
 
 .btn--sm {
   padding: 0.25rem 0.625rem;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 .btn--primary {
@@ -145,7 +145,7 @@ body {
 
 .backend-status {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 .backend-status--ok {
@@ -189,7 +189,7 @@ body {
   border: 1px dashed var(--color-primary);
   border-radius: 999px;
   color: var(--color-primary);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -281,7 +281,7 @@ body {
 .dashboard-eyebrow {
   margin: 0 0 0.5rem;
   color: var(--color-primary);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
