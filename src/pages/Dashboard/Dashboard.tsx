@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
 import ErrorBoundary from '../../components/common/ErrorBoundary'
 import QuoteCard from '../../components/quote/QuoteCard'
-import BalanceSummary from '../../components/wallet/BalanceSummary'
+import TotalEstimate from '../../components/wallet/TotalEstimate'
 import WalletCard from '../../components/wallet/WalletCard'
 import { useAuth } from '../../hooks/useAuth'
 
@@ -11,8 +11,8 @@ const RateChart = lazy(() => import('../../components/chart/RateChart'))
 /**
  * "Mi wallet": gráfico, billetera y cotizador. El encabezado y el menú los pone Layout.
  *
- * - `currency` es la moneda elegida: la cambian el "a" del gráfico o el "Ver total en" de la billetera,
- *   y los dos quedan sincronizados. En el gráfico es la moneda de DESTINO.
+ * - `currency` es la moneda elegida. La comparten tres lugares y cambiarla en uno cambia los otros dos:
+ *   el total estimado de arriba, el "Ver en" de la billetera y el "a" (DESTINO) del gráfico.
  * - `chartFrom` es la moneda de ORIGEN del gráfico (por defecto COP → USD).
  * Si origen y destino coinciden, se intercambian para no graficar "COP → COP".
  */
@@ -38,14 +38,14 @@ function Dashboard() {
 
 	return (
 		<section className="dashboard-content" aria-labelledby="dashboard-title">
-			{/* Saludo a la izquierda y saldo total a la derecha (en celular, el saldo va debajo). */}
+			{/* Saludo a la izquierda y total estimado a la derecha (en celular, el total va debajo). */}
 			<header className="dashboard-hero">
 				<div>
 					<p className="dashboard-eyebrow">Cuenta activa</p>
 					<h1 id="dashboard-title">Hola, {user?.full_name}</h1>
 					<p className="dashboard-hero__subtitle">Tu sesión está iniciada con {user?.email}.</p>
 				</div>
-				<BalanceSummary />
+				<TotalEstimate currency={currency} onCurrencyChange={changeCurrency} />
 			</header>
 			{/* Móvil y tablet: todo apilado. Desktop: gráfico a lo ancho; billetera y cotizador lado a lado. */}
 			<div className="dashboard-grid dashboard-grid--split">

@@ -46,46 +46,6 @@
   font-weight: 600;
 }
 
-/* Total */
-.wallet-card__total {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-bottom: 1.25rem;
-  padding: 1.25rem;
-  border-radius: var(--radius);
-  background: var(--color-primary-soft);
-}
-
-.wallet-card__total-label {
-  color: var(--color-text-muted);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.wallet-card__total-amount {
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
-  line-height: 1.1;
-  font-variant-numeric: tabular-nums;
-}
-
-.wallet-card__total-meta {
-  color: var(--color-text-muted);
-  font-size: 0.8125rem;
-}
-
-/* Título de la lista de saldos por moneda (debajo del total estimado). */
-.wallet-card__subtitle {
-  margin: 0 0 0.75rem;
-  color: var(--color-text-muted);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
 /* Avisos de tasas (ej. última tasa válida) */
 .wallet-card__warnings {
   margin: 0.75rem 0 0;
@@ -225,11 +185,6 @@
   background: linear-gradient(90deg, var(--color-border) 25%, var(--color-bg) 50%, var(--color-border) 75%);
   background-size: 200% 100%;
   animation: wallet-shimmer 1.2s infinite;
-}
-
-.wallet-skeleton--total {
-  height: 6.5rem;
-  margin-bottom: 1.25rem;
 }
 
 .wallet-skeleton--tile {
