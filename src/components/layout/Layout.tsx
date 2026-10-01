@@ -5,6 +5,7 @@ import { useMediaQuery } from '../../hooks/useMediaQuery'
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
 import { AlertsProvider } from '../../contexts/AlertsContext'
+import NotificationToast from '../notifications/NotificationToast'
 import './Layout.css'
 
 /** Mismo valor que el breakpoint de Layout.css. */
@@ -73,6 +74,7 @@ function Layout() {
   return (
     <AlertsProvider>
       <div className={`app-shell${isDesktop && !desktopExpanded ? ' app-shell--collapsed' : ''}`}>
+        <NotificationToast />
         <Navbar ref={menuButtonRef} isMenuOpen={isOpen} onToggleMenu={toggleMenu} onLogout={handleLogout} />
         <Sidebar
           ref={closeButtonRef}

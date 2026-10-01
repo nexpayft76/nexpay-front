@@ -69,7 +69,10 @@ export async function createAlert(input: CreateAlertInput): Promise<AlertRule> {
   }
 }
 
-export async function updateAlert(id: string, changes: Partial<Pick<AlertRule, 'enabled' | 'email_enabled'>>): Promise<AlertRule> {
+export async function updateAlert(
+  id: string,
+  changes: Partial<Pick<AlertRule, 'kind' | 'currency' | 'base_currency' | 'direction' | 'threshold' | 'enabled' | 'email_enabled'>>,
+): Promise<AlertRule> {
   try {
     const response = await api.patch<{ data: AlertRule }>(`/api/alerts/${id}`, changes)
     return unwrap(response.data)
@@ -121,4 +124,13 @@ export function createLocalNotification(notification: Notification): Notificatio
   if (current.some((item) => item.id === notification.id)) return notification
   saveNotifications([notification, ...current])
   return notification
+}
+
+export async function deleteNotification(id: string): Promise<void> {
+  try {
+    await api.delete(`/api/notifications/${id}`)
+  } catch (error) {
+    if (!canUseLocalFallback(error)) throw error
+    saveNotifications(localNotifications().filter((item) => item.id !== id))
+  }
 }

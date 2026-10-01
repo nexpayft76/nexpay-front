@@ -1,10 +1,11 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   createAlert,
   deleteAlert,
   getAlerts,
   getNotifications,
   createLocalNotification,
+  deleteNotification,
   markNotificationRead,
   updateAlert,
 } from '../services/alerts.service'
@@ -37,9 +38,13 @@ interface AlertsContextValue {
   addAlert: (input: CreateAlertInput) => Promise<void>
   toggleAlert: (alert: AlertRule) => Promise<void>
   removeAlert: (id: string) => Promise<void>
+  editAlert: (id: string, input: CreateAlertInput) => Promise<void>
   readNotification: (id: string) => Promise<void>
+  removeNotification: (id: string) => Promise<void>
   recordDeposit: (event: DepositAlertEvent) => void
   recordExchange: (event: ExchangeAlertEvent) => void
+  toastNotification: Notification | null
+  dismissToast: () => void
   unreadCount: number
 }
 
@@ -53,9 +58,13 @@ const EMPTY_ALERTS: AlertsContextValue = {
   addAlert: async () => undefined,
   toggleAlert: async () => undefined,
   removeAlert: async () => undefined,
+  editAlert: async () => undefined,
   readNotification: async () => undefined,
+  removeNotification: async () => undefined,
   recordDeposit: () => undefined,
   recordExchange: () => undefined,
+  toastNotification: null,
+  dismissToast: () => undefined,
   unreadCount: 0,
 }
 
@@ -64,13 +73,22 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [toastNotification, setToastNotification] = useState<Notification | null>(null)
+  const knownNotificationIds = useRef(new Set<string>())
+  const notificationsInitialized = useRef(false)
 
   useEffect(() => {
     let cancelled = false
     const loadNotifications = async () => {
       try {
         const nextNotifications = await getNotifications()
-        if (!cancelled) setNotifications(nextNotifications)
+        if (cancelled) return
+        const newUnread = notificationsInitialized.current
+          ? nextNotifications.find((notification) => !notification.read && !knownNotificationIds.current.has(notification.id))
+          : undefined
+        nextNotifications.forEach((notification) => knownNotificationIds.current.add(notification.id))
+        setNotifications(nextNotifications)
+        if (newUnread) setToastNotification(newUnread)
       } catch {
         if (!cancelled) setError('No pudimos actualizar tus notificaciones.')
       }
@@ -81,6 +99,8 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
         if (cancelled) return
         setAlerts(nextAlerts)
         setNotifications(nextNotifications)
+        nextNotifications.forEach((notification) => knownNotificationIds.current.add(notification.id))
+        notificationsInitialized.current = true
       })
       .catch(() => !cancelled && setError('No pudimos cargar tus alertas. Inténtalo de nuevo.'))
       .finally(() => !cancelled && setLoading(false))
@@ -110,6 +130,11 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     setAlerts((current) => current.map((item) => (item.id === updated.id ? updated : item)))
   }
 
+  async function editAlert(id: string, input: CreateAlertInput) {
+    const updated = await updateAlert(id, input)
+    setAlerts((current) => current.map((item) => (item.id === updated.id ? updated : item)))
+  }
+
   async function removeAlert(id: string) {
     await deleteAlert(id)
     setAlerts((current) => current.filter((item) => item.id !== id))
@@ -120,9 +145,19 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     setNotifications((current) => current.map((item) => (item.id === id ? { ...item, read: true } : item)))
   }
 
+  async function removeNotification(id: string) {
+    await deleteNotification(id)
+    setNotifications((current) => current.filter((item) => item.id !== id))
+  }
+
   function addLocalNotification(notification: Notification) {
     const created = createLocalNotification(notification)
-    setNotifications((current) => (current.some((item) => item.id === created.id) ? current : [created, ...current]))
+    setNotifications((current) => {
+      if (current.some((item) => item.id === created.id)) return current
+      knownNotificationIds.current.add(created.id)
+      return [created, ...current]
+    })
+    setToastNotification(created)
   }
 
   function recordDeposit(event: DepositAlertEvent) {
@@ -186,9 +221,13 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
         addAlert,
         toggleAlert,
         removeAlert,
+        editAlert,
         readNotification,
+        removeNotification,
         recordDeposit,
         recordExchange,
+        toastNotification,
+        dismissToast: () => setToastNotification(null),
         unreadCount: notifications.filter((item) => !item.read).length,
       }}
     >

@@ -77,11 +77,15 @@
   list-style: none;
 }
 
-.notification-panel__list button {
+.notification-panel__list li {
+  position: relative;
+}
+
+.notification-panel__list .notification-panel__item {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 0.625rem;
-  width: 100%;
+  width: calc(100% - 2rem);
   padding: 0.625rem;
   border: 0;
   border-radius: var(--radius);
@@ -92,8 +96,30 @@
   cursor: pointer;
 }
 
-.notification-panel__list button:hover {
+.notification-panel__list .notification-panel__item:hover {
   background: var(--color-primary-soft);
+}
+
+.notification-panel__delete {
+  position: absolute;
+  top: 50%;
+  right: 0.25rem;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.notification-panel__delete:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-danger);
 }
 
 .notification-panel__list li.is-unread .notification-panel__dot {

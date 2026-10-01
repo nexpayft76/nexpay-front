@@ -34,8 +34,9 @@ function formatRule(kind: AlertKind, currency: string, base: string, direction: 
 
 function AlertsPage() {
   useDocumentTitle('Alertas')
-  const { alerts, loading, error, addAlert, toggleAlert, removeAlert } = useAlerts()
+  const { alerts, loading, error, addAlert, editAlert, toggleAlert, removeAlert } = useAlerts()
   const [form, setForm] = useState(initialForm)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const isRateRule = form.kind === 'daily_change' || form.kind === 'target_rate'
@@ -54,13 +55,34 @@ function AlertsPage() {
     setSaving(true)
     setFormError(null)
     try {
-      await addAlert(form)
+      if (editingId) await editAlert(editingId, form)
+      else await addAlert(form)
       setForm(initialForm)
+      setEditingId(null)
     } catch {
       setFormError('No pudimos guardar la alerta. Inténtalo de nuevo.')
     } finally {
       setSaving(false)
     }
+  }
+
+  function startEditing(alert: (typeof alerts)[number]) {
+    setEditingId(alert.id)
+    setForm({
+      kind: alert.kind,
+      currency: alert.currency,
+      base_currency: alert.base_currency,
+      direction: alert.direction,
+      threshold: alert.threshold,
+      email_enabled: alert.email_enabled,
+    })
+    setFormError(null)
+  }
+
+  function cancelEditing() {
+    setEditingId(null)
+    setForm(initialForm)
+    setFormError(null)
   }
 
   return (
@@ -80,8 +102,8 @@ function AlertsPage() {
         <form className="alert-form" onSubmit={handleSubmit}>
           <div className="alert-form__heading">
             <div>
-              <p className="dashboard-eyebrow">Nueva regla</p>
-              <h2>Elige cuándo avisarte</h2>
+              <p className="dashboard-eyebrow">{editingId ? 'Editar regla' : 'Nueva regla'}</p>
+              <h2>{editingId ? 'Actualiza cuándo avisarte' : 'Elige cuándo avisarte'}</h2>
             </div>
           </div>
 
@@ -162,9 +184,12 @@ function AlertsPage() {
 
           <p className="alert-form__preview">{formatRule(form.kind, form.currency, form.base_currency, form.direction, form.threshold || 0)}</p>
           {(formError || error) && <p className="alerts-error" role="alert">{formError ?? error}</p>}
-          <button type="submit" className="btn btn--primary" disabled={saving}>
-            {saving ? 'Guardando…' : 'Crear alerta'}
-          </button>
+          <div className="alert-form__actions">
+            <button type="submit" className="btn btn--primary" disabled={saving}>
+              {saving ? 'Guardando…' : editingId ? 'Guardar cambios' : 'Crear alerta'}
+            </button>
+            {editingId && <button type="button" className="btn btn--ghost" onClick={cancelEditing}>Cancelar</button>}
+          </div>
         </form>
 
         <section className="alert-list" aria-labelledby="active-alerts-title">
@@ -188,11 +213,16 @@ function AlertsPage() {
                     <strong>{formatRule(alert.kind, alert.currency, alert.base_currency, alert.direction, alert.threshold)}</strong>
                     <span>{alert.email_enabled ? 'Campanita + email' : 'Solo campanita'}</span>
                   </div>
-                  <label className="switch" title={alert.enabled ? 'Desactivar alerta' : 'Activar alerta'}>
-                    <input type="checkbox" checked={alert.enabled} onChange={() => toggleAlert(alert)} />
-                    <span />
-                  </label>
-                  <button type="button" className="alert-list__delete" onClick={() => removeAlert(alert.id)} aria-label="Eliminar alerta" title="Eliminar alerta">×</button>
+                  <div className="alert-list__actions">
+                    <button type="button" className="alert-list__edit" onClick={() => startEditing(alert)} aria-label="Editar alerta" title="Editar alerta">
+                      <Icon name="edit" size={16} />
+                    </button>
+                    <label className="switch" title={alert.enabled ? 'Desactivar alerta' : 'Activar alerta'}>
+                      <input type="checkbox" checked={alert.enabled} onChange={() => toggleAlert(alert)} />
+                      <span />
+                    </label>
+                    <button type="button" className="alert-list__delete" onClick={() => removeAlert(alert.id)} aria-label="Eliminar alerta" title="Eliminar alerta">×</button>
+                  </div>
                 </li>
               ))}
             </ul>

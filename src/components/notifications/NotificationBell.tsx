@@ -6,7 +6,7 @@ import './NotificationBell.css'
 
 function NotificationBell() {
   const [open, setOpen] = useState(false)
-  const { notifications, unreadCount, readNotification } = useOptionalAlerts()
+  const { notifications, unreadCount, readNotification, removeNotification } = useOptionalAlerts()
   const recent = notifications.slice(0, 4)
 
   async function handleNotificationClick(id: string) {
@@ -32,11 +32,7 @@ function NotificationBell() {
       {open && (
         <section id="notification-panel" className="notification-panel" aria-label="Notificaciones recientes">
           <header className="notification-panel__header">
-            <div>
-              <p className="dashboard-eyebrow">Centro NexPay</p>
-              <h2>Notificaciones</h2>
-            </div>
-            <span>{unreadCount ? `${unreadCount} nuevas` : 'Al día'}</span>
+            <h2>Notificaciones</h2>
           </header>
           {recent.length === 0 ? (
             <p className="notification-panel__empty">Cuando una tasa cumpla una de tus reglas, aparecerá aquí.</p>
@@ -44,12 +40,21 @@ function NotificationBell() {
             <ul className="notification-panel__list">
               {recent.map((notification) => (
                 <li key={notification.id} className={!notification.read ? 'is-unread' : undefined}>
-                  <button type="button" onClick={() => handleNotificationClick(notification.id)}>
+                  <button type="button" className="notification-panel__item" onClick={() => handleNotificationClick(notification.id)}>
                     <span className="notification-panel__dot" aria-hidden="true" />
                     <span>
                       <strong>{notification.title}</strong>
                       <small>{notification.message}</small>
                     </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="notification-panel__delete"
+                    onClick={() => removeNotification(notification.id)}
+                    aria-label={`Eliminar ${notification.title}`}
+                    title="Eliminar notificación"
+                  >
+                    <Icon name="trash" size={16} />
                   </button>
                 </li>
               ))}
