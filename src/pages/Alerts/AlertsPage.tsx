@@ -26,7 +26,10 @@ function formatRule(kind: AlertKind, currency: string, base: string, direction: 
   if (kind === 'low_balance') {
     return `Avisarme si mi saldo en ${currency} baja de ${threshold} ${currency}.`
   }
-  return `Avisarme si las tasas de ${currency} llevan más de ${threshold} minutos sin actualizarse.`
+  if (kind === 'stale_rates') {
+    return `Avisarme si las tasas de ${currency} llevan más de ${threshold} minutos sin actualizarse.`
+  }
+  return `Avisarme cada vez que reciba una recarga en ${currency}.`
 }
 
 function AlertsPage() {
@@ -35,6 +38,8 @@ function AlertsPage() {
   const [form, setForm] = useState(initialForm)
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  const isRateRule = form.kind === 'daily_change' || form.kind === 'target_rate'
+  const needsThreshold = form.kind !== 'deposit_received'
 
   function updateForm<K extends keyof CreateAlertInput>(key: K, value: CreateAlertInput[K]) {
     setForm((current) => ({ ...current, [key]: value }))
@@ -88,17 +93,18 @@ function AlertsPage() {
               <option value="target_rate">Tasa objetivo</option>
               <option value="low_balance">Saldo bajo</option>
               <option value="stale_rates">Fuente desactualizada</option>
+              <option value="deposit_received">Recarga recibida</option>
             </select>
           </label>
 
-          <div className="alert-form__pair">
+          <div className={`alert-form__pair${isRateRule ? '' : ' alert-form__pair--compact'}`}>
             <label className="field">
               <span>Moneda</span>
               <select value={form.currency} onChange={(event) => updateForm('currency', event.target.value as CurrencyCode)}>
                 {CURRENCY_CODES.map((code) => <option key={code} value={code}>{code}</option>)}
               </select>
             </label>
-            {(form.kind === 'daily_change' || form.kind === 'target_rate') ? (
+            {isRateRule ? (
               <label className="field">
                 <span>Comparada con</span>
                 <select value={form.base_currency} onChange={(event) => updateForm('base_currency', event.target.value as CurrencyCode)}>
@@ -112,8 +118,8 @@ function AlertsPage() {
             )}
           </div>
 
-          <div className="alert-form__pair">
-            {(form.kind === 'daily_change' || form.kind === 'target_rate') ? (
+          {needsThreshold ? <div className={`alert-form__pair${isRateRule ? '' : ' alert-form__pair--single'}`}>
+            {isRateRule ? (
               <label className="field">
                 <span>Condición</span>
                 <select value={form.direction} onChange={(event) => updateForm('direction', event.target.value as AlertDirection)}>
@@ -121,7 +127,7 @@ function AlertsPage() {
                   <option value="down">Baja más de</option>
                 </select>
               </label>
-            ) : <span />}
+            ) : null}
             <label className="field">
               <span>
                 {form.kind === 'daily_change' && 'Porcentaje'}
@@ -146,7 +152,9 @@ function AlertsPage() {
                 </b>
               </span>
             </label>
-          </div>
+          </div> : (
+            <p className="alert-form__event-note">Se activará cuando una recarga de {form.currency} se registre correctamente en tu wallet.</p>
+          )}
 
           <label className="check-row">
             <input type="checkbox" checked={form.email_enabled} onChange={(event) => updateForm('email_enabled', event.target.checked)} />

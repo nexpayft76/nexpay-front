@@ -1,6 +1,6 @@
 import type { CurrencyCode } from './currency'
 
-export type AlertKind = 'daily_change' | 'target_rate' | 'low_balance' | 'stale_rates'
+export type AlertKind = 'daily_change' | 'target_rate' | 'low_balance' | 'stale_rates' | 'deposit_received'
 export type AlertDirection = 'up' | 'down'
 
 export interface AlertRule {

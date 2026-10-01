@@ -9,6 +9,8 @@ import {
 } from '../services/alerts.service'
 import type { AlertRule, CreateAlertInput, Notification } from '../types/alerts'
 
+const NOTIFICATION_POLL_MS = 15_000
+
 interface AlertsContextValue {
   alerts: AlertRule[]
   notifications: Notification[]
@@ -43,6 +45,15 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false
+    const loadNotifications = async () => {
+      try {
+        const nextNotifications = await getNotifications()
+        if (!cancelled) setNotifications(nextNotifications)
+      } catch {
+        if (!cancelled) setError('No pudimos actualizar tus notificaciones.')
+      }
+    }
+
     Promise.all([getAlerts(), getNotifications()])
       .then(([nextAlerts, nextNotifications]) => {
         if (cancelled) return
@@ -51,8 +62,19 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
       })
       .catch(() => !cancelled && setError('No pudimos cargar tus alertas. Inténtalo de nuevo.'))
       .finally(() => !cancelled && setLoading(false))
+
+    const poll = window.setInterval(() => void loadNotifications(), NOTIFICATION_POLL_MS)
+    const refreshWhenActive = () => {
+      if (document.visibilityState === 'visible') void loadNotifications()
+    }
+    document.addEventListener('visibilitychange', refreshWhenActive)
+    window.addEventListener('focus', refreshWhenActive)
+
     return () => {
       cancelled = true
+      window.clearInterval(poll)
+      document.removeEventListener('visibilitychange', refreshWhenActive)
+      window.removeEventListener('focus', refreshWhenActive)
     }
   }, [])
 
