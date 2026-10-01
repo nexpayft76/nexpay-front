@@ -61,7 +61,10 @@ function AppRouter() {
                 />
               }
             />
-            <Route path="configuracion" element={<AlertsPage />} />
+            <Route path="configuracion">
+              <Route index element={<Navigate to="alertas" replace />} />
+              <Route path="alertas" element={<AlertsPage />} />
+            </Route>
             <Route
               path="usuario"
               element={

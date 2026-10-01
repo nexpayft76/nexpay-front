@@ -34,7 +34,12 @@ const MENU: MenuItem[] = [
     ],
   },
   { to: '/dashboard/p2p', label: 'P2P', icon: 'p2p', soon: true },
-  { to: '/dashboard/configuracion', label: 'Configuración', icon: 'settings' },
+  {
+    label: 'Configuración',
+    icon: 'settings',
+    basePath: '/dashboard/configuracion',
+    children: [{ to: '/dashboard/configuracion/alertas', label: 'Alertas', icon: 'bell' }],
+  },
   { to: '/dashboard/usuario', label: 'Usuario', icon: 'user', soon: true },
 ]
 

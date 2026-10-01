@@ -60,7 +60,7 @@ function NotificationBell() {
               ))}
             </ul>
           )}
-          <Link to="/dashboard/configuracion" onClick={() => setOpen(false)} className="notification-panel__link">
+          <Link to="/dashboard/configuracion/alertas" onClick={() => setOpen(false)} className="notification-panel__link">
             Administrar alertas <span aria-hidden="true">→</span>
           </Link>
         </section>
