@@ -317,3 +317,9 @@
     transition: none;
   }
 }
+
+.app-shell__loading {
+  margin: 3rem auto;
+  color: var(--color-text-muted);
+  text-align: center;
+}

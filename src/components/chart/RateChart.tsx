@@ -140,7 +140,14 @@ function RateChart({ from, to, onFromChange, onToChange, onSwap }: RateChartProp
       )}
 
       {history.status === 'ok' && (
-        <ChartBody data={history.data} rangeLong={rangeInfo.long} height={isWide ? 280 : 220} />
+        <div className={`rate-chart__body${history.updating ? ' rate-chart__body--updating' : ''}`} aria-busy={history.updating}>
+          {history.updating && (
+            <span className="rate-chart__updating" role="status">
+              Actualizando…
+            </span>
+          )}
+          <ChartBody data={history.data} rangeLong={rangeInfo.long} height={isWide ? 280 : 220} />
+        </div>
       )}
     </section>
   )
@@ -194,7 +201,9 @@ function ChartBody({ data, rangeLong, height }: { data: RateHistory; rangeLong: 
       )}
 
       <figure className="rate-chart__figure" aria-label={summaryText(data, rangeLong)}>
-        <ResponsiveContainer width="100%" height={height}>
+        {/* initialDimension: se dibuja de entrada con un ancho estimado (no con 0) y después se ajusta,
+            así no hay un primer dibujo vacío. debounce: al cambiar el tamaño de la ventana mide menos veces. */}
+        <ResponsiveContainer width="100%" height={height} initialDimension={{ width: 640, height }} debounce={100}>
           <LineChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
             <CartesianGrid vertical={false} />
             <XAxis

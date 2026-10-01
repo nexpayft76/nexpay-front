@@ -1,7 +1,9 @@
 import QuoteCard from '../../components/quote/QuoteCard'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 
 /** Pantalla "Cotizador" del menú lateral: solo el cotizador. */
 function QuotePage() {
+  useDocumentTitle('Cotizador')
   return (
     <section className="dashboard-content" aria-labelledby="quote-page-title">
       <p className="dashboard-eyebrow">Cotizador</p>

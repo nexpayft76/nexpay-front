@@ -31,13 +31,18 @@
 }
 
 /* Campos */
+/* minmax(0, 1fr): la columna nunca es más ancha que la tarjeta (en celular el campo empujaba 21 px
+   fuera de la pantalla y aparecía scroll horizontal). */
 .quote-card__form {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
 }
 
 .quote-field {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 0.375rem;
 }
 
@@ -81,6 +86,16 @@
 
 .quote-field select {
   font-weight: 700;
+}
+
+.quote-field__error {
+  color: var(--color-danger);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.quote-field__error:empty {
+  display: none;
 }
 
 .quote-field input:focus-visible,

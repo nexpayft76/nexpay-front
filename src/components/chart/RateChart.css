@@ -210,6 +210,30 @@
   stroke: var(--color-text-muted);
 }
 
+/* Cambio de par o de rango: se deja el gráfico anterior atenuado mientras llega el nuevo. */
+.rate-chart__body {
+  position: relative;
+}
+
+.rate-chart__body--updating > :not(.rate-chart__updating) {
+  opacity: 0.45;
+  transition: opacity 0.15s;
+}
+
+.rate-chart__updating {
+  position: absolute;
+  z-index: 1;
+  top: 0.25rem;
+  right: 0.25rem;
+  padding: 0.125rem 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .rate-chart__skeleton {
   height: 17rem;
   border-radius: var(--radius);

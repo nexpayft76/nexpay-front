@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ApiError } from '../services/api'
 import { getMyWallet } from '../services/wallet.service'
 import type { MyWallet } from '../types/wallet'
+import { logLoad } from '../utils/logger'
 
 type State =
   | { status: 'loading' }
@@ -15,7 +16,7 @@ export function useMyWallet(valuedIn: string) {
 
   useEffect(() => {
     let cancelled = false
-    getMyWallet(valuedIn)
+    logLoad('billetera', `billetera (en ${valuedIn})`, () => getMyWallet(valuedIn))
       .then((data) => {
         if (!cancelled) setState({ status: 'ok', data })
       })

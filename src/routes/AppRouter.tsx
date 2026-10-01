@@ -1,74 +1,90 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import Layout from '../components/layout/Layout'
-import ComingSoon from '../pages/ComingSoon/ComingSoon'
 import Landing from '../pages/Landing/Landing'
-import Login from '../pages/Login/Login'
-import Register from '../pages/Register/Register'
-import Dashboard from '../pages/Dashboard/Dashboard'
-import DepositPage from '../pages/Operations/DepositPage'
-import ExchangePage from '../pages/Operations/ExchangePage'
-import QuotePage from '../pages/Quote/QuotePage'
 import ProtectedRoute from './ProtectedRoute'
+
+// La landing va en el archivo principal (es la página que ven los buscadores y la primera visita).
+// El resto se descarga recién al entrar a cada pantalla: así el index-*.js que baja al abrir el sitio
+// es mucho más liviano y la landing carga antes.
+const Layout = lazy(() => import('../components/layout/Layout'))
+const ComingSoon = lazy(() => import('../pages/ComingSoon/ComingSoon'))
+const Login = lazy(() => import('../pages/Login/Login'))
+const Register = lazy(() => import('../pages/Register/Register'))
+const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'))
+const DepositPage = lazy(() => import('../pages/Operations/DepositPage'))
+const ExchangePage = lazy(() => import('../pages/Operations/ExchangePage'))
+const QuotePage = lazy(() => import('../pages/Quote/QuotePage'))
+
+/** Mientras se descarga una pantalla. */
+function PageLoading() {
+  return (
+    <main className="placeholder-page" aria-busy="true">
+      <p>Cargando…</p>
+    </main>
+  )
+}
 
 function AppRouter() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      <Suspense fallback={<PageLoading />}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Todo lo que está bajo /dashboard exige sesión y comparte el Layout (barra + menú lateral). */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="cotizador" element={<QuotePage />} />
-          {/* Operaciones: submenú del menú lateral. Más adelante: venta, intercambio e historial. */}
-          <Route path="operaciones">
-            <Route index element={<Navigate to="recarga" replace />} />
-            <Route path="recarga" element={<DepositPage />} />
-            <Route path="compra" element={<ExchangePage />} />
+          {/* Todo lo que está bajo /dashboard exige sesión y comparte el Layout (barra + menú lateral). */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="cotizador" element={<QuotePage />} />
+            {/* Operaciones: submenú del menú lateral. Más adelante: venta e historial. */}
+            <Route path="operaciones">
+              <Route index element={<Navigate to="recarga" replace />} />
+              <Route path="recarga" element={<DepositPage />} />
+              <Route path="compra" element={<ExchangePage />} />
+            </Route>
+            <Route
+              path="p2p"
+              element={
+                <ComingSoon
+                  icon="p2p"
+                  title="P2P"
+                  description="Intercambia pesos colombianos y argentinos directamente con otros usuarios del corredor, con una comisión pequeña."
+                />
+              }
+            />
+            <Route
+              path="configuracion"
+              element={
+                <ComingSoon
+                  icon="settings"
+                  title="Configuración"
+                  description="Tus preferencias: moneda principal, tipo de dólar para ARS y notificaciones."
+                />
+              }
+            />
+            <Route
+              path="usuario"
+              element={
+                <ComingSoon
+                  icon="user"
+                  title="Usuario"
+                  description="Tus datos personales: ver, editar tu nombre y email, y cerrar tu cuenta."
+                />
+              }
+            />
           </Route>
-          <Route
-            path="p2p"
-            element={
-              <ComingSoon
-                icon="p2p"
-                title="P2P"
-                description="Intercambia pesos colombianos y argentinos directamente con otros usuarios del corredor, con una comisión pequeña."
-              />
-            }
-          />
-          <Route
-            path="configuracion"
-            element={
-              <ComingSoon
-                icon="settings"
-                title="Configuración"
-                description="Tus preferencias: moneda principal, tipo de dólar para ARS y notificaciones."
-              />
-            }
-          />
-          <Route
-            path="usuario"
-            element={
-              <ComingSoon
-                icon="user"
-                title="Usuario"
-                description="Tus datos personales: ver, editar tu nombre y email, y cerrar tu cuenta."
-              />
-            }
-          />
-        </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

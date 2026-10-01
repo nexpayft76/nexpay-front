@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { ARS_RATE_TYPES, useQuote } from '../../hooks/useQuote'
 import type { ArsRateType, Conversion } from '../../types/rates'
-import { parseAmount } from '../../utils/amount'
+import { parseAmount, validateAmountText, visibleAmountError } from '../../utils/amount'
+import AmountInput from '../common/AmountInput'
 import { CURRENCY_CODES } from '../../utils/currencies'
 import { formatCurrency } from '../../utils/formatCurrency'
 import RateSources from './RateSources'
@@ -25,7 +27,12 @@ function QuoteCard() {
   const [arsRate, setArsRate] = useState<ArsRateType>('mep')
 
   const amount = parseAmount(amountText)
-  const quote = useQuote({ from, to, amount, arsRate })
+  // Validación en tiempo real (igual que recarga y compra): decimales de más al instante; el resto tras una pausa.
+  const issue = validateAmountText(amountText)
+  const settled = useDebouncedValue(amountText, 400) === amountText
+  const amountError = visibleAmountError(issue, settled)
+  // Solo se cotiza un monto válido.
+  const quote = useQuote({ from, to, amount: issue === undefined ? amount : Number.NaN, arsRate })
   const involvesArs = from === 'ARS' || to === 'ARS'
 
   function swap() {
@@ -44,12 +51,12 @@ function QuoteCard() {
         <label className="quote-field">
           <span className="quote-field__label">Tengo</span>
           <div className="quote-field__row">
-            <input
-              inputMode="decimal"
+            <AmountInput
               value={amountText}
-              onChange={(event) => setAmountText(event.target.value)}
+              onValueChange={setAmountText}
               aria-label="Monto a cambiar"
-              aria-invalid={amountText !== '' && !(amount > 0)}
+              aria-invalid={amountError !== undefined}
+              aria-describedby="quote-amount-error"
             />
             <select value={from} onChange={(event) => setFrom(event.target.value)} aria-label="Moneda que tengo">
               {CURRENCY_CODES.map((code) => (
@@ -59,6 +66,9 @@ function QuoteCard() {
               ))}
             </select>
           </div>
+          <span id="quote-amount-error" className="quote-field__error" aria-live="polite">
+            {amountError}
+          </span>
         </label>
 
         <button type="button" className="quote-card__swap" onClick={swap} aria-label="Invertir monedas" title="Invertir monedas">
@@ -126,7 +136,7 @@ interface QuoteResultProps {
 function QuoteResult({ state, from, to, amountText, arsRate, onSelectArsRate }: QuoteResultProps) {
   if (from === to) return <p className="quote-card__message">Elige dos monedas distintas.</p>
   if (state.status === 'idle') {
-    return <p className="quote-card__message">{amountText ? 'Ingresa un monto mayor que 0.' : 'Ingresa un monto para cotizar.'}</p>
+    return <p className="quote-card__message">{amountText ? 'Corrige el monto para cotizar.' : 'Ingresa un monto para cotizar.'}</p>
   }
   if (state.status === 'error') {
     return (

@@ -46,52 +46,7 @@
   font-weight: 600;
 }
 
-/* Total */
-.wallet-card__total {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-bottom: 1.25rem;
-  padding: 1.25rem;
-  border-radius: var(--radius);
-  background: var(--color-primary-soft);
-}
-
-.wallet-card__total-label {
-  color: var(--color-text-muted);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.wallet-card__total-amount {
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
-  line-height: 1.1;
-  font-variant-numeric: tabular-nums;
-}
-
-.wallet-card__total-meta {
-  color: var(--color-text-muted);
-  font-size: 0.9375rem;
-}
-
 /* Avisos de tasas (ej. última tasa válida) */
-/* Total estimado (abajo de todo): suma de todos los balances convertida a la moneda elegida. */
-.wallet-card__estimate {
-  display: grid;
-  gap: 0.25rem;
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px dashed var(--color-border);
-}
-
-.wallet-card__estimate-amount {
-  font-size: 1.375rem;
-  font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
-}
-
 .wallet-card__warnings {
   margin: 0.75rem 0 0;
   padding: 0.75rem 1rem 0.75rem 2rem;
@@ -155,16 +110,21 @@
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
+  /* Aro con el color de la moneda; el relleno es una versión más oscura del mismo color para que el
+     código (COP, ARS…) se lea en blanco puro con contraste AA (4,5:1 o más). Antes el COP daba 2,4:1. */
+  box-shadow: 0 0 0 2px var(--badge-ring);
+  background: var(--badge-fill);
   color: #fff;
   font-size: 0.875rem;
   font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 1px rgb(0 0 0 / 0.35);
 }
 
-.balance-tile__badge--cop { background: #d4a017; }
-.balance-tile__badge--ars { background: #4a9ad9; }
-.balance-tile__badge--usd { background: #2e8b57; }
-.balance-tile__badge--eur { background: #3b4fd8; }
+.balance-tile__badge--cop { --badge-fill: #8f6a00; --badge-ring: #d4a017; } /* blanco: 5,0:1 */
+.balance-tile__badge--ars { --badge-fill: #1f6aa8; --badge-ring: #4a9ad9; } /* blanco: 5,7:1 */
+.balance-tile__badge--usd { --badge-fill: #1e7446; --badge-ring: #2e8b57; } /* blanco: 5,8:1 */
+.balance-tile__badge--eur { --badge-fill: #3446c9; --badge-ring: #5b6cf0; } /* blanco: 7,3:1 */
 
 .balance-tile__info {
   display: flex;
@@ -174,11 +134,13 @@
 }
 
 .balance-tile__name {
+  color: var(--color-text);
   font-weight: 600;
 }
 
+/* País y "≈": más claros que el texto secundario común, para que se lean bien sobre la tarjeta. */
 .balance-tile__country {
-  color: var(--color-text-muted);
+  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted));
   font-size: 0.9375rem;
 }
 
@@ -193,7 +155,7 @@
 }
 
 .balance-tile__amounts span {
-  color: var(--color-text-muted);
+  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted));
   font-size: 0.9375rem;
 }
 
@@ -223,11 +185,6 @@
   background: linear-gradient(90deg, var(--color-border) 25%, var(--color-bg) 50%, var(--color-border) 75%);
   background-size: 200% 100%;
   animation: wallet-shimmer 1.2s infinite;
-}
-
-.wallet-skeleton--total {
-  height: 6.5rem;
-  margin-bottom: 1.25rem;
 }
 
 .wallet-skeleton--tile {

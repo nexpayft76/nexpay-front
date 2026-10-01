@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Icon, { type IconName } from '../../components/common/Icon'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 
 interface ComingSoonProps {
   title: string
@@ -9,6 +10,7 @@ interface ComingSoonProps {
 
 /** Pantalla para las secciones del menú que todavía no están construidas. */
 function ComingSoon({ title, description, icon }: ComingSoonProps) {
+  useDocumentTitle(title)
   return (
     <section className="dashboard-content" aria-labelledby="coming-soon-title">
       <div className="coming-soon">
