@@ -4,12 +4,30 @@ import {
   deleteAlert,
   getAlerts,
   getNotifications,
+  createLocalNotification,
   markNotificationRead,
   updateAlert,
 } from '../services/alerts.service'
 import type { AlertRule, CreateAlertInput, Notification } from '../types/alerts'
 
 const NOTIFICATION_POLL_MS = 15_000
+
+interface DepositAlertEvent {
+  transactionId: string
+  currency: string
+  amount: string
+  newBalance: string
+  createdAt: string
+}
+
+interface ExchangeAlertEvent {
+  transactionId: string
+  fromCurrency: string
+  fromBalance: string
+  toCurrency: string
+  toBalance: string
+  createdAt: string
+}
 
 interface AlertsContextValue {
   alerts: AlertRule[]
@@ -20,6 +38,8 @@ interface AlertsContextValue {
   toggleAlert: (alert: AlertRule) => Promise<void>
   removeAlert: (id: string) => Promise<void>
   readNotification: (id: string) => Promise<void>
+  recordDeposit: (event: DepositAlertEvent) => void
+  recordExchange: (event: ExchangeAlertEvent) => void
   unreadCount: number
 }
 
@@ -34,6 +54,8 @@ const EMPTY_ALERTS: AlertsContextValue = {
   toggleAlert: async () => undefined,
   removeAlert: async () => undefined,
   readNotification: async () => undefined,
+  recordDeposit: () => undefined,
+  recordExchange: () => undefined,
   unreadCount: 0,
 }
 
@@ -98,6 +120,62 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     setNotifications((current) => current.map((item) => (item.id === id ? { ...item, read: true } : item)))
   }
 
+  function addLocalNotification(notification: Notification) {
+    const created = createLocalNotification(notification)
+    setNotifications((current) => (current.some((item) => item.id === created.id) ? current : [created, ...current]))
+  }
+
+  function recordDeposit(event: DepositAlertEvent) {
+    for (const alert of alerts) {
+      if (!alert.enabled || alert.currency !== event.currency) continue
+      if (alert.kind === 'deposit_received') {
+        addLocalNotification({
+          id: `local-${alert.id}-${event.transactionId}-deposit`,
+          type: 'system',
+          title: `Recarga recibida en ${event.currency}`,
+          message: `Sumaste ${event.amount} ${event.currency} a tu wallet.`,
+          read: false,
+          created_at: event.createdAt,
+          alert_id: alert.id,
+        })
+      }
+      if (alert.kind === 'low_balance' && Number(event.newBalance) <= alert.threshold) {
+        addLocalNotification({
+          id: `local-${alert.id}-${event.transactionId}-low`,
+          type: 'rate_alert',
+          title: `Saldo bajo en ${event.currency}`,
+          message: `Tu saldo quedó en ${event.newBalance} ${event.currency}.`,
+          read: false,
+          created_at: event.createdAt,
+          alert_id: alert.id,
+        })
+      }
+    }
+  }
+
+  function recordExchange(event: ExchangeAlertEvent) {
+    const balances = [
+      { currency: event.fromCurrency, balance: event.fromBalance },
+      { currency: event.toCurrency, balance: event.toBalance },
+    ]
+    for (const balance of balances) {
+      for (const alert of alerts) {
+        if (!alert.enabled || alert.kind !== 'low_balance' || alert.currency !== balance.currency) continue
+        if (Number(balance.balance) <= alert.threshold) {
+          addLocalNotification({
+            id: `local-${alert.id}-${event.transactionId}-${balance.currency}-low`,
+            type: 'rate_alert',
+            title: `Saldo bajo en ${balance.currency}`,
+            message: `Tu saldo quedó en ${balance.balance} ${balance.currency}.`,
+            read: false,
+            created_at: event.createdAt,
+            alert_id: alert.id,
+          })
+        }
+      }
+    }
+  }
+
   return (
     <AlertsContext.Provider
       value={{
@@ -109,6 +187,8 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
         toggleAlert,
         removeAlert,
         readNotification,
+        recordDeposit,
+        recordExchange,
         unreadCount: notifications.filter((item) => !item.read).length,
       }}
     >

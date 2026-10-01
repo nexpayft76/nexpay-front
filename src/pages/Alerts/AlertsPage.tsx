@@ -13,7 +13,7 @@ const initialForm: CreateAlertInput = {
   base_currency: 'USD',
   direction: 'up',
   threshold: 2,
-  email_enabled: true,
+  email_enabled: false,
 }
 
 function formatRule(kind: AlertKind, currency: string, base: string, direction: AlertDirection, threshold: number) {
@@ -83,7 +83,6 @@ function AlertsPage() {
               <p className="dashboard-eyebrow">Nueva regla</p>
               <h2>Elige cuándo avisarte</h2>
             </div>
-            <span className="alert-form__step">01</span>
           </div>
 
           <label className="field">

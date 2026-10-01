@@ -95,7 +95,12 @@ export async function deleteAlert(id: string): Promise<void> {
 export async function getNotifications(): Promise<Notification[]> {
   try {
     const response = await api.get<{ data: Notification[] }>('/api/notifications')
-    return unwrap(response.data)
+    const serverNotifications = unwrap(response.data)
+    const local = localNotifications()
+    const seen = new Set(serverNotifications.map((notification) => notification.id))
+    return [...serverNotifications, ...local.filter((notification) => !seen.has(notification.id))].sort((a, b) =>
+      b.created_at.localeCompare(a.created_at),
+    )
   } catch (error) {
     if (canUseLocalFallback(error)) return localNotifications()
     throw error
@@ -109,4 +114,11 @@ export async function markNotificationRead(id: string): Promise<void> {
     if (!canUseLocalFallback(error)) throw error
     saveNotifications(localNotifications().map((item) => (item.id === id ? { ...item, read: true } : item)))
   }
+}
+
+export function createLocalNotification(notification: Notification): Notification {
+  const current = localNotifications()
+  if (current.some((item) => item.id === notification.id)) return notification
+  saveNotifications([notification, ...current])
+  return notification
 }
