@@ -1060,4 +1060,35 @@
 /* El botón de modo claro/oscuro queda alineado con los botones de cuenta */
 .landing-header__actions {
   align-items: center;
+  /* Las acciones no se encogen: los botones conservan su tamaño en una sola línea. */
+  flex-shrink: 0;
+}
+
+.landing-header__actions .btn {
+  white-space: nowrap;
+}
+
+.landing-header__brand {
+  min-width: 0;
+}
+
+/* Celulares angostos (hasta ~400 px): el botón de tema (40 px) ya no entra junto al
+   logo con el nombre y "Crear cuenta". Queda solo el ícono del logo; el nombre se
+   oculta a la vista pero sigue siendo el texto del enlace para lectores de pantalla. */
+@media (max-width: 400px) {
+  .landing-header__wordmark {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .landing-header__inner {
+    gap: 0.75rem;
+  }
 }

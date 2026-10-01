@@ -87,7 +87,7 @@ function Landing() {
           <div className="landing-header__brand">
             <Link to="/" className="brand" onClick={goToLandingTop}>
               <NexpayLogo />
-              NexPay
+              <span className="landing-header__wordmark">NexPay</span>
             </Link>
           </div>
           <nav className="landing-sections" aria-label="Secciones">
