@@ -62,7 +62,7 @@ export function validateAmountText(text: string, rules: AmountRules = {}): Amoun
   if (!text.trim()) return undefined
   const amount = parseAmount(text)
   if (Number.isNaN(amount)) {
-    return { code: 'format', message: 'Usá solo números: punto para miles y coma para decimales (ej. 1.500,50).' }
+    return { code: 'format', message: 'Usa solo números: punto para miles y coma para decimales (ej. 1.500,50).' }
   }
   const decimals = rules.decimals ?? 2
   const typedDecimals = text.includes(',') ? text.split(',')[1]!.length : 0

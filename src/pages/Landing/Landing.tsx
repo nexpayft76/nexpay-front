@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import BackendStatus from '../../components/common/BackendStatus'
+import ThemeToggle from '../../components/common/ThemeToggle'
 import NexpayLogo from '../../components/common/NexpayLogo'
 import { useAuth } from '../../hooks/useAuth'
 import CurrencyQuote from './CurrencyQuote'
@@ -25,7 +26,7 @@ const PROBLEMS = [
   },
   {
     title: 'Tres dólares en Argentina',
-    text: 'Conviven el dólar oficial, el MEP y el blue. Lo que recibís cambia mucho según cuál se use.',
+    text: 'Conviven el dólar oficial, el MEP y el blue. Lo que recibes cambia mucho según cuál se use.',
   },
 ]
 
@@ -38,12 +39,12 @@ const SOLUTION = [
   {
     tag: 'B / Compra, venta e intercambio',
     title: 'Cualquier par, un solo paso',
-    text: 'Comprá, vendé o intercambiá entre las 4 monedas: 12 combinaciones, con la tasa visible antes de confirmar.',
+    text: 'Compra, vende o intercambia entre las 4 monedas: 12 combinaciones, con la tasa visible antes de confirmar.',
   },
   {
     tag: 'C / Cotizador transparente',
-    title: 'Sabés cuánto recibís antes de operar',
-    text: '«Tenés 1.000.000 COP y recibís X ARS; con el dólar oficial serían Y». Un solo vistazo, sin letra chica.',
+    title: 'Sabes cuánto recibes antes de operar',
+    text: '«Tienes 1.000.000 COP y recibes X ARS; con el dólar oficial serían Y». Un solo vistazo, sin letra pequeña.',
   },
   {
     tag: 'D / Nuestro diferencial',
@@ -86,7 +87,7 @@ function Landing() {
           <div className="landing-header__brand">
             <Link to="/" className="brand" onClick={goToLandingTop}>
               <NexpayLogo />
-              NexPay
+              <span className="landing-header__wordmark">NexPay</span>
             </Link>
           </div>
           <nav className="landing-sections" aria-label="Secciones">
@@ -97,6 +98,7 @@ function Landing() {
             ))}
           </nav>
           <nav className="landing-header__actions" aria-label="Cuenta">
+            <ThemeToggle />
             {isLoading ? null : user ? (
               <>
                 <Link to="/dashboard" className="btn btn--ghost">Mi dashboard</Link>
@@ -133,9 +135,9 @@ function Landing() {
             <em className="gold-text">Nosotros lo mostramos.</em>
           </h1>
           <p className="hero__lead">
-            NexPay es tu billetera en dólares, euros, pesos colombianos y pesos argentinos: comprás,
-            vendés e intercambiás entre las 4 monedas viendo la tasa real antes de confirmar. Y si vivís
-            entre Colombia y Argentina, tenés algo más: <strong>un puente directo COP ↔ ARS que te cruza
+            NexPay es tu billetera en dólares, euros, pesos colombianos y pesos argentinos: compras,
+            vendes e intercambias entre las 4 monedas viendo la tasa real antes de confirmar. Y si vives
+            entre Colombia y Argentina, tienes algo más: <strong>un puente directo COP ↔ ARS que te cruza
             con alguien que necesita hacer el camino contrario</strong>, sin pasar por dólares. Operaciones
             simuladas, sin dinero real.
           </p>
@@ -165,7 +167,7 @@ function Landing() {
               </h2>
               <p className="band__text">
                 Un saldo independiente para cada moneda y el total de tu billetera en la que prefieras,
-                valorizado con las tasas del momento. Cambiá la moneda del total y mirá cómo se recalcula.
+                valorizado con las tasas del momento. Cambia la moneda del total y mira cómo se recalcula.
               </p>
               <ul className="bullets">
                 <li>Saldos en USD, EUR, COP y ARS</li>
@@ -308,7 +310,7 @@ function Landing() {
         <section className="band band--line final-cta" aria-labelledby="cta-title">
           <div className="container container--narrow">
             <h2 id="cta-title" className="display display--center">
-              Tu primer envío simulado está a un clic. <em className="gold-text">Probalo hoy.</em>
+              Tu primer envío simulado está a un clic. <em className="gold-text">Pruébalo hoy.</em>
             </h2>
             <p className="band__note">
               NexPay es un entorno 100% simulado: saldos de prueba, sin dinero real. Ideal para conocer el

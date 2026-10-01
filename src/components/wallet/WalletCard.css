@@ -33,7 +33,7 @@
   align-items: center;
   gap: 0.5rem;
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .wallet-card__select select {
@@ -50,20 +50,13 @@
 .wallet-card__warnings {
   margin: 0.75rem 0 0;
   padding: 0.75rem 1rem 0.75rem 2rem;
-  border: 1px solid #e8b44a;
+  border: 1px solid var(--color-warning-border);
   border-radius: var(--radius);
-  background: #fff6e0;
-  color: #7a5200;
-  font-size: 0.875rem;
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: 1rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .wallet-card__warnings {
-    border-color: #8a6a1f;
-    background: #2e2410;
-    color: #f2cf7a;
-  }
-}
 
 /* Saldos */
 .wallet-card__balances {
@@ -122,7 +115,7 @@
   box-shadow: 0 0 0 2px var(--badge-ring);
   background: var(--badge-fill);
   color: #fff;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-shadow: 0 1px 1px rgb(0 0 0 / 0.35);
@@ -148,7 +141,7 @@
 /* País y "≈": más claros que el texto secundario común, para que se lean bien sobre la tarjeta. */
 .balance-tile__country {
   color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted));
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 .balance-tile__amounts {
@@ -163,13 +156,13 @@
 
 .balance-tile__amounts span {
   color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted));
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 .wallet-card__empty {
   margin: 1rem 0 0;
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: 1rem;
   text-align: center;
 }
 

@@ -36,7 +36,7 @@ function DepositPage() {
   const [error, setError] = useState<string | null>(null)
   /** Se intentó enviar o se salió del campo: ahí también se avisa si quedó vacío. */
   const [touched, setTouched] = useState(false)
-  /** Ventana "¿Confirmás la recarga?" abierta. */
+  /** Ventana "¿Confirmas la recarga?" abierta. */
   const [confirming, setConfirming] = useState(false)
   const [result, setResult] = useState<DepositResult | null>(null)
   const wallet = useMyWallet('USD')
@@ -52,7 +52,7 @@ function DepositPage() {
   const issue = validateDeposit(amountText, currency)
   const settled = useDebouncedValue(amountText, 400) === amountText
   const amountError =
-    visibleAmountError(issue, settled || touched) ?? (touched && !amountText.trim() ? 'Ingresá un monto.' : undefined)
+    visibleAmountError(issue, settled || touched) ?? (touched && !amountText.trim() ? 'Ingresa un monto.' : undefined)
   const canSubmit = !submitting && amountText.trim() !== '' && issue === undefined
   const currentBalance = wallet.status === 'ok' ? wallet.data.balances.find((b) => b.currency === currency)?.amount : undefined
 
@@ -93,7 +93,7 @@ function DepositPage() {
     <section className="dashboard-content" aria-labelledby="deposit-title">
       <p className="dashboard-eyebrow">Operaciones</p>
       <h1 id="deposit-title">Recargar mi billetera</h1>
-      <p>Agregá saldo para comprar, vender o intercambiar monedas.</p>
+      <p>Agrega saldo para comprar, vender o intercambiar monedas.</p>
 
       <div className="op-layout">
         {result ? (
@@ -181,7 +181,7 @@ function DepositPage() {
 
       <ConfirmDialog
         open={confirming}
-        title="¿Confirmás la recarga?"
+        title="¿Confirmas la recarga?"
         confirmLabel="Sí, recargar"
         busy={submitting}
         onConfirm={confirmDeposit}

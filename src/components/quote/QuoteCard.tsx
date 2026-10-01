@@ -134,9 +134,9 @@ interface QuoteResultProps {
 }
 
 function QuoteResult({ state, from, to, amountText, arsRate, onSelectArsRate }: QuoteResultProps) {
-  if (from === to) return <p className="quote-card__message">Elegí dos monedas distintas.</p>
+  if (from === to) return <p className="quote-card__message">Elige dos monedas distintas.</p>
   if (state.status === 'idle') {
-    return <p className="quote-card__message">{amountText ? 'Corregí el monto para cotizar.' : 'Ingresá un monto para cotizar.'}</p>
+    return <p className="quote-card__message">{amountText ? 'Corrige el monto para cotizar.' : 'Ingresa un monto para cotizar.'}</p>
   }
   if (state.status === 'error') {
     return (
@@ -211,8 +211,8 @@ function Suggestion({ comparison, selected, onSelect }: SuggestionProps) {
 
   const benefit = (amount: number) =>
     receivesArs
-      ? `recibís ${formatCurrency(amount, best.to)} más`
-      : `comprás más barato: recibís ${formatCurrency(amount, best.to)} más por tus pesos`
+      ? `recibes ${formatCurrency(amount, best.to)} más`
+      : `compras más barato: recibes ${formatCurrency(amount, best.to)} más por tus pesos`
 
   let message: string
   if (selectedType === bestType) {

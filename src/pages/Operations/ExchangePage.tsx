@@ -58,7 +58,7 @@ function ExchangePage() {
   const [error, setError] = useState<string | null>(null)
   /** Se intentó enviar o se salió del campo: ahí también se avisa si quedó vacío. */
   const [touched, setTouched] = useState(false)
-  /** Ventana "¿Confirmás la operación?" abierta. */
+  /** Ventana "¿Confirmas la operación?" abierta. */
   const [confirming, setConfirming] = useState(false)
   const [result, setResult] = useState<ExchangeResult | null>(null)
   const wallet = useMyWallet('USD')
@@ -76,7 +76,7 @@ function ExchangePage() {
     available:
       available === undefined
         ? undefined
-        : { value: available, message: `Saldo insuficiente: tenés ${formatCurrency(available, from)}.` },
+        : { value: available, message: `Saldo insuficiente: tienes ${formatCurrency(available, from)}.` },
   }
   const liveError = validateAmountText(amountText, amountRules)
   // Solo se cotiza un monto válido: así el back no responde 400 (y no aparece un error en la consola).
@@ -89,7 +89,7 @@ function ExchangePage() {
   // Decimales de más y saldo insuficiente se avisan al instante; "mayor que 0" y el formato, tras una pausa.
   const settled = useDebouncedValue(amountText, 400) === amountText
   const amountError =
-    visibleAmountError(liveError, settled || touched) ?? (touched && !amountText.trim() ? 'Ingresá un monto.' : undefined)
+    visibleAmountError(liveError, settled || touched) ?? (touched && !amountText.trim() ? 'Ingresa un monto.' : undefined)
 
   function chooseFrom(code: string) {
     // Si elige como origen la moneda de destino, se invierten para no quedar iguales.
@@ -114,7 +114,7 @@ function ExchangePage() {
     event.preventDefault()
     setTouched(true)
     if (wallet.status !== 'ok') {
-      setError('Esperá a que tu billetera esté disponible para operar.')
+      setError('Espera a que tu billetera esté disponible para operar.')
       return
     }
     if (!canSubmit) return
@@ -146,7 +146,7 @@ function ExchangePage() {
     <section className="dashboard-content" aria-labelledby="exchange-title">
       <p className="dashboard-eyebrow">Operaciones</p>
       <h1 id="exchange-title">Comprar monedas</h1>
-      <p>Comprá, vendé o intercambiá monedas con el saldo de tu billetera, a la tasa del momento.</p>
+      <p>Compra, vende o intercambia monedas con el saldo de tu billetera, a la tasa del momento.</p>
 
       <div className="op-layout">
         {result ? (
@@ -166,7 +166,7 @@ function ExchangePage() {
 
             <fieldset className="op-field">
               <legend className="op-field__label">Pago con</legend>
-              <CurrencyPicker value={from} onChange={chooseFrom} label="Moneda con la que pagás" />
+              <CurrencyPicker value={from} onChange={chooseFrom} label="Moneda con la que pagas" />
             </fieldset>
 
             <div className="op-field">
@@ -214,7 +214,7 @@ function ExchangePage() {
 
             <fieldset className="op-field">
               <legend className="op-field__label">Recibo</legend>
-              <CurrencyPicker value={to} onChange={setTo} label="Moneda que recibís" disabledCode={from} />
+              <CurrencyPicker value={to} onChange={setTo} label="Moneda que recibes" disabledCode={from} />
             </fieldset>
 
             {involvesArs && (
@@ -253,7 +253,7 @@ function ExchangePage() {
                   : 'Confirmar'}
             </button>
             <p className="op-hint">
-              Operás con la <strong>tasa actual</strong>: USD, EUR y COP con la tasa oficial del día (Frankfurter) y el
+              Operas con la <strong>tasa actual</strong>: USD, EUR y COP con la tasa oficial del día (Frankfurter) y el
               peso argentino con el dólar en vivo (DolarApi, se actualiza cada 5 minutos).
             </p>
           </form>
@@ -267,7 +267,7 @@ function ExchangePage() {
       {quote.status === 'ok' && (
         <ConfirmDialog
           open={confirming}
-          title={`¿Confirmás la ${TYPE_LABEL[quote.quote.type].toLowerCase()}?`}
+          title={`¿Confirmas la ${TYPE_LABEL[quote.quote.type].toLowerCase()}?`}
           confirmLabel="Sí, confirmar"
           busy={submitting}
           onConfirm={confirmExchange}
@@ -292,7 +292,7 @@ function ExchangePage() {
 /** Detalle antes de confirmar: tipo de operación, tasa, comisión y lo que se recibe. */
 function ExchangeSummary({ state }: { state: ReturnType<typeof useExchangeQuote> }) {
   if (state.status === 'idle') {
-    return <p className="op-summary op-summary--empty">Ingresá un monto para ver cuánto recibís.</p>
+    return <p className="op-summary op-summary--empty">Ingresa un monto para ver cuánto recibes.</p>
   }
   if (state.status === 'loading') {
     return <p className="op-summary op-summary--empty" aria-busy="true">Calculando…</p>
@@ -330,7 +330,7 @@ function SummaryRows({ quote }: { quote: ExchangeQuote }) {
           <dd>{fee > 0 ? `${formatCurrency(fee, quote.from_currency)} (${quote.fee_percent}%)` : 'Sin comisión'}</dd>
         </div>
         <div className="op-summary__total">
-          <dt>Recibís</dt>
+          <dt>Recibes</dt>
           <dd>{formatCurrency(Number(quote.to_amount), quote.to_currency)}</dd>
         </div>
       </dl>

@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			logger.warn('sesión', 'El login respondió bien pero la cookie de sesión no quedó guardada')
 			throw new ApiError(
 				'http',
-				'No se pudo guardar la sesión en este navegador. Revisá que las cookies estén habilitadas para este sitio.',
+				'No se pudo guardar la sesión en este navegador. Revisa que las cookies estén habilitadas para este sitio.',
 			)
 		}
 		setSessionActive(true)

@@ -56,7 +56,7 @@ function AppRouter() {
                 <ComingSoon
                   icon="p2p"
                   title="P2P"
-                  description="Intercambiá pesos colombianos y argentinos directamente con otros usuarios del corredor, con una comisión pequeña."
+                  description="Intercambia pesos colombianos y argentinos directamente con otros usuarios del corredor, con una comisión pequeña."
                 />
               }
             />

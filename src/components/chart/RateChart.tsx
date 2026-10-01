@@ -216,7 +216,7 @@ function ChartBody({ data, rangeLong, height }: { data: RateHistory; rangeLong: 
             <YAxis
               domain={['auto', 'auto']}
               tickFormatter={(value: number) => compactFormat.format(value)}
-              width={60}
+              width={76}
               tickLine={false}
               axisLine={false}
             />

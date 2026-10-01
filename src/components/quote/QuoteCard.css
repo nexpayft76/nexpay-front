@@ -27,7 +27,7 @@
 
 .quote-card__hint {
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 /* Campos */
@@ -48,7 +48,7 @@
 
 .quote-field__label {
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   font-weight: 600;
 }
 
@@ -159,7 +159,7 @@
 .quote-card__note {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 /* Resultado */
@@ -186,7 +186,7 @@
 
 .quote-result__label {
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -201,7 +201,7 @@
 
 .quote-result__meta {
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 .quote-card__message {
@@ -216,25 +216,18 @@
 .quote-card__warnings {
   margin: 0;
   padding: 0.75rem 1rem 0.75rem 2rem;
-  border: 1px solid #e8b44a;
+  border: 1px solid var(--color-warning-border);
   border-radius: var(--radius);
-  background: #fff6e0;
-  color: #7a5200;
-  font-size: 0.875rem;
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: 1rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .quote-card__warnings {
-    border-color: #8a6a1f;
-    background: #2e2410;
-    color: #f2cf7a;
-  }
-}
 
 /* Comparación entre tipos de dólar */
 .quote-compare h3 {
   margin: 0 0 0.5rem;
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 .quote-compare ul {
@@ -268,7 +261,7 @@
 
 .quote-compare__diff {
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   text-align: right;
 }
 
@@ -307,14 +300,14 @@
 
 .quote-suggestion p {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 .quote-suggestion__extra {
   display: block;
   margin-top: 0.25rem;
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 /* Fuentes de las tasas */
@@ -335,7 +328,7 @@
 .rate-sources__header h3 {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -345,13 +338,13 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-success) 14%, transparent);
   color: var(--color-success);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
 .rate-sources__badge--stale {
-  background: #fff6e0;
-  color: #7a5200;
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
 }
 
 .rate-sources ul {
@@ -385,40 +378,30 @@
 }
 
 .rate-sources__name {
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .rate-sources__detail {
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 .rate-sources li.is-stale .rate-sources__detail {
-  color: #9a6700;
+  color: var(--color-warning-text);
 }
 
 .rate-sources__note {
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-style: italic;
 }
 
 .rate-sources__error {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .rate-sources__badge--stale {
-    background: #2e2410;
-    color: #f2cf7a;
-  }
-
-  .rate-sources li.is-stale .rate-sources__detail {
-    color: #f2cf7a;
-  }
-}
 
 /* "Tengo" y "Quiero" siempre en filas separadas: el cotizador del dashboard vive en una columna
    angosta, y en una sola fila el selector de moneda de "Tengo" quedaba tapado. */

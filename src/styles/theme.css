@@ -1,70 +1,130 @@
 /* ------------------------------------------------------------------
-   Tema NexPay: negro y dorado.
-   Se carga después de index.css y solo redefine variables y algunos
-   estilos base, así todas las pantallas (login, registro, dashboard)
-   toman la identidad nueva sin tocar sus archivos.
+   Tema NexPay: modo oscuro (negro y dorado) y modo claro (marfil y dorado).
+   El modo lo decide el atributo data-theme de <html>, que se fija antes
+   de pintar la página (script en index.html) y se cambia con ThemeToggle.
+   Se carga después de index.css: estas variables pisan las suyas.
+
+   Tipografía inspirada en N26 (GT America, comercial): usamos Archivo en
+   ancho "expanded" para títulos e Inter para texto, ambas gratuitas.
    ------------------------------------------------------------------ */
-/* Las fuentes (Cormorant Garamond, Inter y JetBrains Mono) se cargan una sola vez en index.html. */
+/* Las fuentes (Archivo e Inter) se cargan una sola vez en index.html. */
 
-/* Como este archivo se importa después de index.css, estas variables pisan
-   tanto su modo claro como su bloque de prefers-color-scheme: dark. */
 :root {
-  --color-bg: #0a0a0a;
-  --color-surface: #12110e;
-  --color-border: rgb(212 166 74 / 0.18);
-  --color-text: #eee2c0;
-  --color-text-muted: #b3a888;
-  --color-primary: #d4a64a;
-  --color-primary-hover: #e6c577;
-  --color-primary-soft: rgb(212 166 74 / 0.12);
-  --color-success: #4cc38a;
-  --color-danger: #ff7b6b;
-  --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
+  --font-display: 'Archivo', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Etiquetas chicas (antes en mono): misma familia del texto, en mayúsculas. */
+  --font-label: var(--font-body);
+  --font-mono: var(--font-body);
 
-  /* Dorado metálico: reflejo champán, cuerpo dorado y sombra bronce. */
+  /* Dorado metálico de botones: igual en los dos modos, siempre con texto oscuro. */
   --gold-metal: linear-gradient(135deg, #f6e3a9 0%, #dcb461 28%, #b9893a 52%, #ecd08a 74%, #a97d31 100%);
   --gold-glow: 0 0 0 1px rgb(246 227 169 / 0.25) inset, 0 8px 24px rgb(212 166 74 / 0.22);
+  --color-on-primary: #1a1206;
 
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-
-  color-scheme: dark;
   font-family: var(--font-body);
   color: var(--color-text);
   background: var(--color-bg);
 }
 
+/* Modo oscuro (por defecto si no hay data-theme, por ejemplo en los tests) */
+:root,
+:root[data-theme='dark'] {
+  --color-bg: #0a0a0a;
+  --color-surface: #12110e;
+  --color-surface-raised: #0e0d0b;
+  --color-sunken: #050505;
+  --color-border: rgb(212 166 74 / 0.18);
+  --color-border-strong: rgb(212 166 74 / 0.45);
+  --color-text: #eee2c0;
+  --color-text-muted: #b3a888;
+  --color-text-subtle: #a09683;
+  --color-primary: #d4a64a;
+  --color-primary-hover: #e6c577;
+  --color-primary-soft: rgb(212 166 74 / 0.12);
+  --color-success: #4cc38a;
+  --color-danger: #ff7b6b;
+  --color-warning-bg: #2e2410;
+  --color-warning-border: #8a6a1f;
+  --color-warning-text: #f2cf7a;
+  --color-header-bg: rgb(10 10 10 / 0.88);
+  --color-overlay: rgb(0 0 0 / 0.55);
+  --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
+  /* Texto dorado con reflejo (títulos y montos). */
+  --gold-text: linear-gradient(100deg, #b9893a 0%, #e6c577 22%, #f8e9b8 38%, #d4a64a 55%, #a97d31 75%, #e6c577 100%);
+  --gold-light: #f6e3a9;
+  --gold-deep: #8a6424;
+
+  color-scheme: dark;
+}
+
+/* Modo claro: fondo marfil y un dorado más profundo para que el texto se lea bien */
+:root[data-theme='light'] {
+  --color-bg: #faf7f0;
+  --color-surface: #ffffff;
+  --color-surface-raised: #fffdf8;
+  --color-sunken: #f3eee2;
+  --color-border: rgb(122 85 16 / 0.22);
+  --color-border-strong: rgb(122 85 16 / 0.55);
+  --color-text: #17140e;
+  --color-text-muted: #4a4234;
+  --color-text-subtle: #5e5545;
+  --color-primary: #7a5510;
+  --color-primary-hover: #5e400a;
+  --color-primary-soft: rgb(196 145 40 / 0.18);
+  --color-success: #1a7f4b;
+  --color-danger: #b3261e;
+  --color-warning-bg: #fff6e0;
+  --color-warning-border: #e8b44a;
+  --color-warning-text: #7a5200;
+  --color-header-bg: rgb(250 247 240 / 0.9);
+  --color-overlay: rgb(29 26 20 / 0.35);
+  --shadow: 0 12px 32px rgb(60 45 15 / 0.1);
+  --gold-text: linear-gradient(100deg, #6b4a0c 0%, #8f6212 30%, #a8761a 45%, #7a5510 65%, #5a3d08 100%);
+  --gold-light: #b8852e;
+  --gold-deep: #5a3d08;
+  /* Botones: metal más intenso para que resalte sobre el fondo claro. */
+  --gold-metal: linear-gradient(135deg, #f1d27f 0%, #d6a441 30%, #b07c22 55%, #deb458 78%, #a06d18 100%);
+  --gold-glow: 0 0 0 1px rgb(255 240 200 / 0.35) inset, 0 8px 22px rgb(160 110 24 / 0.28);
+
+  color-scheme: light;
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Títulos con la serif itálica de la marca */
+/* Títulos: grotesca ancha, recta y firme (estilo N26) */
 h1,
 h2,
 h3 {
-  font-style: italic;
-  font-weight: 500;
-  letter-spacing: -0.005em;
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
 }
 
-/* Logo en texto: mono espaciado, como en la landing */
+/* Logo en texto */
 .brand,
-.auth-card__brand {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  letter-spacing: 0.3em;
+.auth-card__brand,
+.navbar__brand {
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-/* Botones principales en dorado metálico, con texto oscuro en ambos modos del sistema */
+/* Botones principales en dorado metálico */
 .btn--primary {
   background: var(--gold-metal);
   background-size: 180% 180%;
   background-position: 0% 50%;
   box-shadow: var(--gold-glow);
-  color: #1a1206;
+  color: var(--color-on-primary);
   transition: background-position 0.5s ease, box-shadow 0.2s;
 }
 
@@ -73,7 +133,7 @@ h3 {
   background-size: 180% 180%;
   background-position: 100% 50%;
   box-shadow: 0 0 0 1px rgb(246 227 169 / 0.4) inset, 0 10px 32px rgb(212 166 74 / 0.38);
-  color: #1a1206;
+  color: var(--color-on-primary);
 }
 
 .btn--ghost:hover {
@@ -87,11 +147,52 @@ h3 {
 
 ::selection {
   background: rgb(212 166 74 / 0.35);
-  color: #fff;
+  color: var(--color-text);
 }
 
 input,
 select,
 textarea {
   accent-color: var(--color-primary);
+}
+
+/* Botón para cambiar entre modo claro y oscuro */
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.theme-toggle svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
 }

@@ -39,7 +39,7 @@ function Register() {
   const passwordEmptyError = touched.password && !password ? 'La contraseña es obligatoria.' : undefined
   let confirmationError: string | undefined
   if (passwordConfirmation || touched.confirmation) {
-    if (!passwordConfirmation) confirmationError = 'Repetí la contraseña.'
+    if (!passwordConfirmation) confirmationError = 'Repite la contraseña.'
     else if (passwordConfirmation !== password) confirmationError = 'Las contraseñas no coinciden.'
   }
 
@@ -58,7 +58,7 @@ function Register() {
     event.preventDefault()
     setTouched(ALL_TOUCHED)
     if (!formValid) {
-      setError('Revisá los campos marcados.')
+      setError('Revisa los campos marcados.')
       return
     }
 
@@ -82,7 +82,7 @@ function Register() {
   else if (emailTaken)
     emailHint = (
       <span className="auth-hint--error">
-        Ya existe una cuenta con este email. <Link to="/login">Iniciá sesión</Link>
+        Ya existe una cuenta con este email. <Link to="/login">Inicia sesión</Link>
       </span>
     )
   else if (emailSettled && availability === 'available') emailHint = <span className="auth-hint--ok">✓ Email disponible</span>
@@ -93,7 +93,7 @@ function Register() {
       <section className="auth-card" aria-labelledby="register-title">
         <Link to="/" className="auth-card__brand">NexPay</Link>
         <h1 id="register-title">Crear cuenta</h1>
-        <p className="auth-card__intro">Registrate para empezar a gestionar tus divisas.</p>
+        <p className="auth-card__intro">Regístrate para empezar a gestionar tus divisas.</p>
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="auth-field">
             <label htmlFor="register-name">Nombre completo</label>
@@ -182,7 +182,7 @@ function Register() {
             {isSubmitting ? 'Creando cuenta...' : 'Crear cuenta'}
           </button>
         </form>
-        <p className="auth-card__footer">¿Ya tenés cuenta? <Link to="/login">Iniciar sesión</Link></p>
+        <p className="auth-card__footer">¿Ya tienes cuenta? <Link to="/login">Iniciar sesión</Link></p>
         <Link to="/" className="auth-card__back">Volver al inicio</Link>
       </section>
     </main>

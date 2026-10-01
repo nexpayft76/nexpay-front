@@ -51,10 +51,10 @@ function Login() {
       <section className="auth-card" aria-labelledby="login-title">
         <Link to="/" className="auth-card__brand">NexPay</Link>
         <h1 id="login-title">Iniciar sesión</h1>
-        <p className="auth-card__intro">Ingresá para consultar tus balances y operaciones.</p>
+        <p className="auth-card__intro">Ingresa para consultar tus balances y operaciones.</p>
         {sessionExpired && (
           <p className="auth-notice" role="status">
-            Tu sesión expiró. Volvé a iniciar sesión para continuar.
+            Tu sesión expiró. Vuelve a iniciar sesión para continuar.
           </p>
         )}
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
@@ -96,7 +96,7 @@ function Login() {
             {isSubmitting ? 'Ingresando...' : 'Ingresar'}
           </button>
         </form>
-        <p className="auth-card__footer">¿No tenés cuenta? <Link to="/register">Crear cuenta</Link></p>
+        <p className="auth-card__footer">¿No tienes cuenta? <Link to="/register">Crear cuenta</Link></p>
         <Link to="/" className="auth-card__back">Volver al inicio</Link>
       </section>
     </main>

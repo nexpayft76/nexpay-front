@@ -55,7 +55,7 @@ function CurrencyQuote() {
         <div>
           <p className="eyebrow">Cotizador transparente</p>
           <p className="quote__intro">
-            Elegí entre las 4 monedas, mové el monto y mirá exactamente cuánto recibís, con la tasa y su
+            Elige entre las 4 monedas, mueve el monto y mira exactamente cuánto recibes, con la tasa y su
             fuente a la vista.
           </p>
         </div>
@@ -66,7 +66,7 @@ function CurrencyQuote() {
         <div className="quote__input">
           <div className="quote__pair">
             <label className="quote__select">
-              <span className="mono-label">Tenés</span>
+              <span className="mono-label">Tienes</span>
               <select value={from} onChange={(e) => changeFrom(e.target.value as CurrencyCode)}>
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>
@@ -79,7 +79,7 @@ function CurrencyQuote() {
               ⇄
             </button>
             <label className="quote__select">
-              <span className="mono-label">Recibís en</span>
+              <span className="mono-label">Recibes en</span>
               <select value={to} onChange={(e) => changeTo(e.target.value as CurrencyCode)}>
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>
@@ -133,7 +133,7 @@ function CurrencyQuote() {
 
         <div className="quote__results">
           {quote.status === 'idle' ? (
-            <div className="quote__loading">Ingresá un monto en {from}.</div>
+            <div className="quote__loading">Ingresa un monto en {from}.</div>
           ) : quote.status === 'error' ? (
             <div className="quote__error" role="alert">
               <p>
@@ -148,7 +148,7 @@ function CurrencyQuote() {
           ) : (
             <div className={quote.status === 'loading' ? 'is-updating' : undefined}>
               <div className="quote-card quote-card--nexpay">
-                <p className="mono-label mono-label--gold">Recibís</p>
+                <p className="mono-label mono-label--gold">Recibes</p>
                 <p className="quote-card__value">{formatAmount(shown.main.result, to)}</p>
                 <p className="quote-card__rate">
                   1 {from} = {formatRate(shown.main.rate)} {to}

@@ -6,7 +6,7 @@ export type ArsRateType = 'oficial' | 'mep' | 'blue'
 export interface ArsRateUsed {
   type: ArsRateType
   label: string
-  /** "compra" si recibís ARS; "venta" si pagás con ARS. */
+  /** "compra" si recibes ARS; "venta" si pagas con ARS. */
   price_used: 'compra' | 'venta'
   compra: number
   venta: number

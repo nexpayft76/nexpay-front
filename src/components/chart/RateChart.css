@@ -26,7 +26,7 @@
 .rate-chart__subtitle {
   margin: 0.125rem 0 0;
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 .rate-chart__controls {
@@ -46,7 +46,7 @@
   display: grid;
   gap: 0.25rem;
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
@@ -58,7 +58,7 @@
   background: var(--color-bg);
   color: var(--color-text);
   font: inherit;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -99,7 +99,7 @@
   background: transparent;
   color: var(--color-text-muted);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -130,7 +130,7 @@
 
 .rate-chart__headline > span {
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .rate-chart__explain {
@@ -166,13 +166,13 @@
 }
 
 .rate-chart__chips strong {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   overflow-wrap: anywhere;
 }
 
 .rate-chart__chips .rate-chart__change {
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .rate-chart__chip-name {
@@ -180,7 +180,7 @@
   align-items: center;
   gap: 0.375rem;
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -203,7 +203,7 @@
 
 .rate-chart .recharts-cartesian-axis-tick-value {
   fill: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .rate-chart .recharts-tooltip-cursor {
@@ -256,17 +256,17 @@
 .rate-chart__warnings {
   margin: 0;
   padding: 0.75rem 1rem 0.75rem 2rem;
-  border: 1px solid #e8b44a;
+  border: 1px solid var(--color-warning-border);
   border-radius: var(--radius);
-  background: #fff6e0;
-  color: #7a5200;
-  font-size: 0.875rem;
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: 1rem;
 }
 
 .rate-chart__footer {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 @media (min-width: 640px) {
@@ -301,13 +301,6 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .rate-chart__warnings {
-    border-color: #8a6a1f;
-    background: #2e2410;
-    color: #f2cf7a;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .rate-chart__skeleton {
