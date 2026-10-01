@@ -34,7 +34,7 @@ const MENU: MenuItem[] = [
     ],
   },
   { to: '/dashboard/p2p', label: 'P2P', icon: 'p2p', soon: true },
-  { to: '/dashboard/configuracion', label: 'Configuración', icon: 'settings', soon: true },
+  { to: '/dashboard/configuracion', label: 'Configuración', icon: 'settings' },
   { to: '/dashboard/usuario', label: 'Usuario', icon: 'user', soon: true },
 ]
 

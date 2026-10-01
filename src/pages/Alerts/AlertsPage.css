@@ -321,28 +321,6 @@
   color: var(--color-danger);
 }
 
-.alerts-note {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.875rem;
-  padding: 1rem 0;
-  border-top: 1px solid var(--color-border);
-}
-
-.alerts-note strong,
-.alerts-note p {
-  display: block;
-  margin: 0;
-}
-
-.alerts-note p {
-  max-width: 56rem;
-  margin-top: 0.25rem;
-  color: var(--color-text-muted);
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
 @media (min-width: 900px) {
   .alerts-page__layout {
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);

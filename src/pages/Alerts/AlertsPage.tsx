@@ -193,10 +193,6 @@ function AlertsPage() {
         </section>
       </div>
 
-      <aside className="alerts-note">
-        <span className="alerts-note__number">02</span>
-        <div><strong>Más control, sin ruido</strong><p>Ya puedes vigilar variaciones, objetivos, saldo bajo y fuentes desactualizadas. Como siguiente ampliación, las alertas de transferencias completadas o fallidas podrían vivir aquí cuando el backend exponga esos eventos.</p></div>
-      </aside>
     </section>
   )
 }
