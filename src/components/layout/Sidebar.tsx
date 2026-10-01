@@ -38,9 +38,12 @@ const MENU: MenuItem[] = [
     label: 'Configuración',
     icon: 'settings',
     basePath: '/dashboard/configuracion',
-    children: [{ to: '/dashboard/configuracion/alertas', label: 'Alertas', icon: 'bell' }],
+    children: [
+      { to: '/dashboard/configuracion/alertas', label: 'Alertas', icon: 'bell' },
+      { to: '/dashboard/configuracion/preferencias', label: 'Preferencias', icon: 'settings', soon: true },
+      { to: '/dashboard/configuracion/usuario', label: 'Usuario', icon: 'user', soon: true },
+    ],
   },
-  { to: '/dashboard/usuario', label: 'Usuario', icon: 'user', soon: true },
 ]
 
 function isGroup(item: MenuItem): item is MenuGroup {

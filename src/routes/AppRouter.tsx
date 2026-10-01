@@ -64,17 +64,27 @@ function AppRouter() {
             <Route path="configuracion">
               <Route index element={<Navigate to="alertas" replace />} />
               <Route path="alertas" element={<AlertsPage />} />
+              <Route
+                path="preferencias"
+                element={
+                  <ComingSoon
+                    icon="settings"
+                    title="Preferencias"
+                    description="Aquí podrás elegir tu moneda principal y el tipo de dólar para ARS."
+                  />
+                }
+              />
+              <Route
+                path="usuario"
+                element={
+                  <ComingSoon
+                    icon="user"
+                    title="Usuario"
+                    description="Tus datos personales: ver, editar tu nombre y email, y cerrar tu cuenta."
+                  />
+                }
+              />
             </Route>
-            <Route
-              path="usuario"
-              element={
-                <ComingSoon
-                  icon="user"
-                  title="Usuario"
-                  description="Tus datos personales: ver, editar tu nombre y email, y cerrar tu cuenta."
-                />
-              }
-            />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
