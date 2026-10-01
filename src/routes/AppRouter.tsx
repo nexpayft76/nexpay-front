@@ -14,6 +14,7 @@ const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'))
 const DepositPage = lazy(() => import('../pages/Operations/DepositPage'))
 const ExchangePage = lazy(() => import('../pages/Operations/ExchangePage'))
 const QuotePage = lazy(() => import('../pages/Quote/QuotePage'))
+const AlertsPage = lazy(() => import('../pages/Alerts/AlertsPage'))
 
 /** Mientras se descarga una pantalla. */
 function PageLoading() {
@@ -60,16 +61,7 @@ function AppRouter() {
                 />
               }
             />
-            <Route
-              path="configuracion"
-              element={
-                <ComingSoon
-                  icon="settings"
-                  title="Configuración"
-                  description="Tus preferencias: moneda principal, tipo de dólar para ARS y notificaciones."
-                />
-              }
-            />
+            <Route path="configuracion" element={<AlertsPage />} />
             <Route
               path="usuario"
               element={

@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
+import { AlertsProvider } from '../../contexts/AlertsContext'
 import './Layout.css'
 
 /** Mismo valor que el breakpoint de Layout.css. */
@@ -70,25 +71,26 @@ function Layout() {
   }
 
   return (
-    <div className={`app-shell${isDesktop && !desktopExpanded ? ' app-shell--collapsed' : ''}`}>
-      <Navbar ref={menuButtonRef} isMenuOpen={isOpen} onToggleMenu={toggleMenu} onLogout={handleLogout} />
-      <Sidebar
-        ref={closeButtonRef}
-        isOpen={isOpen}
-        isDesktop={isDesktop}
-        onClose={closeMobile}
-        onNavigate={() => {
-          if (!isDesktop) closeMobile()
-        }}
-        onLogout={handleLogout}
-      />
-      <main className="app-shell__main">
-        {/* Las pantallas se descargan al entrar: mientras tanto, la barra y el menú siguen en su lugar. */}
-        <Suspense fallback={<p className="app-shell__loading" aria-busy="true">Cargando…</p>}>
-          <Outlet />
-        </Suspense>
-      </main>
-    </div>
+    <AlertsProvider>
+      <div className={`app-shell${isDesktop && !desktopExpanded ? ' app-shell--collapsed' : ''}`}>
+        <Navbar ref={menuButtonRef} isMenuOpen={isOpen} onToggleMenu={toggleMenu} onLogout={handleLogout} />
+        <Sidebar
+          ref={closeButtonRef}
+          isOpen={isOpen}
+          isDesktop={isDesktop}
+          onClose={closeMobile}
+          onNavigate={() => {
+            if (!isDesktop) closeMobile()
+          }}
+          onLogout={handleLogout}
+        />
+        <main className="app-shell__main">
+          <Suspense fallback={<p className="app-shell__loading" aria-busy="true">Cargando…</p>}>
+            <Outlet />
+          </Suspense>
+        </main>
+      </div>
+    </AlertsProvider>
   )
 }
 

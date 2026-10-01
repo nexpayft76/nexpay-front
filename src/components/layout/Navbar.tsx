@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Icon from '../common/Icon'
 import NexpayLogo from '../common/NexpayLogo'
 import ThemeToggle from '../common/ThemeToggle'
+import NotificationBell from '../notifications/NotificationBell'
 
 interface NavbarProps {
   isMenuOpen: boolean
@@ -42,6 +43,7 @@ const Navbar = forwardRef<HTMLButtonElement, NavbarProps>(function Navbar(
 
       <div className="navbar__end">
         <ThemeToggle />
+        <NotificationBell />
         <button type="button" className="icon-btn navbar__logout" onClick={onLogout} aria-label="Cerrar sesión" title="Cerrar sesión">
           <Icon name="logout" size={22} />
         </button>
