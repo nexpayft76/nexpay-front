@@ -89,9 +89,9 @@ function AlertsPage() {
     <section className="dashboard-content alerts-page" aria-labelledby="alerts-title">
       <header className="alerts-page__hero">
         <div>
-          <p className="dashboard-eyebrow">Controla el mercado</p>
-          <h1 id="alerts-title">Alertas de tasas</h1>
-          <p>Recibe un aviso cuando el movimiento de una moneda importe para ti. Las alertas también quedarán en tu campanita.</p>
+          <p className="dashboard-eyebrow">Centro de notificaciones</p>
+          <h1 id="alerts-title">Tus notificaciones</h1>
+          <p>Aquí se reúnen tus alertas de tasas, movimientos de tu wallet y avisos importantes de NexPay.</p>
         </div>
         <div className="alerts-page__mark" aria-hidden="true">
           <Icon name="bell" size={30} />
