@@ -20,7 +20,13 @@ function formatRule(kind: AlertKind, currency: string, base: string, direction: 
   if (kind === 'daily_change') {
     return `Avisarme si ${currency} ${direction === 'up' ? 'sube' : 'baja'} más del ${threshold}% frente a ayer.`
   }
-  return `Avisarme si 1 ${base} ${direction === 'up' ? 'supera' : 'baja de'} ${threshold} ${currency}.`
+  if (kind === 'target_rate') {
+    return `Avisarme si 1 ${base} ${direction === 'up' ? 'supera' : 'baja de'} ${threshold} ${currency}.`
+  }
+  if (kind === 'low_balance') {
+    return `Avisarme si mi saldo en ${currency} baja de ${threshold} ${currency}.`
+  }
+  return `Avisarme si las tasas de ${currency} llevan más de ${threshold} minutos sin actualizarse.`
 }
 
 function AlertsPage() {
@@ -80,6 +86,8 @@ function AlertsPage() {
             <select value={form.kind} onChange={(event) => updateForm('kind', event.target.value as AlertKind)}>
               <option value="daily_change">Variación diaria</option>
               <option value="target_rate">Tasa objetivo</option>
+              <option value="low_balance">Saldo bajo</option>
+              <option value="stale_rates">Fuente desactualizada</option>
             </select>
           </label>
 
@@ -90,24 +98,37 @@ function AlertsPage() {
                 {CURRENCY_CODES.map((code) => <option key={code} value={code}>{code}</option>)}
               </select>
             </label>
-            <label className="field">
-              <span>Comparada con</span>
-              <select value={form.base_currency} onChange={(event) => updateForm('base_currency', event.target.value as CurrencyCode)}>
-                {CURRENCY_CODES.map((code) => <option key={code} value={code}>{code}</option>)}
-              </select>
-            </label>
+            {(form.kind === 'daily_change' || form.kind === 'target_rate') ? (
+              <label className="field">
+                <span>Comparada con</span>
+                <select value={form.base_currency} onChange={(event) => updateForm('base_currency', event.target.value as CurrencyCode)}>
+                  {CURRENCY_CODES.map((code) => <option key={code} value={code}>{code}</option>)}
+                </select>
+              </label>
+            ) : (
+              <p className="alert-form__hint">
+                {form.kind === 'low_balance' ? 'Vigila el saldo disponible de esta moneda.' : 'Te avisaremos si la fuente deja de publicar datos recientes.'}
+              </p>
+            )}
           </div>
 
           <div className="alert-form__pair">
+            {(form.kind === 'daily_change' || form.kind === 'target_rate') ? (
+              <label className="field">
+                <span>Condición</span>
+                <select value={form.direction} onChange={(event) => updateForm('direction', event.target.value as AlertDirection)}>
+                  <option value="up">Sube más de</option>
+                  <option value="down">Baja más de</option>
+                </select>
+              </label>
+            ) : <span />}
             <label className="field">
-              <span>Condición</span>
-              <select value={form.direction} onChange={(event) => updateForm('direction', event.target.value as AlertDirection)}>
-                <option value="up">Sube más de</option>
-                <option value="down">Baja más de</option>
-              </select>
-            </label>
-            <label className="field">
-              <span>{form.kind === 'daily_change' ? 'Porcentaje' : `Valor en ${form.currency}`}</span>
+              <span>
+                {form.kind === 'daily_change' && 'Porcentaje'}
+                {form.kind === 'target_rate' && `Valor en ${form.currency}`}
+                {form.kind === 'low_balance' && `Avisar cuando baje de ${form.currency}`}
+                {form.kind === 'stale_rates' && 'Tiempo sin actualizar'}
+              </span>
               <span className="field__input-wrap">
                 <input
                   type="number"
@@ -117,7 +138,12 @@ function AlertsPage() {
                   onChange={(event) => updateForm('threshold', Number(event.target.value))}
                   required
                 />
-                <b>{form.kind === 'daily_change' ? '%' : form.currency}</b>
+                <b>
+                  {form.kind === 'daily_change' && '%'}
+                  {form.kind === 'target_rate' && form.currency}
+                  {form.kind === 'low_balance' && form.currency}
+                  {form.kind === 'stale_rates' && 'min'}
+                </b>
               </span>
             </label>
           </div>
@@ -169,7 +195,7 @@ function AlertsPage() {
 
       <aside className="alerts-note">
         <span className="alerts-note__number">02</span>
-        <div><strong>Próximo paso recomendado</strong><p>Podemos sumar alertas de saldo bajo y de fuentes de tasas desactualizadas. Son útiles para saber cuándo recargar y cuándo una cotización merece una segunda mirada.</p></div>
+        <div><strong>Más control, sin ruido</strong><p>Ya puedes vigilar variaciones, objetivos, saldo bajo y fuentes desactualizadas. Como siguiente ampliación, las alertas de transferencias completadas o fallidas podrían vivir aquí cuando el backend exponga esos eventos.</p></div>
       </aside>
     </section>
   )
