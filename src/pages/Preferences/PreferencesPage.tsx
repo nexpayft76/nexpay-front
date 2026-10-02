@@ -38,7 +38,7 @@ function PreferencesPage() {
       <div className="preferences-page__sections">
         <section className="preference-section" aria-labelledby="currency-preference-title">
           <div className="preference-section__heading">
-            <div><p className="dashboard-eyebrow">01 / Vista principal</p><h2 id="currency-preference-title">Moneda principal</h2></div>
+            <div><h2 id="currency-preference-title">Moneda principal</h2></div>
             <Icon name="wallet" size={21} />
           </div>
           <p className="preference-section__description">Será la moneda inicial para valorar tu wallet y abrir el gráfico del dashboard.</p>
@@ -52,7 +52,7 @@ function PreferencesPage() {
 
         <section className="preference-section" aria-labelledby="ars-preference-title">
           <div className="preference-section__heading">
-            <div><p className="dashboard-eyebrow">02 / Mercado argentino</p><h2 id="ars-preference-title">Tipo de dólar para ARS</h2></div>
+            <div><h2 id="ars-preference-title">Tipo de dólar para ARS</h2></div>
             <Icon name="calculator" size={21} />
           </div>
           <p className="preference-section__description">Se usará como selección inicial en el cotizador cuando intervenga el peso argentino.</p>
@@ -68,7 +68,7 @@ function PreferencesPage() {
 
         <section className="preference-section" aria-labelledby="appearance-preference-title">
           <div className="preference-section__heading">
-            <div><p className="dashboard-eyebrow">03 / Apariencia</p><h2 id="appearance-preference-title">Modo de la interfaz</h2></div>
+            <div><h2 id="appearance-preference-title">Modo de la interfaz</h2></div>
             <Icon name="eye" size={21} />
           </div>
           <div className="preference-options preference-options--inline" role="radiogroup" aria-label="Modo de la interfaz">
@@ -85,7 +85,7 @@ function PreferencesPage() {
 
         <section className="preference-section" aria-labelledby="notification-preference-title">
           <div className="preference-section__heading">
-            <div><p className="dashboard-eyebrow">04 / Avisos</p><h2 id="notification-preference-title">Cómo quieres enterarte</h2></div>
+            <div><h2 id="notification-preference-title">Cómo quieres enterarte</h2></div>
             <Icon name="bell" size={21} />
           </div>
           <div className="preference-toggles">
