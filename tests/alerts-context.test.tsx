@@ -12,7 +12,7 @@ const service = vi.hoisted(() => ({
   deleteAlert: vi.fn(),
   markNotificationRead: vi.fn(),
   deleteNotification: vi.fn(),
-  createLocalNotification: vi.fn((notification) => notification),
+  createLocalNotification: vi.fn((_userId, notification) => notification),
 }))
 
 vi.mock('../src/services/alerts.service', () => service)
@@ -42,8 +42,9 @@ function Harness() {
   return (
     <>
       <span data-testid="notification-count">{context.notifications.length}</span>
+      <span data-testid="alert-count">{context.alerts.length}</span>
       <button onClick={() => context.recordDeposit({ transactionId: 'tx-deposit', currency: 'USD', amount: '500', newBalance: '500', createdAt: '2026-10-01T12:00:00.000Z' })}>Recarga de prueba</button>
-      <button onClick={() => context.recordExchange({ transactionId: 'tx-exchange', fromCurrency: 'USD', fromBalance: '1', toCurrency: 'EUR', toBalance: '1.3', createdAt: '2026-10-01T12:01:00.000Z' })}>Compra de prueba</button>
+      <button onClick={() => context.recordExchange({ transactionId: 'tx-exchange', fromCurrency: 'EUR', fromBalance: '1.3', toCurrency: 'USD', toBalance: '500', createdAt: '2026-10-01T12:01:00.000Z' })}>Compra de prueba</button>
       <button onClick={() => context.addAlert({ kind: 'daily_change', currency: 'EUR', base_currency: 'USD', direction: 'up', threshold: 2, email_enabled: false })}>Crear regla</button>
       <button onClick={() => context.editAlert('alert-low-eur', { kind: 'low_balance', currency: 'EUR', base_currency: 'USD', direction: 'down', threshold: 5, email_enabled: false })}>Editar regla</button>
       <button onClick={() => context.removeNotification('local-alert-deposit-usd-tx-deposit-deposit')}>Eliminar notificación</button>
@@ -67,23 +68,24 @@ describe('AlertsContext', () => {
     render(<AlertsProvider><Harness /></AlertsProvider>)
 
     await waitFor(() => expect(service.getAlerts).toHaveBeenCalled())
+    await waitFor(() => expect(screen.getByTestId('alert-count')).toHaveTextContent('2'))
     await user.click(screen.getByRole('button', { name: 'Recarga de prueba' }))
     expect(screen.getByTestId('notification-count')).toHaveTextContent('1')
 
     await user.click(screen.getByRole('button', { name: 'Compra de prueba' }))
-    expect(screen.getByTestId('notification-count')).toHaveTextContent('2')
+    expect(service.createLocalNotification).toHaveBeenCalledTimes(2)
   })
 
   it('expone las operaciones CRUD de reglas y elimina notificaciones', async () => {
     const user = userEvent.setup()
     render(<AlertsProvider><Harness /></AlertsProvider>)
 
-    await waitFor(() => expect(service.getAlerts).toHaveBeenCalled())
+    await waitFor(() => expect(screen.getByTestId('alert-count')).toHaveTextContent('2'))
     await user.click(screen.getByRole('button', { name: 'Crear regla' }))
     expect(service.createAlert).toHaveBeenCalledOnce()
     await user.click(screen.getByRole('button', { name: 'Editar regla' }))
-    expect(service.updateAlert).toHaveBeenCalledWith('alert-low-eur', expect.objectContaining({ threshold: 5 }))
+    expect(service.updateAlert).toHaveBeenCalledWith('alert-low-eur', 'anonymous', expect.objectContaining({ threshold: 5 }))
     await user.click(screen.getByRole('button', { name: 'Eliminar notificación' }))
-    expect(service.deleteNotification).toHaveBeenCalledWith('local-alert-deposit-usd-tx-deposit-deposit')
+    expect(service.deleteNotification).toHaveBeenCalledWith('anonymous', 'local-alert-deposit-usd-tx-deposit-deposit')
   })
 })

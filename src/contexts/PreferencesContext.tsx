@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { getTheme, setTheme, type Theme } from '../theme/theme'
 import type { ArsRateType } from '../types/rates'
 import type { CurrencyCode } from '../types/currency'
+import { AuthContext } from '../context/AuthContext'
 
 const STORAGE_KEY = 'nexpay_preferences'
 
@@ -30,9 +31,13 @@ const defaults: Preferences = {
   emailNotifications: false,
 }
 
-function readPreferences(): Preferences {
+function storageKey(userId: string): string {
+  return `${STORAGE_KEY}:${userId}`
+}
+
+function readPreferences(userId: string): Preferences {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as Partial<Preferences>
+    const saved = JSON.parse(localStorage.getItem(storageKey(userId)) ?? '{}') as Partial<Preferences>
     return {
       ...defaults,
       ...saved,
@@ -43,9 +48,9 @@ function readPreferences(): Preferences {
   }
 }
 
-function savePreferences(preferences: Preferences) {
+function savePreferences(userId: string, preferences: Preferences) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences))
+    localStorage.setItem(storageKey(userId), JSON.stringify(preferences))
   } catch {
     // Las preferencias siguen activas durante esta visita aunque el navegador no permita guardar.
   }
@@ -64,12 +69,18 @@ const EMPTY_PREFERENCES: PreferencesContextValue = {
 }
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
-  const [preferences, setPreferences] = useState<Preferences>(readPreferences)
+  const auth = useContext(AuthContext)
+  const userId = auth?.user?.id ?? 'anonymous'
+  const [preferences, setPreferences] = useState<Preferences>(() => readPreferences(userId))
+
+  useEffect(() => {
+    setPreferences(readPreferences(userId))
+  }, [userId])
 
   function update(changes: Partial<Preferences>) {
     setPreferences((current) => {
       const next = { ...current, ...changes }
-      savePreferences(next)
+      savePreferences(userId, next)
       return next
     })
   }

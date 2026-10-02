@@ -90,7 +90,7 @@ function PreferencesPage() {
           </div>
           <div className="preference-toggles">
             <label className="preference-toggle"><span><strong>Avisos en pantalla</strong><small>Mostrar el aviso flotante y guardarlo en la campana.</small></span><input type="checkbox" checked={preferences.inAppNotifications} onChange={(event) => showSaved(() => preferences.setInAppNotifications(event.target.checked))} /><i /></label>
-            <label className="preference-toggle"><span><strong>Notificaciones por email</strong><small>Preferencia global para futuras alertas enviadas por AWS SES.</small></span><input type="checkbox" checked={preferences.emailNotifications} onChange={(event) => showSaved(() => preferences.setEmailNotifications(event.target.checked))} /><i /></label>
+            <label className="preference-toggle"><span><strong>Notificaciones por email</strong><small>Valor predeterminado para nuevas alertas; el backend enviará el email cuando SES esté conectado.</small></span><input type="checkbox" checked={preferences.emailNotifications} onChange={(event) => showSaved(() => preferences.setEmailNotifications(event.target.checked))} /><i /></label>
           </div>
         </section>
       </div>

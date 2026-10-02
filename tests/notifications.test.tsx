@@ -12,7 +12,7 @@ const service = vi.hoisted(() => ({
   getNotifications: vi.fn(),
   deleteNotification: vi.fn(),
   markNotificationRead: vi.fn(),
-  createLocalNotification: vi.fn((notification) => notification),
+  createLocalNotification: vi.fn((_userId, notification) => notification),
 }))
 
 vi.mock('../src/services/alerts.service', () => service)
@@ -28,7 +28,8 @@ const notification = {
 
 function DepositTrigger() {
   const { recordDeposit } = useAlerts()
-  return <button onClick={() => recordDeposit({ transactionId: 'tx-1', currency: 'USD', amount: '500', newBalance: '500', createdAt: notification.created_at })}>Disparar aviso</button>
+  const { alerts } = useAlerts()
+  return <><span data-testid="alert-count">{alerts.length}</span><button onClick={() => recordDeposit({ transactionId: 'tx-1', currency: 'USD', amount: '500', newBalance: '500', createdAt: notification.created_at })}>Disparar aviso</button></>
 }
 
 describe('Notificaciones', () => {
@@ -52,7 +53,7 @@ describe('Notificaciones', () => {
     expect(screen.getByRole('heading', { name: 'Notificaciones' })).toBeInTheDocument()
     expect(screen.queryByText('Centro NexPay')).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Eliminar Recarga recibida' }))
-    expect(service.deleteNotification).toHaveBeenCalledWith('notification-1')
+    expect(service.deleteNotification).toHaveBeenCalledWith('anonymous', 'notification-1')
   })
 
   it('muestra el aviso flotante y lo oculta después de tres segundos', async () => {
@@ -62,7 +63,9 @@ describe('Notificaciones', () => {
     await act(async () => {
       await Promise.resolve()
       await Promise.resolve()
+      await Promise.resolve()
     })
+    expect(screen.getByTestId('alert-count')).toHaveTextContent('1')
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Disparar aviso' })))
     expect(screen.getByRole('status')).toHaveTextContent('Recarga recibida en USD')
     act(() => vi.advanceTimersByTime(3_000))

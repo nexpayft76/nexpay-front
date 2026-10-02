@@ -24,7 +24,7 @@ function Dashboard() {
 	const { user } = useAuth()
 	const { defaultCurrency, setDefaultCurrency } = usePreferences()
 	const [currency, setCurrency] = useState<CurrencyCode>(defaultCurrency)
-	const [chartFrom, setChartFrom] = useState<CurrencyCode>('COP')
+	const [chartFrom, setChartFrom] = useState<CurrencyCode>(() => (defaultCurrency === 'COP' ? 'USD' : 'COP'))
 
 	useEffect(() => {
 		setCurrency(defaultCurrency)

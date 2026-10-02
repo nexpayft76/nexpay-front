@@ -5,6 +5,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import PreferencesPage from '../src/pages/Preferences/PreferencesPage'
 import { PreferencesProvider } from '../src/contexts/PreferencesContext'
 
+const PREFERENCES_STORAGE_KEY = 'nexpay_preferences:anonymous'
+
 describe('Preferencias', () => {
   beforeEach(() => {
     localStorage.clear()
@@ -24,7 +26,7 @@ describe('Preferencias', () => {
     await user.selectOptions(screen.getByLabelText('Mostrar valores en'), 'COP')
     await user.click(screen.getByRole('radio', { name: /MEP/i }))
 
-    const saved = JSON.parse(localStorage.getItem('nexpay_preferences') ?? '{}')
+    const saved = JSON.parse(localStorage.getItem(PREFERENCES_STORAGE_KEY) ?? '{}')
     expect(saved.defaultCurrency).toBe('COP')
     expect(saved.arsRate).toBe('mep')
   })
@@ -44,6 +46,6 @@ describe('Preferencias', () => {
     await user.click(email)
 
     expect(email).toBeChecked()
-    expect(JSON.parse(localStorage.getItem('nexpay_preferences') ?? '{}').emailNotifications).toBe(true)
+    expect(JSON.parse(localStorage.getItem(PREFERENCES_STORAGE_KEY) ?? '{}').emailNotifications).toBe(true)
   })
 })

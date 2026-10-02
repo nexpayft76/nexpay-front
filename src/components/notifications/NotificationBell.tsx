@@ -7,7 +7,7 @@ import './NotificationBell.css'
 function NotificationBell() {
   const [open, setOpen] = useState(false)
   const { notifications, unreadCount, readNotification, removeNotification } = useOptionalAlerts()
-  const recent = notifications.slice(0, 4)
+  const recent = notifications
 
   async function handleNotificationClick(id: string) {
     await readNotification(id)
