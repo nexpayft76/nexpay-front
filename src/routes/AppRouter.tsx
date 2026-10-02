@@ -15,6 +15,7 @@ const DepositPage = lazy(() => import('../pages/Operations/DepositPage'))
 const ExchangePage = lazy(() => import('../pages/Operations/ExchangePage'))
 const QuotePage = lazy(() => import('../pages/Quote/QuotePage'))
 const AlertsPage = lazy(() => import('../pages/Alerts/AlertsPage'))
+const PreferencesPage = lazy(() => import('../pages/Preferences/PreferencesPage'))
 
 /** Mientras se descarga una pantalla. */
 function PageLoading() {
@@ -64,16 +65,7 @@ function AppRouter() {
             <Route path="configuracion">
               <Route index element={<Navigate to="alertas" replace />} />
               <Route path="alertas" element={<AlertsPage />} />
-              <Route
-                path="preferencias"
-                element={
-                  <ComingSoon
-                    icon="settings"
-                    title="Preferencias"
-                    description="Aquí podrás elegir tu moneda principal y el tipo de dólar para ARS."
-                  />
-                }
-              />
+              <Route path="preferencias" element={<PreferencesPage />} />
               <Route
                 path="usuario"
                 element={

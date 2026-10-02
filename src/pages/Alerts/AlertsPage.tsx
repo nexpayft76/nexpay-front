@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useAlerts } from '../../contexts/AlertsContext'
+import { usePreferences } from '../../contexts/PreferencesContext'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import type { AlertDirection, AlertKind, CreateAlertInput } from '../../types/alerts'
 import type { CurrencyCode } from '../../types/currency'
@@ -35,7 +36,8 @@ function formatRule(kind: AlertKind, currency: string, base: string, direction: 
 function AlertsPage() {
   useDocumentTitle('Alertas')
   const { alerts, loading, error, addAlert, editAlert, toggleAlert, removeAlert } = useAlerts()
-  const [form, setForm] = useState(initialForm)
+  const { emailNotifications } = usePreferences()
+  const [form, setForm] = useState(() => ({ ...initialForm, email_enabled: emailNotifications }))
   const [editingId, setEditingId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -57,7 +59,7 @@ function AlertsPage() {
     try {
       if (editingId) await editAlert(editingId, form)
       else await addAlert(form)
-      setForm(initialForm)
+      setForm({ ...initialForm, email_enabled: emailNotifications })
       setEditingId(null)
     } catch {
       setFormError('No pudimos guardar la alerta. Inténtalo de nuevo.')
@@ -81,7 +83,7 @@ function AlertsPage() {
 
   function cancelEditing() {
     setEditingId(null)
-    setForm(initialForm)
+    setForm({ ...initialForm, email_enabled: emailNotifications })
     setFormError(null)
   }
 

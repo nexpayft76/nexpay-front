@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import Icon from '../common/Icon'
 import { useOptionalAlerts } from '../../contexts/AlertsContext'
+import { useOptionalPreferences } from '../../contexts/PreferencesContext'
 import './NotificationToast.css'
 
 function NotificationToast() {
   const { toastNotification, dismissToast } = useOptionalAlerts()
+  const { inAppNotifications } = useOptionalPreferences()
 
   useEffect(() => {
     if (!toastNotification) return
@@ -12,7 +14,7 @@ function NotificationToast() {
     return () => window.clearTimeout(timer)
   }, [toastNotification, dismissToast])
 
-  if (!toastNotification) return null
+  if (!toastNotification || !inAppNotifications) return null
 
   return (
     <div className="notification-toast" role="status" aria-live="polite">

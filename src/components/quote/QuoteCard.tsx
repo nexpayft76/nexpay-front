@@ -6,6 +6,7 @@ import { parseAmount, validateAmountText, visibleAmountError } from '../../utils
 import AmountInput from '../common/AmountInput'
 import { CURRENCY_CODES } from '../../utils/currencies'
 import { formatCurrency } from '../../utils/formatCurrency'
+import { usePreferences } from '../../contexts/PreferencesContext'
 import RateSources from './RateSources'
 import './QuoteCard.css'
 
@@ -24,7 +25,7 @@ function QuoteCard() {
   const [amountText, setAmountText] = useState('1.000.000')
   const [from, setFrom] = useState('COP')
   const [to, setTo] = useState('ARS')
-  const [arsRate, setArsRate] = useState<ArsRateType>('mep')
+  const { arsRate, setArsRate } = usePreferences()
 
   const amount = parseAmount(amountText)
   // Validación en tiempo real (igual que recarga y compra): decimales de más al instante; el resto tras una pausa.

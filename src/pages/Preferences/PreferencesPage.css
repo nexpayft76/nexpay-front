@@ -1,0 +1,256 @@
+.preferences-page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.preferences-page__hero {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.preferences-page__hero h1 {
+  margin: 0 0 0.75rem;
+}
+
+.preferences-page__hero p:not(.dashboard-eyebrow) {
+  max-width: 42rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.preferences-page__mark {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.preferences-page__sections {
+  display: grid;
+  gap: 1rem;
+  max-width: 58rem;
+}
+
+.preference-section {
+  display: grid;
+  gap: 0.875rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+}
+
+.preference-section__heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.preference-section__heading > svg {
+  color: var(--color-primary);
+}
+
+.preference-section h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.preference-section__description {
+  max-width: 44rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.preference-field {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 22rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.preference-field select {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+}
+
+.preference-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+
+.preference-options--inline {
+  grid-template-columns: repeat(2, minmax(0, 14rem));
+}
+
+.preference-option {
+  position: relative;
+  display: flex;
+  align-items: start;
+  gap: 0.625rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.preference-option:hover,
+.preference-option.is-selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.preference-option input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin: 0.15rem 0 0;
+  accent-color: var(--color-primary);
+}
+
+.preference-option strong,
+.preference-option small {
+  display: block;
+}
+
+.preference-option strong {
+  font-size: 0.9375rem;
+}
+
+.preference-option small {
+  margin-top: 0.2rem;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.preference-toggles {
+  display: grid;
+  gap: 0.25rem;
+  max-width: 44rem;
+}
+
+.preference-toggle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+}
+
+.preference-toggle:last-child {
+  border-bottom: 0;
+}
+
+.preference-toggle strong,
+.preference-toggle small {
+  display: block;
+}
+
+.preference-toggle small {
+  margin-top: 0.2rem;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.preference-toggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.preference-toggle i {
+  display: block;
+  width: 2.5rem;
+  height: 1.45rem;
+  border-radius: 999px;
+  background: var(--color-border-strong);
+}
+
+.preference-toggle i::after {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.22);
+  content: '';
+  transform: translate(0.2rem, 0.2rem);
+  transition: transform 0.15s ease;
+}
+
+.preference-toggle input:checked + i {
+  background: var(--color-primary);
+}
+
+.preference-toggle input:checked + i::after {
+  transform: translate(1.25rem, 0.2rem);
+}
+
+.preference-toggle input:focus-visible + i,
+.preference-option input:focus-visible,
+.preference-field select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.preferences-page__saved {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 70;
+  margin: 0;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.5rem);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.preferences-page__saved.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .preferences-page__mark {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .preference-options,
+  .preference-options--inline {
+    grid-template-columns: 1fr;
+  }
+}

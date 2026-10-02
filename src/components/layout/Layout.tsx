@@ -5,6 +5,7 @@ import { useMediaQuery } from '../../hooks/useMediaQuery'
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
 import { AlertsProvider } from '../../contexts/AlertsContext'
+import { PreferencesProvider } from '../../contexts/PreferencesContext'
 import NotificationToast from '../notifications/NotificationToast'
 import './Layout.css'
 
@@ -72,28 +73,30 @@ function Layout() {
   }
 
   return (
-    <AlertsProvider>
-      <div className={`app-shell${isDesktop && !desktopExpanded ? ' app-shell--collapsed' : ''}`}>
-        <NotificationToast />
-        <Navbar ref={menuButtonRef} isMenuOpen={isOpen} onToggleMenu={toggleMenu} onLogout={handleLogout} />
-        <Sidebar
-          ref={closeButtonRef}
-          isOpen={isOpen}
-          isDesktop={isDesktop}
-          onClose={closeMobile}
-          onNavigate={() => {
-            if (!isDesktop) closeMobile()
-          }}
-          onLogout={handleLogout}
-          onExpandSidebar={() => setDesktopExpanded(true)}
-        />
-        <main className="app-shell__main">
-          <Suspense fallback={<p className="app-shell__loading" aria-busy="true">Cargando…</p>}>
-            <Outlet />
-          </Suspense>
-        </main>
-      </div>
-    </AlertsProvider>
+    <PreferencesProvider>
+      <AlertsProvider>
+        <div className={`app-shell${isDesktop && !desktopExpanded ? ' app-shell--collapsed' : ''}`}>
+          <NotificationToast />
+          <Navbar ref={menuButtonRef} isMenuOpen={isOpen} onToggleMenu={toggleMenu} onLogout={handleLogout} />
+          <Sidebar
+            ref={closeButtonRef}
+            isOpen={isOpen}
+            isDesktop={isDesktop}
+            onClose={closeMobile}
+            onNavigate={() => {
+              if (!isDesktop) closeMobile()
+            }}
+            onLogout={handleLogout}
+            onExpandSidebar={() => setDesktopExpanded(true)}
+          />
+          <main className="app-shell__main">
+            <Suspense fallback={<p className="app-shell__loading" aria-busy="true">Cargando…</p>}>
+              <Outlet />
+            </Suspense>
+          </main>
+        </div>
+      </AlertsProvider>
+    </PreferencesProvider>
   )
 }
 

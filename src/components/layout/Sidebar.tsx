@@ -40,7 +40,7 @@ const MENU: MenuItem[] = [
     basePath: '/dashboard/configuracion',
     children: [
       { to: '/dashboard/configuracion/alertas', label: 'Alertas', icon: 'bell' },
-      { to: '/dashboard/configuracion/preferencias', label: 'Preferencias', icon: 'settings', soon: true },
+      { to: '/dashboard/configuracion/preferencias', label: 'Preferencias', icon: 'settings' },
       { to: '/dashboard/configuracion/usuario', label: 'Usuario', icon: 'user', soon: true },
     ],
   },
