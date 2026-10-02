@@ -3,7 +3,7 @@ import { getTheme, setTheme, type Theme } from '../theme/theme'
 import type { ArsRateType } from '../types/rates'
 import type { CurrencyCode } from '../types/currency'
 import { AuthContext } from '../context/AuthContext'
-import { saveThemePreference } from '../services/preferences.service'
+import { getUserPreferences, saveThemePreference, saveUserPreferences } from '../services/preferences.service'
 
 const STORAGE_KEY = 'nexpay_preferences'
 
@@ -75,17 +75,44 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<Preferences>(() => readPreferences(userId))
 
   useEffect(() => {
-    const userPreferences = readPreferences(userId)
-    setPreferences(userPreferences)
-    if (userId !== 'anonymous') {
-      void saveThemePreference(userPreferences.theme).catch(() => undefined)
+    if (userId === 'anonymous') {
+      const userPreferences = readPreferences(userId)
+      setPreferences(userPreferences)
+      setTheme(userPreferences.theme)
+      return
     }
+
+    void (async () => {
+      try {
+        const serverPreferences = await getUserPreferences()
+        const localPreferences = readPreferences(userId)
+        const next: Preferences = {
+          ...localPreferences,
+          ...(serverPreferences ?? {}),
+          theme: serverPreferences?.theme ?? localPreferences.theme,
+        }
+        setPreferences(next)
+        setTheme(next.theme)
+        savePreferences(userId, next)
+      } catch {
+        const localPreferences = readPreferences(userId)
+        setPreferences(localPreferences)
+        setTheme(localPreferences.theme)
+      }
+    })()
   }, [userId])
 
   function update(changes: Partial<Preferences>) {
     setPreferences((current) => {
       const next = { ...current, ...changes }
       savePreferences(userId, next)
+      if (userId !== 'anonymous') {
+        void saveUserPreferences({
+          theme: next.theme,
+          inAppNotifications: next.inAppNotifications,
+          emailNotifications: next.emailNotifications,
+        }).catch(() => undefined)
+      }
       return next
     })
   }
@@ -103,6 +130,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     update({ theme })
     if (userId !== 'anonymous') {
       void saveThemePreference(theme).catch(() => undefined)
+      void saveUserPreferences({ theme, inAppNotifications: preferences.inAppNotifications, emailNotifications: preferences.emailNotifications }).catch(() => undefined)
     }
   }
 

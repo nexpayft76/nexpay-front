@@ -145,6 +145,27 @@ export async function markNotificationRead(userId: string, id: string): Promise<
 }
 
 export function createLocalNotification(userId: string, notification: Notification): Notification {
+  if (userId !== 'anonymous') {
+    try {
+      const apiRequest = api.post<{ data: Notification }>('/api/notifications', {
+        type: notification.type,
+        title: notification.title,
+        message: notification.message,
+        read: notification.read,
+        alert_id: notification.alert_id ?? null,
+      })
+      void apiRequest.then((response) => {
+        const created = unwrap(response.data)
+        const current = localNotifications(userId)
+        if (!current.some((item) => item.id === created.id)) {
+          saveNotifications(userId, [created, ...current])
+        }
+      }).catch(() => undefined)
+    } catch {
+      // El fallback local se usa si la API no está disponible.
+    }
+  }
+
   const current = localNotifications(userId)
   if (current.some((item) => item.id === notification.id)) return notification
   saveNotifications(userId, [notification, ...current])
