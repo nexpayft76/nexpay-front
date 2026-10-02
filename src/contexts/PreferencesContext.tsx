@@ -3,6 +3,7 @@ import { getTheme, setTheme, type Theme } from '../theme/theme'
 import type { ArsRateType } from '../types/rates'
 import type { CurrencyCode } from '../types/currency'
 import { AuthContext } from '../context/AuthContext'
+import { saveThemePreference } from '../services/preferences.service'
 
 const STORAGE_KEY = 'nexpay_preferences'
 
@@ -74,7 +75,11 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<Preferences>(() => readPreferences(userId))
 
   useEffect(() => {
-    setPreferences(readPreferences(userId))
+    const userPreferences = readPreferences(userId)
+    setPreferences(userPreferences)
+    if (userId !== 'anonymous') {
+      void saveThemePreference(userPreferences.theme).catch(() => undefined)
+    }
   }, [userId])
 
   function update(changes: Partial<Preferences>) {
@@ -96,6 +101,9 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
   function setPreferredTheme(theme: Theme) {
     setTheme(theme)
     update({ theme })
+    if (userId !== 'anonymous') {
+      void saveThemePreference(theme).catch(() => undefined)
+    }
   }
 
   return (
