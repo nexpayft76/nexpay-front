@@ -14,6 +14,7 @@ import CurrencyPicker from './CurrencyPicker'
 import './Operations.css'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
+import { useOptionalAlerts } from '../../contexts/AlertsContext'
 
 /** Mismas reglas que el back: formato válido, mayor que 0, hasta 2 decimales y hasta el límite de la moneda. */
 function validateDeposit(text: string, currency: string): AmountIssue | undefined {
@@ -44,6 +45,7 @@ function DepositPage() {
   const [walletCurrency, setWalletCurrency] = useState('COP')
   // Cambiar la key vuelve a montar la billetera para que pida los saldos nuevos después de recargar.
   const [walletVersion, setWalletVersion] = useState(0)
+  const { recordDeposit } = useOptionalAlerts()
 
   const info = currencyInfo(currency)
   const amount = parseAmount(amountText)
@@ -76,7 +78,15 @@ function DepositPage() {
   async function confirmDeposit() {
     setSubmitting(true)
     try {
-      setResult(await depositToMyWallet(currency, amount))
+      const deposit = await depositToMyWallet(currency, amount)
+      setResult(deposit)
+      recordDeposit({
+        transactionId: deposit.transaction_id,
+        currency: deposit.currency,
+        amount: deposit.amount,
+        newBalance: deposit.new_balance,
+        createdAt: deposit.created_at,
+      })
       setAmountText('')
       setTouched(false)
       wallet.reload()

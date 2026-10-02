@@ -14,6 +14,8 @@ const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'))
 const DepositPage = lazy(() => import('../pages/Operations/DepositPage'))
 const ExchangePage = lazy(() => import('../pages/Operations/ExchangePage'))
 const QuotePage = lazy(() => import('../pages/Quote/QuotePage'))
+const AlertsPage = lazy(() => import('../pages/Alerts/AlertsPage'))
+const PreferencesPage = lazy(() => import('../pages/Preferences/PreferencesPage'))
 
 /** Mientras se descarga una pantalla. */
 function PageLoading() {
@@ -60,26 +62,21 @@ function AppRouter() {
                 />
               }
             />
-            <Route
-              path="configuracion"
-              element={
-                <ComingSoon
-                  icon="settings"
-                  title="Configuración"
-                  description="Tus preferencias: moneda principal, tipo de dólar para ARS y notificaciones."
-                />
-              }
-            />
-            <Route
-              path="usuario"
-              element={
-                <ComingSoon
-                  icon="user"
-                  title="Usuario"
-                  description="Tus datos personales: ver, editar tu nombre y email, y cerrar tu cuenta."
-                />
-              }
-            />
+            <Route path="configuracion">
+              <Route index element={<Navigate to="alertas" replace />} />
+              <Route path="alertas" element={<AlertsPage />} />
+              <Route path="preferencias" element={<PreferencesPage />} />
+              <Route
+                path="usuario"
+                element={
+                  <ComingSoon
+                    icon="user"
+                    title="Usuario"
+                    description="Tus datos personales: ver, editar tu nombre y email, y cerrar tu cuenta."
+                  />
+                }
+              />
+            </Route>
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

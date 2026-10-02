@@ -1,10 +1,12 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import ErrorBoundary from '../../components/common/ErrorBoundary'
 import QuoteCard from '../../components/quote/QuoteCard'
 import TotalEstimate from '../../components/wallet/TotalEstimate'
 import WalletCard from '../../components/wallet/WalletCard'
 import { useAuth } from '../../hooks/useAuth'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
+import { usePreferences } from '../../contexts/PreferencesContext'
+import type { CurrencyCode } from '../../types/currency'
 
 // Recharts pesa bastante: se descarga solo al entrar al dashboard, no en la landing ni en el login.
 const RateChart = lazy(() => import('../../components/chart/RateChart'))
@@ -20,17 +22,25 @@ const RateChart = lazy(() => import('../../components/chart/RateChart'))
 function Dashboard() {
 	useDocumentTitle('Mi billetera')
 	const { user } = useAuth()
-	const [currency, setCurrency] = useState('USD')
-	const [chartFrom, setChartFrom] = useState('COP')
+	const { defaultCurrency, setDefaultCurrency } = usePreferences()
+	const [currency, setCurrency] = useState<CurrencyCode>(defaultCurrency)
+	const [chartFrom, setChartFrom] = useState<CurrencyCode>(() => (defaultCurrency === 'COP' ? 'USD' : 'COP'))
+
+	useEffect(() => {
+		setCurrency(defaultCurrency)
+	}, [defaultCurrency])
 
 	function changeCurrency(next: string) {
-		if (next === chartFrom) setChartFrom(currency)
-		setCurrency(next)
+		const nextCurrency = next as CurrencyCode
+		if (nextCurrency === chartFrom) setChartFrom(currency)
+		setCurrency(nextCurrency)
+		setDefaultCurrency(nextCurrency)
 	}
 
 	function changeChartFrom(next: string) {
-		if (next === currency) setCurrency(chartFrom)
-		setChartFrom(next)
+		const nextCurrency = next as CurrencyCode
+		if (nextCurrency === currency) setCurrency(chartFrom)
+		setChartFrom(nextCurrency)
 	}
 
 	function swapChart() {

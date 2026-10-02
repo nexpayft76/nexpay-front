@@ -1,15 +1,19 @@
 import { useState } from 'react'
 import { getTheme, setTheme, type Theme } from '../../theme/theme'
+import { useOptionalPreferences } from '../../contexts/PreferencesContext'
 
 /** Botón sol/luna para cambiar entre modo claro y oscuro. */
 function ThemeToggle() {
-  const [theme, setThemeState] = useState<Theme>(getTheme)
+  const preferences = useOptionalPreferences()
+  const [standaloneTheme, setStandaloneTheme] = useState<Theme>(getTheme)
+  const theme = preferences.isProvider ? preferences.theme : standaloneTheme
   const next: Theme = theme === 'dark' ? 'light' : 'dark'
   const label = next === 'light' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'
 
   function toggle() {
     setTheme(next)
-    setThemeState(next)
+    setStandaloneTheme(next)
+    preferences.setPreferredTheme(next)
   }
 
   return (

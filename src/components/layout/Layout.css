@@ -269,6 +269,7 @@
   .sidebar--collapsed .sidebar__soon {
     display: none;
   }
+
 }
 
 @media (prefers-reduced-motion: reduce) {

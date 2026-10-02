@@ -14,6 +14,7 @@ import CurrencyPicker from './CurrencyPicker'
 import './Operations.css'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
+import { useOptionalAlerts } from '../../contexts/AlertsContext'
 
 const TYPE_LABEL: Record<ExchangeType, string> = { BUY: 'Compra', SELL: 'Venta', EXCHANGE: 'Intercambio' }
 
@@ -65,6 +66,7 @@ function ExchangePage() {
   // Billetera al costado: muestra la moneda con la que se paga. Cambiar la key la recarga después de operar.
   const [walletCurrency, setWalletCurrency] = useState('COP')
   const [walletVersion, setWalletVersion] = useState(0)
+  const { recordExchange } = useOptionalAlerts()
 
   const amount = parseAmount(amountText)
   const involvesArs = from === 'ARS' || to === 'ARS'
@@ -126,7 +128,16 @@ function ExchangePage() {
   async function confirmExchange() {
     setSubmitting(true)
     try {
-      setResult(await exchangeInMyWallet({ from_currency: from, to_currency: to, amount, ars_rate: arsRate }))
+      const exchange = await exchangeInMyWallet({ from_currency: from, to_currency: to, amount, ars_rate: arsRate })
+      setResult(exchange)
+      recordExchange({
+        transactionId: exchange.transaction_id,
+        fromCurrency: from,
+        fromBalance: exchange.balances.from,
+        toCurrency: to,
+        toBalance: exchange.balances.to,
+        createdAt: exchange.created_at,
+      })
       setAmountText('')
       setTouched(false)
       wallet.reload()
