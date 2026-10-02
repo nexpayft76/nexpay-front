@@ -56,6 +56,7 @@ interface SidebarProps {
   onClose: () => void
   onNavigate: () => void
   onLogout: () => void
+  onExpandSidebar: () => void
 }
 
 /**
@@ -64,7 +65,7 @@ interface SidebarProps {
  * - Desktop: columna fija; cerrado = solo íconos, abierto = íconos + texto.
  */
 const Sidebar = forwardRef<HTMLButtonElement, SidebarProps>(function Sidebar(
-  { isOpen, isDesktop, onClose, onNavigate, onLogout },
+  { isOpen, isDesktop, onClose, onNavigate, onLogout, onExpandSidebar },
   closeButtonRef,
 ) {
   const collapsed = isDesktop && !isOpen
@@ -92,7 +93,13 @@ const Sidebar = forwardRef<HTMLButtonElement, SidebarProps>(function Sidebar(
           <ul>
             {MENU.map((item) =>
               isGroup(item) ? (
-                <SidebarGroup key={item.basePath} group={item} collapsed={collapsed} onNavigate={onNavigate} />
+                <SidebarGroup
+                  key={item.basePath}
+                  group={item}
+                  collapsed={collapsed}
+                  onNavigate={onNavigate}
+                  onExpandSidebar={onExpandSidebar}
+                />
               ) : (
                 <li key={item.to}>
                   <SidebarLink item={item} collapsed={collapsed} onNavigate={onNavigate} />
@@ -147,9 +154,10 @@ interface SidebarGroupProps {
   group: MenuGroup
   collapsed: boolean
   onNavigate: () => void
+  onExpandSidebar: () => void
 }
 
-function SidebarGroup({ group, collapsed, onNavigate }: SidebarGroupProps) {
+function SidebarGroup({ group, collapsed, onNavigate, onExpandSidebar }: SidebarGroupProps) {
   const { pathname } = useLocation()
   const inside = pathname.startsWith(group.basePath)
   // null = automático (abierto si estás en una de sus pantallas); true/false = lo eligió el usuario.
@@ -157,30 +165,24 @@ function SidebarGroup({ group, collapsed, onNavigate }: SidebarGroupProps) {
   const expanded = collapsed ? manualOpen === true : (manualOpen ?? inside)
   const listId = `submenu-${group.basePath.replaceAll('/', '-')}`
 
-  // Menú plegado: el grupo abre un submenú flotante para poder elegir cualquier opción.
+  // Menú plegado: el grupo expande la barra y deja abiertas sus opciones.
   if (collapsed) {
     return (
       <li className="sidebar__group-item">
         <button
           type="button"
-          className={`sidebar__link sidebar__group${expanded ? ' sidebar__link--active' : ''}`}
-          aria-expanded={expanded}
+          className="sidebar__link sidebar__group"
+          aria-expanded={false}
           aria-controls={listId}
           aria-label={group.label}
           title={group.label}
-          onClick={() => setManualOpen(!expanded)}
+          onClick={() => {
+            setManualOpen(true)
+            onExpandSidebar()
+          }}
         >
           <Icon name={group.icon} />
         </button>
-        {expanded && (
-          <ul id={listId} className="sidebar__submenu sidebar__submenu--flyout">
-            {group.children.map((child) => (
-              <li key={child.to}>
-                <SidebarLink item={child} collapsed={false} onNavigate={onNavigate} nested />
-              </li>
-            ))}
-          </ul>
-        )}
       </li>
     )
   }

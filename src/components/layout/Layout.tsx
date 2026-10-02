@@ -85,6 +85,7 @@ function Layout() {
             if (!isDesktop) closeMobile()
           }}
           onLogout={handleLogout}
+          onExpandSidebar={() => setDesktopExpanded(true)}
         />
         <main className="app-shell__main">
           <Suspense fallback={<p className="app-shell__loading" aria-busy="true">Cargando…</p>}>
