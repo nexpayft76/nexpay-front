@@ -154,15 +154,33 @@ function SidebarGroup({ group, collapsed, onNavigate }: SidebarGroupProps) {
   const inside = pathname.startsWith(group.basePath)
   // null = automático (abierto si estás en una de sus pantallas); true/false = lo eligió el usuario.
   const [manualOpen, setManualOpen] = useState<boolean | null>(null)
-  const expanded = manualOpen ?? inside
+  const expanded = collapsed ? manualOpen === true : (manualOpen ?? inside)
   const listId = `submenu-${group.basePath.replaceAll('/', '-')}`
-  const first = group.children[0]
 
-  // Menú plegado (solo íconos): el grupo es un acceso directo a su primera opción.
-  if (collapsed && first) {
+  // Menú plegado: el grupo abre un submenú flotante para poder elegir cualquier opción.
+  if (collapsed) {
     return (
-      <li>
-        <SidebarLink item={{ ...first, icon: group.icon, label: group.label, soon: false }} collapsed onNavigate={onNavigate} />
+      <li className="sidebar__group-item">
+        <button
+          type="button"
+          className={`sidebar__link sidebar__group${expanded ? ' sidebar__link--active' : ''}`}
+          aria-expanded={expanded}
+          aria-controls={listId}
+          aria-label={group.label}
+          title={group.label}
+          onClick={() => setManualOpen(!expanded)}
+        >
+          <Icon name={group.icon} />
+        </button>
+        {expanded && (
+          <ul id={listId} className="sidebar__submenu sidebar__submenu--flyout">
+            {group.children.map((child) => (
+              <li key={child.to}>
+                <SidebarLink item={child} collapsed={false} onNavigate={onNavigate} nested />
+              </li>
+            ))}
+          </ul>
+        )}
       </li>
     )
   }
