@@ -50,7 +50,7 @@ function AlertsPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!form.threshold || form.threshold <= 0) {
+    if (needsThreshold && (!form.threshold || form.threshold <= 0)) {
       setFormError('Escribe un umbral mayor que cero.')
       return
     }
@@ -161,8 +161,8 @@ function AlertsPage() {
               <span className="field__input-wrap">
                 <input
                   type="number"
-                  min="0.01"
-                  step="0.01"
+                  min={form.kind === 'target_rate' ? '0' : '0.01'}
+                  step={form.kind === 'target_rate' ? 'any' : '0.01'}
                   value={form.threshold}
                   onChange={(event) => updateForm('threshold', Number(event.target.value))}
                   required
@@ -220,7 +220,12 @@ function AlertsPage() {
                       <Icon name="edit" size={16} />
                     </button>
                     <label className="switch" title={alert.enabled ? 'Desactivar alerta' : 'Activar alerta'}>
-                      <input type="checkbox" checked={alert.enabled} onChange={() => toggleAlert(alert)} />
+                      <input
+                        type="checkbox"
+                        checked={alert.enabled}
+                        onChange={() => toggleAlert(alert)}
+                        aria-label={`${alert.enabled ? 'Desactivar' : 'Activar'} alerta: ${formatRule(alert.kind, alert.currency, alert.base_currency, alert.direction, alert.threshold)}`}
+                      />
                       <span />
                     </label>
                     <button type="button" className="alert-list__delete" onClick={() => removeAlert(alert.id)} aria-label="Eliminar alerta" title="Eliminar alerta">×</button>

@@ -41,10 +41,10 @@ function readPreferences(userId: string): Preferences {
     return {
       ...defaults,
       ...saved,
-      theme: saved.theme === 'light' ? 'light' : saved.theme === 'dark' ? 'dark' : defaults.theme,
+      theme: getTheme(),
     }
   } catch {
-    return defaults
+    return { ...defaults, theme: getTheme() }
   }
 }
 
