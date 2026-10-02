@@ -47,6 +47,7 @@ interface AlertsContextValue {
   toastNotification: Notification | null
   dismissToast: () => void
   unreadCount: number
+  rateAlertsAvailable: boolean | null
 }
 
 const AlertsContext = createContext<AlertsContextValue | null>(null)
@@ -67,6 +68,7 @@ const EMPTY_ALERTS: AlertsContextValue = {
   toastNotification: null,
   dismissToast: () => undefined,
   unreadCount: 0,
+  rateAlertsAvailable: null,
 }
 
 export function AlertsProvider({ children }: { children: ReactNode }) {
@@ -76,6 +78,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [rateAlertsAvailable, setRateAlertsAvailable] = useState<boolean | null>(null)
   const [toastNotification, setToastNotification] = useState<Notification | null>(null)
   const knownNotificationIds = useRef(new Set<string>())
   const notificationsInitialized = useRef(false)
@@ -85,6 +88,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     setAlerts([])
     setNotifications([])
     setToastNotification(null)
+    setRateAlertsAvailable(null)
     knownNotificationIds.current.clear()
     notificationsInitialized.current = false
     const loadNotifications = async () => {
@@ -103,8 +107,14 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     }
 
     const alertsRequest = getAlerts(userId).then((nextAlerts) => {
-      if (!cancelled) setAlerts(nextAlerts)
-    }).catch(() => !cancelled && setError('No pudimos cargar tus alertas. Inténtalo de nuevo.'))
+      if (cancelled) return
+      setRateAlertsAvailable(true)
+      setAlerts(nextAlerts)
+    }).catch(() => {
+      if (cancelled) return
+      setRateAlertsAvailable(false)
+      setError('No pudimos cargar tus alertas. Inténtalo de nuevo.')
+    })
     const notificationsRequest = getNotifications(userId).then((nextNotifications) => {
       if (cancelled) return
       setNotifications(nextNotifications)
@@ -244,6 +254,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
         toastNotification,
         dismissToast,
         unreadCount: notifications.filter((item) => !item.read).length,
+        rateAlertsAvailable,
       }}
     >
       {children}

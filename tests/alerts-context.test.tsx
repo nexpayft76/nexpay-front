@@ -57,10 +57,10 @@ describe('AlertsContext', () => {
     vi.clearAllMocks()
     service.getAlerts.mockResolvedValue([lowBalanceAlert, depositAlert])
     service.getNotifications.mockResolvedValue([])
-    service.createAlert.mockImplementation(async (input) => ({ ...lowBalanceAlert, ...input, id: 'created-alert' }))
-    service.updateAlert.mockImplementation(async (id, changes) => ({ ...lowBalanceAlert, id, ...changes }))
+    service.createAlert.mockImplementation(async (_userId, input) => ({ ...lowBalanceAlert, ...input, id: 'created-alert' }))
+    service.updateAlert.mockImplementation(async (id, _userId, changes) => ({ ...lowBalanceAlert, id, ...changes }))
     service.deleteNotification.mockResolvedValue(undefined)
-    service.createLocalNotification.mockImplementation((notification) => notification)
+    service.createLocalNotification.mockImplementation((_userId, notification) => notification)
   })
 
   it('dispara recarga recibida y saldo bajo después de operaciones reales', async () => {

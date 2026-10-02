@@ -99,12 +99,21 @@ export async function updateAlert(
 }
 
 export async function deleteAlert(userId: string, id: string): Promise<void> {
+  const rules = localRules(userId)
+  const localRuleExists = rules.some((item) => item.id === id)
+  if (id.startsWith('local-')) {
+    if (!localRuleExists) throw new ApiError('http', 'La alerta local no existe.', 404)
+    saveRules(userId, rules.filter((item) => item.id !== id))
+    return
+  }
+
   try {
     await api.delete(`/api/alerts/${id}`)
   } catch (error) {
-    if (!canUseLocalFallback(error)) throw error
-    saveRules(userId, localRules(userId).filter((item) => item.id !== id))
+    if (!canUseLocalFallback(error) || !localRuleExists) throw error
   }
+
+  if (localRuleExists) saveRules(userId, rules.filter((item) => item.id !== id))
 }
 
 export async function getNotifications(userId: string): Promise<Notification[]> {

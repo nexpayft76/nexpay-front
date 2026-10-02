@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { useAlerts } from '../../contexts/AlertsContext'
 import { usePreferences } from '../../contexts/PreferencesContext'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
@@ -35,7 +35,7 @@ function formatRule(kind: AlertKind, currency: string, base: string, direction: 
 
 function AlertsPage() {
   useDocumentTitle('Alertas')
-  const { alerts, loading, error, addAlert, editAlert, toggleAlert, removeAlert } = useAlerts()
+  const { alerts, loading, error, addAlert, editAlert, toggleAlert, removeAlert, rateAlertsAvailable } = useAlerts()
   const { emailNotifications } = usePreferences()
   const [form, setForm] = useState(() => ({ ...initialForm, email_enabled: emailNotifications }))
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -43,6 +43,13 @@ function AlertsPage() {
   const [formError, setFormError] = useState<string | null>(null)
   const isRateRule = form.kind === 'daily_change' || form.kind === 'target_rate'
   const needsThreshold = form.kind !== 'deposit_received'
+  const backendRuleKinds: AlertKind[] = ['daily_change', 'target_rate', 'stale_rates']
+
+  useEffect(() => {
+    if (rateAlertsAvailable === false && !editingId && backendRuleKinds.includes(form.kind)) {
+      setForm((current) => ({ ...current, kind: 'low_balance' }))
+    }
+  }, [editingId, form.kind, rateAlertsAvailable])
 
   function updateForm<K extends keyof CreateAlertInput>(key: K, value: CreateAlertInput[K]) {
     setForm((current) => ({ ...current, [key]: value }))
@@ -112,10 +119,10 @@ function AlertsPage() {
           <label className="field">
             <span>Tipo de alerta</span>
             <select value={form.kind} onChange={(event) => updateForm('kind', event.target.value as AlertKind)}>
-              <option value="daily_change">Variación diaria</option>
-              <option value="target_rate">Tasa objetivo</option>
+              <option value="daily_change" disabled={rateAlertsAvailable === false}>Variación diaria</option>
+              <option value="target_rate" disabled={rateAlertsAvailable === false}>Tasa objetivo</option>
               <option value="low_balance">Saldo bajo</option>
-              <option value="stale_rates">Fuente desactualizada</option>
+              <option value="stale_rates" disabled={rateAlertsAvailable === false}>Fuente desactualizada</option>
               <option value="deposit_received">Recarga recibida</option>
             </select>
           </label>
