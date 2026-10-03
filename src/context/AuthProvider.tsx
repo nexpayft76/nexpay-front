@@ -6,8 +6,10 @@ import {
 	register as registerRequest,
 } from '../services/auth.service'
 import { ApiError } from '../services/api'
+import { closeMyAccount, updateMyProfile } from '../services/user.service'
 import { onSessionExpired, removeLegacyToken, setSessionActive } from '../services/session'
 import type { AuthResult, AuthUser, LoginPayload, RegisterPayload } from '../types/auth'
+import type { UpdateProfilePayload } from '../types/user'
 import { logger } from '../utils/logger'
 import { AuthContext } from './AuthContext'
 
@@ -112,8 +114,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		}
 	}
 
+	async function updateProfile(payload: UpdateProfilePayload) {
+		setUser(await updateMyProfile(payload))
+	}
+
+	/** El back ya invalidó el token y borró la cookie: solo falta cerrar la sesión en esta pestaña. */
+	async function closeAccount(password: string) {
+		await closeMyAccount(password)
+		setSessionActive(false)
+		setSessionExpired(false)
+		setExpiresAt(null)
+		setUser(null)
+	}
+
 	return (
-		<AuthContext.Provider value={{ user, isLoading, sessionExpired, login, register, logout }}>
+		<AuthContext.Provider value={{ user, isLoading, sessionExpired, login, register, logout, updateProfile, closeAccount }}>
 			{children}
 		</AuthContext.Provider>
 	)
