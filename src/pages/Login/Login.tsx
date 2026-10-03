@@ -90,6 +90,9 @@ function Login() {
             <span id="login-password-hint" className="auth-hint" aria-live="polite">
               {passwordError && <span className="auth-hint--error">{passwordError}</span>}
             </span>
+            <Link className="auth-forgot-password" to="/forgot-password" state={{ email }}>
+              ¿Olvidaste tu contraseña?
+            </Link>
           </div>
           {error && <p className="auth-error" role="alert">{error}</p>}
           <button className="btn btn--primary btn--lg auth-form__submit" type="submit" disabled={isSubmitting}>

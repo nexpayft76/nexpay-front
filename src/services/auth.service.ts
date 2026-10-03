@@ -6,6 +6,14 @@ export async function login(payload: LoginPayload): Promise<AuthResult> {
 	return data.data
 }
 
+export async function requestPasswordReset(email: string): Promise<void> {
+	await api.post('/api/auth/password-reset/request', { email })
+}
+
+export async function resetPassword(token: string, new_password: string): Promise<void> {
+	await api.post('/api/auth/password-reset/confirm', { token, new_password })
+}
+
 export async function register(payload: RegisterPayload): Promise<AuthResult> {
 	const { data } = await api.post<AuthResponse>('/api/auth/register', payload)
 	return data.data
