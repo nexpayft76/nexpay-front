@@ -3,14 +3,28 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import AssistantWidget from '../src/components/assistant/AssistantWidget'
 import { ApiError } from '../src/services/api'
-import { getAssistantModels, sendAssistantMessage, type AssistantModel } from '../src/services/assistant.service'
+import {
+  getAssistantModels,
+  sendAssistantMessage,
+  sendGuestAssistantMessage,
+  type AssistantModel,
+} from '../src/services/assistant.service'
 
-vi.mock('../src/services/assistant.service', () => ({ sendAssistantMessage: vi.fn(), getAssistantModels: vi.fn() }))
+vi.mock('../src/services/assistant.service', () => ({
+  sendAssistantMessage: vi.fn(),
+  sendGuestAssistantMessage: vi.fn(),
+  getAssistantModels: vi.fn(),
+}))
+
+/** Usuario con sesión, o null para probar el chat de visitante (landing). */
+const ANA = { id: 'user-1', full_name: 'Ana Pérez', email: 'ana@nexpay.com' }
+let currentUser: typeof ANA | null = ANA
 vi.mock('../src/hooks/useAuth', () => ({
-  useAuth: () => ({ user: { id: 'user-1', full_name: 'Ana Pérez', email: 'ana@nexpay.com' } }),
+  useAuth: () => ({ user: currentUser, isLoading: false }),
 }))
 
 const mockedSend = vi.mocked(sendAssistantMessage)
+const mockedGuestSend = vi.mocked(sendGuestAssistantMessage)
 const mockedModels = vi.mocked(getAssistantModels)
 
 const MODELS: AssistantModel[] = [
@@ -32,7 +46,23 @@ describe('AssistantWidget', () => {
   beforeEach(() => {
     sessionStorage.clear()
     vi.clearAllMocks()
+    currentUser = ANA
     mockedModels.mockResolvedValue(MODELS)
+  })
+
+  it('sin sesión (landing): saluda como visitante, sugiere lo básico y usa el chat público', async () => {
+    currentUser = null
+    mockedGuestSend.mockResolvedValue(answer('Toca "Crear cuenta" arriba a la derecha.'))
+    render(<AssistantWidget />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Abrir asistente de NexPay' }))
+    expect(screen.getByText(/¡Hola! Soy Nexa/)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '¿Cuál es mi saldo total?' })).not.toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: '¿Cómo creo una cuenta?' }))
+    expect(await screen.findByText(/Crear cuenta/)).toBeInTheDocument()
+    expect(mockedGuestSend).toHaveBeenCalledWith('¿Cómo creo una cuenta?', [], undefined)
+    expect(mockedSend).not.toHaveBeenCalled()
   })
 
   it('abre el panel, saluda por el nombre y responde una pregunta sugerida', async () => {

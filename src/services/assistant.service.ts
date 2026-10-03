@@ -40,6 +40,20 @@ export async function sendAssistantMessage(
   return data.data
 }
 
+/** Visitante sin sesión (landing): Nexa responde solo información pública. */
+export async function sendGuestAssistantMessage(
+  message: string,
+  history: AssistantTurn[],
+  model?: string,
+): Promise<AssistantReply> {
+  const { data } = await api.post<{ data: AssistantReply }>(
+    '/api/assistant/public/chat',
+    { message, history, ...(model && { model }) },
+    { timeout: 45_000 },
+  )
+  return data.data
+}
+
 /** Modelos del asistente, del más capaz al más básico, con su estado. */
 export async function getAssistantModels(): Promise<AssistantModel[]> {
   const { data } = await api.get<{ data: AssistantModel[] }>('/api/assistant/models')
