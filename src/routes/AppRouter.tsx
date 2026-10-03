@@ -16,6 +16,7 @@ const ExchangePage = lazy(() => import('../pages/Operations/ExchangePage'))
 const QuotePage = lazy(() => import('../pages/Quote/QuotePage'))
 const AlertsPage = lazy(() => import('../pages/Alerts/AlertsPage'))
 const PreferencesPage = lazy(() => import('../pages/Preferences/PreferencesPage'))
+const ProfilePage = lazy(() => import('../pages/Profile/ProfilePage'))
 
 /** Mientras se descarga una pantalla. */
 function PageLoading() {
@@ -66,16 +67,7 @@ function AppRouter() {
               <Route index element={<Navigate to="alertas" replace />} />
               <Route path="alertas" element={<AlertsPage />} />
               <Route path="preferencias" element={<PreferencesPage />} />
-              <Route
-                path="usuario"
-                element={
-                  <ComingSoon
-                    icon="user"
-                    title="Usuario"
-                    description="Tus datos personales: ver, editar tu nombre y email, y cerrar tu cuenta."
-                  />
-                }
-              />
+              <Route path="usuario" element={<ProfilePage />} />
             </Route>
           </Route>
 
