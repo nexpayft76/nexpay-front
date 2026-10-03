@@ -11,6 +11,7 @@ import {
 } from '../services/alerts.service'
 import type { AlertRule, CreateAlertInput, Notification } from '../types/alerts'
 import { AuthContext } from '../context/AuthContext'
+import { logger } from '../utils/logger'
 
 const NOTIFICATION_POLL_MS = 15_000
 
@@ -81,6 +82,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
   const [rateAlertsAvailable, setRateAlertsAvailable] = useState<boolean | null>(null)
   const [toastNotification, setToastNotification] = useState<Notification | null>(null)
   const knownNotificationIds = useRef(new Set<string>())
+  const processedNotificationIds = useRef(new Set<string>())
   const notificationsInitialized = useRef(false)
 
   useEffect(() => {
@@ -90,6 +92,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     setToastNotification(null)
     setRateAlertsAvailable(null)
     knownNotificationIds.current.clear()
+    processedNotificationIds.current.clear()
     notificationsInitialized.current = false
     const loadNotifications = async () => {
       try {
@@ -168,19 +171,27 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     setNotifications((current) => current.filter((item) => item.id !== id))
   }
 
-  function addLocalNotification(notification: Notification) {
-    let created = notification
+  async function addLocalNotification(notification: Notification) {
+    if (processedNotificationIds.current.has(notification.id)) return
+    processedNotificationIds.current.add(notification.id)
+
     try {
-      created = createLocalNotification(userId, notification)
-    } catch {
-      // Una falla de localStorage no debe interrumpir una operación ya confirmada.
-    }
-    setNotifications((current) => {
-      if (current.some((item) => item.id === created.id)) return current
+      const created = await createLocalNotification(userId, notification)
+      knownNotificationIds.current.add(notification.id)
       knownNotificationIds.current.add(created.id)
-      return [created, ...current]
-    })
-    setToastNotification(created)
+      setNotifications((current) => {
+        const withoutDuplicate = current.filter(
+          (item) => item.id !== created.id && item.id !== notification.id,
+        )
+        return [created, ...withoutDuplicate]
+      })
+      setToastNotification(created)
+    } catch (error) {
+      processedNotificationIds.current.delete(notification.id)
+      logger.warn('alertas', 'No se pudo guardar la notificación', {
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
   }
 
   const dismissToast = useCallback(() => setToastNotification(null), [])

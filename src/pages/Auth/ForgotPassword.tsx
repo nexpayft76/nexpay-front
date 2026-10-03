@@ -32,7 +32,7 @@ function ForgotPassword() {
     try {
       await requestPasswordReset(email.trim())
       setSubmitted(true)
-    } catch (requestError: unknown) {
+    } catch {
       setError('No se pudo procesar la solicitud. Inténtalo de nuevo.')
     } finally {
       setIsSubmitting(false)

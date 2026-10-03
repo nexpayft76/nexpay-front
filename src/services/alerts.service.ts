@@ -122,9 +122,27 @@ export async function getNotifications(userId: string): Promise<Notification[]> 
     const serverNotifications = unwrap(response.data)
     const local = localNotifications(userId)
     const seen = new Set(serverNotifications.map((notification) => notification.id))
-    return [...serverNotifications, ...local.filter((notification) => !seen.has(notification.id))].sort((a, b) =>
-      b.created_at.localeCompare(a.created_at),
-    )
+    const unmatchedServer = [...serverNotifications]
+    const localOnly = local.filter((notification) => {
+      if (seen.has(notification.id)) return false
+      const duplicateIndex = unmatchedServer.findIndex((serverNotification) => {
+        const timeDifference = Math.abs(
+          Date.parse(serverNotification.created_at) - Date.parse(notification.created_at),
+        )
+        return (
+          serverNotification.alert_id === notification.alert_id &&
+          serverNotification.title === notification.title &&
+          serverNotification.message === notification.message &&
+          Number.isFinite(timeDifference) &&
+          timeDifference <= 60_000
+        )
+      })
+      if (duplicateIndex === -1) return true
+      unmatchedServer.splice(duplicateIndex, 1)
+      return false
+    })
+    if (localOnly.length !== local.length) saveNotifications(userId, localOnly)
+    return [...serverNotifications, ...localOnly].sort((a, b) => b.created_at.localeCompare(a.created_at))
   } catch (error) {
     if (canUseLocalFallback(error)) return localNotifications(userId)
     throw error
@@ -144,30 +162,29 @@ export async function markNotificationRead(userId: string, id: string): Promise<
   }
 }
 
-export function createLocalNotification(userId: string, notification: Notification): Notification {
-  if (userId !== 'anonymous') {
+export async function createLocalNotification(userId: string, notification: Notification): Promise<Notification> {
+  const current = localNotifications(userId)
+  const existing = current.find((item) => item.id === notification.id)
+  if (existing) return existing
+
+  if (userId !== 'anonymous' && !notification.alert_id?.startsWith('local-')) {
     try {
-      const apiRequest = api.post<{ data: Notification }>('/api/notifications', {
+      const response = await api.post<{ data: Notification }>('/api/notifications', {
         type: notification.type,
         title: notification.title,
         message: notification.message,
         read: notification.read,
         alert_id: notification.alert_id ?? null,
       })
-      void apiRequest.then((response) => {
-        const created = unwrap(response.data)
-        const current = localNotifications(userId)
-        if (!current.some((item) => item.id === created.id)) {
-          saveNotifications(userId, [created, ...current])
-        }
-      }).catch(() => undefined)
-    } catch {
-      // El fallback local se usa si la API no está disponible.
+      const created = unwrap(response.data)
+      const remaining = current.filter((item) => item.id !== notification.id)
+      if (remaining.length !== current.length) saveNotifications(userId, remaining)
+      return created
+    } catch (error) {
+      if (!canUseLocalFallback(error)) throw error
     }
   }
 
-  const current = localNotifications(userId)
-  if (current.some((item) => item.id === notification.id)) return notification
   saveNotifications(userId, [notification, ...current])
   return notification
 }

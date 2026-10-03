@@ -44,6 +44,7 @@ function Harness() {
       <span data-testid="notification-count">{context.notifications.length}</span>
       <span data-testid="alert-count">{context.alerts.length}</span>
       <button onClick={() => context.recordDeposit({ transactionId: 'tx-deposit', currency: 'USD', amount: '500', newBalance: '500', createdAt: '2026-10-01T12:00:00.000Z' })}>Recarga de prueba</button>
+      <button onClick={() => context.recordDeposit({ transactionId: 'tx-deposit', currency: 'USD', amount: '500', newBalance: '500', createdAt: '2026-10-01T12:00:00.000Z' })}>Repetir recarga</button>
       <button onClick={() => context.recordExchange({ transactionId: 'tx-exchange', fromCurrency: 'EUR', fromBalance: '1.3', toCurrency: 'USD', toBalance: '500', createdAt: '2026-10-01T12:01:00.000Z' })}>Compra de prueba</button>
       <button onClick={() => context.addAlert({ kind: 'daily_change', currency: 'EUR', base_currency: 'USD', direction: 'up', threshold: 2, email_enabled: false })}>Crear regla</button>
       <button onClick={() => context.editAlert('alert-low-eur', { kind: 'low_balance', currency: 'EUR', base_currency: 'USD', direction: 'down', threshold: 5, email_enabled: false })}>Editar regla</button>
@@ -70,7 +71,9 @@ describe('AlertsContext', () => {
     await waitFor(() => expect(service.getAlerts).toHaveBeenCalled())
     await waitFor(() => expect(screen.getByTestId('alert-count')).toHaveTextContent('2'))
     await user.click(screen.getByRole('button', { name: 'Recarga de prueba' }))
-    expect(screen.getByTestId('notification-count')).toHaveTextContent('1')
+    await waitFor(() => expect(screen.getByTestId('notification-count')).toHaveTextContent('1'))
+    await user.click(screen.getByRole('button', { name: 'Repetir recarga' }))
+    expect(service.createLocalNotification).toHaveBeenCalledTimes(1)
 
     await user.click(screen.getByRole('button', { name: 'Compra de prueba' }))
     expect(service.createLocalNotification).toHaveBeenCalledTimes(2)
