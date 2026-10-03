@@ -27,6 +27,11 @@ function notificationKey(
   ])
 }
 
+function formatAlertAmount(value: string): string {
+  const amount = Number(value)
+  return Number.isFinite(amount) ? amount.toFixed(2) : value
+}
+
 interface DepositAlertEvent {
   transactionId: string
   currency: string
@@ -207,11 +212,14 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
       })
       setToastNotification(created)
     } catch (error) {
-      knownNotificationKeys.current.delete(key)
-      knownNotificationKeys.current.delete(notification.id)
       logger.warn('alertas', 'No se pudo guardar la notificación', {
         error: error instanceof Error ? error.message : String(error),
       })
+      setNotifications((current) => {
+        if (current.some((item) => notificationKey(item) === key)) return current
+        return [notification, ...current]
+      })
+      setToastNotification(notification)
     }
   }
 
@@ -225,7 +233,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
           id: `local-${alert.id}-${event.transactionId}-deposit`,
           type: 'system',
           title: `Recarga recibida en ${event.currency}`,
-          message: `Sumaste ${event.amount} ${event.currency} a tu wallet.`,
+          message: `Sumaste ${formatAlertAmount(event.amount)} ${event.currency} a tu wallet.`,
           read: false,
           created_at: event.createdAt,
           alert_id: alert.id,
@@ -236,7 +244,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
           id: `local-${alert.id}-${event.transactionId}-low`,
           type: 'rate_alert',
           title: `Saldo bajo en ${event.currency}`,
-          message: `Tu saldo quedó en ${event.newBalance} ${event.currency}.`,
+          message: `Tu saldo quedó en ${formatAlertAmount(event.newBalance)} ${event.currency}.`,
           read: false,
           created_at: event.createdAt,
           alert_id: alert.id,
@@ -258,7 +266,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
             id: `local-${alert.id}-${event.transactionId}-${balance.currency}-low`,
             type: 'rate_alert',
             title: `Saldo bajo en ${balance.currency}`,
-            message: `Tu saldo quedó en ${balance.balance} ${balance.currency}.`,
+            message: `Tu saldo quedó en ${formatAlertAmount(balance.balance)} ${balance.currency}.`,
             read: false,
             created_at: event.createdAt,
             alert_id: alert.id,

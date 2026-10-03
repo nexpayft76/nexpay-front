@@ -12,6 +12,9 @@ vi.mock('../src/services/api', () => ({
     status?: number
   },
 }))
+vi.mock('../src/utils/logger', () => ({
+  logger: { warn: vi.fn() },
+}))
 
 import { createLocalNotification, getNotifications } from '../src/services/alerts.service'
 
@@ -91,11 +94,25 @@ describe('alerts service notifications', () => {
     expect(JSON.parse(localStorage.getItem('nexpay_notifications:user-1') ?? '[]')).toEqual([])
   })
 
-  it('does not replace backend failures with a local success-shaped fallback', async () => {
-    const failure = Object.assign(new Error('server error'), { status: 500 })
-    api.post.mockRejectedValue(failure)
+  it.each([400, 429, 500, 503, undefined])(
+    'keeps the notification locally when backend persistence fails with status %s',
+    async (status) => {
+      const failure = Object.assign(new Error('backend unavailable'), { status })
+      api.post.mockRejectedValue(failure)
 
-    await expect(createLocalNotification('user-1', localNotification)).rejects.toBe(failure)
-    expect(localStorage.getItem('nexpay_notifications:user-1')).toBeNull()
+      const created = await createLocalNotification('user-1', localNotification)
+
+      expect(created).toEqual({ ...localNotification, source_event_key: localNotification.id })
+      expect(JSON.parse(localStorage.getItem('nexpay_notifications:user-1') ?? '[]')).toEqual([created])
+    },
+  )
+
+  it('does not lose the notification when local storage is unavailable after the backend fails', async () => {
+    api.post.mockRejectedValue(new Error('network unavailable'))
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Storage quota exceeded', 'QuotaExceededError')
+    })
+
+    await expect(createLocalNotification('user-1', localNotification)).rejects.toThrow('Storage quota exceeded')
   })
 })

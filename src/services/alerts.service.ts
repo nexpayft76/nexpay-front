@@ -1,5 +1,6 @@
 import { ApiError, api } from './api'
 import type { AlertRule, CreateAlertInput, Notification } from '../types/alerts'
+import { logger } from '../utils/logger'
 
 const ALERTS_STORAGE_KEY = 'nexpay_alert_rules'
 const NOTIFICATIONS_STORAGE_KEY = 'nexpay_notifications'
@@ -205,12 +206,23 @@ export async function createLocalNotification(userId: string, notification: Noti
       }
       return created
     } catch (error) {
-      if (!canUseLocalFallback(error)) throw error
+      logger.warn('alertas', 'No se pudo guardar la notificación en el backend; se usará el respaldo local.', {
+        status: (error as ApiError).status,
+        error: error instanceof Error ? error.message : String(error),
+        notificationId: notification.id,
+      })
     }
   }
 
-  saveNotifications(userId, [{ ...notification, source_event_key: notification.id }, ...current])
-  return notification
+  const latest = localNotifications(userId)
+  const fallback = latest.find(
+    (item) => item.source_event_key === notification.id || notificationKey(item) === key,
+  )
+  if (fallback) return fallback
+
+  const localNotification = { ...notification, source_event_key: notification.id }
+  saveNotifications(userId, [localNotification, ...latest])
+  return localNotification
 }
 
 export async function deleteNotification(userId: string, id: string): Promise<void> {
