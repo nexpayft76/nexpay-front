@@ -2,7 +2,6 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
-import { ApiError } from '../../services/api'
 import { requestPasswordReset } from '../../services/auth.service'
 import { validateEmail } from '../../utils/validators'
 import './Auth.css'
@@ -34,7 +33,7 @@ function ForgotPassword() {
       await requestPasswordReset(email.trim())
       setSubmitted(true)
     } catch (requestError: unknown) {
-      setError(requestError instanceof ApiError ? requestError.message : 'No se pudo enviar la solicitud.')
+      setError('No se pudo procesar la solicitud. Inténtalo de nuevo.')
     } finally {
       setIsSubmitting(false)
     }
@@ -64,7 +63,10 @@ function ForgotPassword() {
                   id="forgot-password-email"
                   type="email"
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) => {
+                    setEmail(event.target.value)
+                    setFieldError('')
+                  }}
                   onBlur={() => setFieldError(validateEmail(email) ?? '')}
                   autoComplete="email"
                   required

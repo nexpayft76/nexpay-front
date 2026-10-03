@@ -101,6 +101,29 @@ describe('Usuario: editar datos', () => {
     expect(await screen.findByText('nueva@nexpay.com', { selector: 'dd' })).toBeInTheDocument()
   })
 
+  it('bloquea el guardado durante la espera y la consulta de disponibilidad', async () => {
+    let resolveAvailability!: (available: boolean) => void
+    vi.mocked(authService.checkEmailAvailable).mockReturnValue(
+      new Promise((resolve) => {
+        resolveAvailability = resolve
+      }),
+    )
+    const user = await openEditor()
+
+    const email = screen.getByLabelText('Email')
+    await user.clear(email)
+    await user.type(email, 'pendiente@nexpay.com')
+    const save = screen.getByRole('button', { name: 'Guardar cambios' })
+
+    expect(save).toBeDisabled()
+    await waitFor(() => expect(authService.checkEmailAvailable).toHaveBeenCalledWith('pendiente@nexpay.com'))
+    expect(save).toBeDisabled()
+
+    resolveAvailability(true)
+    expect(await screen.findByText('✓ Email disponible')).toBeInTheDocument()
+    expect(save).toBeEnabled()
+  })
+
   it('si el email ya tiene otra cuenta lo avisa y no deja guardar', async () => {
     vi.mocked(authService.checkEmailAvailable).mockResolvedValue(false)
     const user = await openEditor()
@@ -141,6 +164,21 @@ describe('Usuario: editar datos', () => {
 
     expect(screen.getByRole('button', { name: 'Guardar cambios' })).toBeDisabled()
     expect(userService.updateMyProfile).not.toHaveBeenCalled()
+  })
+
+  it('limpia el error de formato obsoleto al corregir el email', async () => {
+    const user = await openEditor()
+    const email = screen.getByLabelText('Email')
+
+    await user.clear(email)
+    await user.type(email, 'email-invalido')
+    await user.tab()
+    expect(await screen.findByText('Ingresa un email válido.')).toBeInTheDocument()
+
+    await user.clear(email)
+    await user.type(email, 'valido@nexpay.com')
+    expect(screen.queryByText('Ingresa un email válido.')).not.toBeInTheDocument()
+    expect(email).toHaveAttribute('aria-invalid', 'false')
   })
 
   it('muestra el mensaje del back si falla el guardado (409) y deja seguir editando', async () => {
@@ -203,6 +241,26 @@ describe('Usuario: cerrar cuenta', () => {
     expect(await within(dialog).findByRole('alert')).toHaveTextContent('La contraseña es incorrecta')
     expect(screen.queryByText('Pantalla de login')).not.toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Tu usuario' })).toBeInTheDocument()
+  })
+
+  it('ignora envíos repetidos con Enter mientras la solicitud de cierre sigue activa', async () => {
+    let finishClose!: () => void
+    vi.mocked(userService.closeMyAccount).mockImplementation(
+      () => new Promise<void>((resolve) => {
+        finishClose = resolve
+      }),
+    )
+    const { user, dialog } = await openCloseDialog()
+    const password = within(dialog).getByLabelText('Contraseña')
+    await user.type(password, 'Secreta123')
+
+    await user.keyboard('{Enter}')
+    await waitFor(() => expect(userService.closeMyAccount).toHaveBeenCalledOnce())
+    await user.keyboard('{Enter}{Enter}')
+    expect(userService.closeMyAccount).toHaveBeenCalledOnce()
+
+    finishClose()
+    expect(await screen.findByText('Pantalla de login')).toBeInTheDocument()
   })
 
   it('si tiene saldo explica el motivo, lista los fondos con saldo y enlaza a Compra', async () => {
