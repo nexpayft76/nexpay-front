@@ -42,4 +42,19 @@ describe('Sidebar', () => {
     await user.click(screen.getByRole('button', { name: 'Configuración' }))
     expect(onExpandSidebar).toHaveBeenCalledOnce()
   })
+
+  it('Usuario ya no está marcado como "Pronto" y lleva a su pantalla', async () => {
+    const user = userEvent.setup()
+    render(
+      <MemoryRouter initialEntries={['/dashboard/configuracion/alertas']}>
+        <Sidebar {...baseProps} isOpen isDesktop />
+      </MemoryRouter>,
+    )
+
+    const link = screen.getByRole('link', { name: 'Usuario' })
+    expect(link).toHaveAttribute('href', '/dashboard/configuracion/usuario')
+    expect(link).not.toHaveTextContent(/Pronto/i)
+    await user.click(link)
+    expect(baseProps.onNavigate).toHaveBeenCalled()
+  })
 })
