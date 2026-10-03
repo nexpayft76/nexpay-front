@@ -33,4 +33,6 @@ export interface Notification {
   read: boolean
   created_at: string
   alert_id?: string
+  /** Clave local del evento de origen; permite reintentos idempotentes sin cambiar el ID del backend. */
+  source_event_key?: string
 }

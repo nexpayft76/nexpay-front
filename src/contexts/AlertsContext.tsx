@@ -15,6 +15,18 @@ import { logger } from '../utils/logger'
 
 const NOTIFICATION_POLL_MS = 15_000
 
+function notificationKey(
+  notification: Pick<Notification, 'alert_id' | 'type' | 'title' | 'message' | 'created_at'>,
+): string {
+  return JSON.stringify([
+    notification.alert_id ?? 'manual',
+    notification.type,
+    notification.title,
+    notification.message,
+    notification.created_at,
+  ])
+}
+
 interface DepositAlertEvent {
   transactionId: string
   currency: string
@@ -81,8 +93,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null)
   const [rateAlertsAvailable, setRateAlertsAvailable] = useState<boolean | null>(null)
   const [toastNotification, setToastNotification] = useState<Notification | null>(null)
-  const knownNotificationIds = useRef(new Set<string>())
-  const processedNotificationIds = useRef(new Set<string>())
+  const knownNotificationKeys = useRef(new Set<string>())
   const notificationsInitialized = useRef(false)
 
   useEffect(() => {
@@ -91,17 +102,21 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     setNotifications([])
     setToastNotification(null)
     setRateAlertsAvailable(null)
-    knownNotificationIds.current.clear()
-    processedNotificationIds.current.clear()
+    knownNotificationKeys.current.clear()
     notificationsInitialized.current = false
     const loadNotifications = async () => {
       try {
         const nextNotifications = await getNotifications(userId)
         if (cancelled) return
         const newUnread = notificationsInitialized.current
-          ? nextNotifications.find((notification) => !notification.read && !knownNotificationIds.current.has(notification.id))
+          ? nextNotifications.find(
+              (notification) => !notification.read && !knownNotificationKeys.current.has(notificationKey(notification)),
+            )
           : undefined
-        nextNotifications.forEach((notification) => knownNotificationIds.current.add(notification.id))
+        nextNotifications.forEach((notification) => {
+          knownNotificationKeys.current.add(notificationKey(notification))
+          if (notification.source_event_key) knownNotificationKeys.current.add(notification.source_event_key)
+        })
         setNotifications(nextNotifications)
         if (newUnread) setToastNotification(newUnread)
       } catch {
@@ -121,7 +136,10 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     const notificationsRequest = getNotifications(userId).then((nextNotifications) => {
       if (cancelled) return
       setNotifications(nextNotifications)
-      nextNotifications.forEach((notification) => knownNotificationIds.current.add(notification.id))
+      nextNotifications.forEach((notification) => {
+        knownNotificationKeys.current.add(notificationKey(notification))
+        if (notification.source_event_key) knownNotificationKeys.current.add(notification.source_event_key)
+      })
       notificationsInitialized.current = true
     }).catch(() => !cancelled && setError('No pudimos cargar tus notificaciones. Inténtalo de nuevo.'))
     Promise.allSettled([alertsRequest, notificationsRequest]).finally(() => !cancelled && setLoading(false))
@@ -172,22 +190,25 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
   }
 
   async function addLocalNotification(notification: Notification) {
-    if (processedNotificationIds.current.has(notification.id)) return
-    processedNotificationIds.current.add(notification.id)
+    const key = notificationKey(notification)
+    if (knownNotificationKeys.current.has(key) || knownNotificationKeys.current.has(notification.id)) return
+    knownNotificationKeys.current.add(key)
+    knownNotificationKeys.current.add(notification.id)
 
     try {
       const created = await createLocalNotification(userId, notification)
-      knownNotificationIds.current.add(notification.id)
-      knownNotificationIds.current.add(created.id)
+      const createdKey = notificationKey(created)
+      knownNotificationKeys.current.add(createdKey)
       setNotifications((current) => {
         const withoutDuplicate = current.filter(
-          (item) => item.id !== created.id && item.id !== notification.id,
+          (item) => item.id !== created.id && notificationKey(item) !== key && notificationKey(item) !== createdKey,
         )
         return [created, ...withoutDuplicate]
       })
       setToastNotification(created)
     } catch (error) {
-      processedNotificationIds.current.delete(notification.id)
+      knownNotificationKeys.current.delete(key)
+      knownNotificationKeys.current.delete(notification.id)
       logger.warn('alertas', 'No se pudo guardar la notificación', {
         error: error instanceof Error ? error.message : String(error),
       })

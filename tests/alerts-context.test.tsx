@@ -43,6 +43,7 @@ function Harness() {
     <>
       <span data-testid="notification-count">{context.notifications.length}</span>
       <span data-testid="alert-count">{context.alerts.length}</span>
+      <span data-testid="toast-id">{context.toastNotification?.id ?? ''}</span>
       <button onClick={() => context.recordDeposit({ transactionId: 'tx-deposit', currency: 'USD', amount: '500', newBalance: '500', createdAt: '2026-10-01T12:00:00.000Z' })}>Recarga de prueba</button>
       <button onClick={() => context.recordDeposit({ transactionId: 'tx-deposit', currency: 'USD', amount: '500', newBalance: '500', createdAt: '2026-10-01T12:00:00.000Z' })}>Repetir recarga</button>
       <button onClick={() => context.recordExchange({ transactionId: 'tx-exchange', fromCurrency: 'EUR', fromBalance: '1.3', toCurrency: 'USD', toBalance: '500', createdAt: '2026-10-01T12:01:00.000Z' })}>Compra de prueba</button>
@@ -77,6 +78,29 @@ describe('AlertsContext', () => {
 
     await user.click(screen.getByRole('button', { name: 'Compra de prueba' }))
     expect(service.createLocalNotification).toHaveBeenCalledTimes(2)
+  })
+
+  it('no vuelve a guardar ni mostrar el toast de un evento ya cargado tras remontar el provider', async () => {
+    const eventId = 'local-alert-deposit-usd-tx-deposit-deposit'
+    service.getNotifications.mockResolvedValue([{
+      id: 'server-notification-id',
+      source_event_key: eventId,
+      type: 'system',
+      title: 'Recarga recibida en USD',
+      message: 'Sumaste 500 USD a tu wallet.',
+      read: false,
+      created_at: '2026-10-01T12:00:01.000Z',
+      alert_id: depositAlert.id,
+    }])
+    const user = userEvent.setup()
+    render(<AlertsProvider><Harness /></AlertsProvider>)
+
+    await waitFor(() => expect(screen.getByTestId('notification-count')).toHaveTextContent('1'))
+    await user.click(screen.getByRole('button', { name: 'Recarga de prueba' }))
+
+    expect(service.createLocalNotification).not.toHaveBeenCalled()
+    expect(screen.getByTestId('notification-count')).toHaveTextContent('1')
+    expect(screen.getByTestId('toast-id')).toBeEmptyDOMElement()
   })
 
   it('expone las operaciones CRUD de reglas y elimina notificaciones', async () => {
