@@ -3,6 +3,7 @@ import { ApiError } from '../../services/api'
 import {
   getAssistantModels,
   sendAssistantMessage,
+  sendGuestAssistantMessage,
   type AssistantModel,
   type AssistantTurn,
 } from '../../services/assistant.service'
@@ -40,9 +41,13 @@ function write(key: string, value: unknown): void {
   }
 }
 
-export function useAssistantChat(userId: string) {
-  const messagesKey = `nexpay_assistant_${userId}`
-  const modelKey = `nexpay_assistant_model_${userId}`
+/**
+ * @param userId el usuario con sesión, o null para un visitante de la landing (chat público, sin datos de nadie).
+ */
+export function useAssistantChat(userId: string | null) {
+  const owner = userId ?? 'visitante'
+  const messagesKey = `nexpay_assistant_${owner}`
+  const modelKey = `nexpay_assistant_model_${owner}`
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     const saved = read<unknown>(messagesKey, [])
     return Array.isArray(saved) ? (saved as ChatMessage[]) : []
@@ -73,7 +78,10 @@ export function useAssistantChat(userId: string) {
     setError(null)
     setSending(true)
     try {
-      const result = await sendAssistantMessage(message, history, model === AUTO_MODEL ? undefined : model)
+      const chosen = model === AUTO_MODEL ? undefined : model
+      const result = userId
+        ? await sendAssistantMessage(message, history, chosen)
+        : await sendGuestAssistantMessage(message, history, chosen)
       setMessages((current) => [
         ...current,
         { id: Date.now() + 1, role: 'assistant', content: result.reply, modelLabel: result.model_label },

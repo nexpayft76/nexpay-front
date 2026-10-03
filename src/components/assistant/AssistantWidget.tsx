@@ -26,12 +26,20 @@ function modelOption(model: AssistantModel, now: number): string {
   return `${model.rank}. ${model.label} · ${model.tier} · ${status}`
 }
 
-/** Preguntas de ejemplo para arrancar la conversación. */
+/** Preguntas de ejemplo para arrancar la conversación (con sesión). */
 const SUGGESTIONS = [
   '¿Cuántos dólares son 100.000 pesos colombianos?',
   '¿Cuál es mi saldo total?',
   '¿Cómo compro dólares?',
   '¿Qué diferencia hay entre el dólar oficial y el MEP?',
+]
+
+/** Para un visitante de la landing: lo básico, sin datos de cuenta. */
+const GUEST_SUGGESTIONS = [
+  '¿Cuál es la tasa del dólar hoy?',
+  '¿Qué es NexPay?',
+  '¿Cómo creo una cuenta?',
+  '¿Cómo inicio sesión?',
 ]
 
 /**
@@ -67,13 +75,17 @@ function FormattedText({ text }: { text: string }) {
  * Solo enseña, explica, sugiere y calcula; las operaciones siempre las hace el usuario.
  */
 function AssistantWidget() {
-  const { user } = useAuth()
-  if (!user) return null
-  // key: si cambia la cuenta, la conversación empieza de cero.
-  return <AssistantPanel key={user.id} userId={user.id} firstName={user.full_name.split(' ')[0] ?? ''} />
+  const { user, isLoading } = useAuth()
+  // Mientras se verifica la sesión no se muestra, para no abrir el chat de visitante y cambiarlo enseguida.
+  if (isLoading) return null
+  // key: si cambia la cuenta (o se inicia sesión), la conversación empieza de cero.
+  if (!user) return <AssistantPanel key="visitante" userId={null} firstName="" />
+  return <AssistantPanel key={user.id} userId={user.id} firstName={user.full_name.trim().split(/\s+/)[0] ?? ''} />
 }
 
-function AssistantPanel({ userId, firstName }: { userId: string; firstName: string }) {
+/** userId null = visitante de la landing (chat público: tasas, cómo crear cuenta, iniciar sesión…). */
+function AssistantPanel({ userId, firstName }: { userId: string | null; firstName: string }) {
+  const isGuest = userId === null
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const [lastFailed, setLastFailed] = useState<string | null>(null)
@@ -170,11 +182,20 @@ function AssistantPanel({ userId, firstName }: { userId: string; firstName: stri
             {messages.length === 0 && (
               <div className="assistant__welcome">
                 <p>
-                  ¡Hola{firstName ? `, ${firstName}` : ''}! Soy {ASSISTANT_NAME}, la asistente de NexPay. Pregúntame sobre
-                  tu billetera, las monedas y sus tasas, o cómo hacer una operación.
+                  {isGuest ? (
+                    <>
+                      ¡Hola! Soy {ASSISTANT_NAME}, la asistente de NexPay. Pregúntame por las tasas del día, qué es
+                      NexPay o cómo crear tu cuenta.
+                    </>
+                  ) : (
+                    <>
+                      ¡Hola{firstName ? `, ${firstName}` : ''}! Soy {ASSISTANT_NAME}, la asistente de NexPay. Pregúntame
+                      sobre tu billetera, las monedas y sus tasas, o cómo hacer una operación.
+                    </>
+                  )}
                 </p>
                 <ul className="assistant__suggestions">
-                  {SUGGESTIONS.map((suggestion) => (
+                  {(isGuest ? GUEST_SUGGESTIONS : SUGGESTIONS).map((suggestion) => (
                     <li key={suggestion}>
                       <button type="button" onClick={() => void submit(suggestion)} disabled={sending}>
                         {suggestion}

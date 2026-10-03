@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import BackendStatus from '../../components/common/BackendStatus'
 import ThemeToggle from '../../components/common/ThemeToggle'
@@ -7,6 +8,9 @@ import CurrencyQuote from './CurrencyQuote'
 import RateChart from './RateChart'
 import WalletPreview from './WalletPreview'
 import './Landing.css'
+
+// El chat se descarga aparte, después de la landing: no suma peso a la primera carga.
+const AssistantWidget = lazy(() => import('../../components/assistant/AssistantWidget'))
 
 const SECTION_LINKS = [
   { href: '#billetera', label: 'Billetera' },
@@ -352,6 +356,11 @@ function Landing() {
           </div>
         </div>
       </footer>
+
+      {/* Nexa también en la landing: tasas del día, qué es NexPay, cómo crear cuenta o iniciar sesión. */}
+      <Suspense fallback={null}>
+        <AssistantWidget />
+      </Suspense>
     </div>
   )
 }
