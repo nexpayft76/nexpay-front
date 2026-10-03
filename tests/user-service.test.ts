@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { api } from '../src/services/api'
-import { closeMyAccount, updateMyProfile } from '../src/services/user.service'
+import { changeMyPassword, closeMyAccount, updateMyProfile } from '../src/services/user.service'
 
 describe('user.service', () => {
   beforeEach(() => vi.restoreAllMocks())
@@ -21,5 +21,16 @@ describe('user.service', () => {
     await closeMyAccount('Secreta123')
 
     expect(del).toHaveBeenCalledWith('/api/users/me', { data: { password: 'Secreta123' } })
+  })
+
+  it('changeMyPassword hace PATCH /api/users/me/password con la actual y la nueva', async () => {
+    const patch = vi.spyOn(api, 'patch').mockResolvedValue({ status: 204 })
+
+    await changeMyPassword('Secreta123', 'NuevaSecreta456')
+
+    expect(patch).toHaveBeenCalledWith('/api/users/me/password', {
+      current_password: 'Secreta123',
+      new_password: 'NuevaSecreta456',
+    })
   })
 })

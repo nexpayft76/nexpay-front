@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 import Icon from '../../components/common/Icon'
 import { useAuth } from '../../hooks/useAuth'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
+import { changeMyPassword } from '../../services/user.service'
 import type { UpdateProfilePayload } from '../../types/user'
+import ChangePasswordSection from './ChangePasswordSection'
 import CloseAccountSection from './CloseAccountSection'
 import ProfileDetails from './ProfileDetails'
 import ProfileEditForm from './ProfileEditForm'
@@ -65,6 +67,8 @@ function ProfilePage() {
             <Icon name="logout" size={18} /> Cerrar sesión
           </button>
         </div>
+
+        {user && <ChangePasswordSection onChange={changeMyPassword} />}
 
         {user && <CloseAccountSection onClose={closeAccount} />}
       </div>

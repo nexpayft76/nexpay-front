@@ -15,3 +15,11 @@ export async function updateMyProfile(payload: UpdateProfilePayload): Promise<Au
 export async function closeMyAccount(password: string): Promise<void> {
 	await api.delete('/api/users/me', { data: { password } })
 }
+
+/**
+ * Cambia la contraseña del usuario logueado (el back pide la actual). La sesión sigue abierta.
+ * 403 = la contraseña actual es incorrecta (NO es sesión vencida); 409 = cuenta sin contraseña (Google).
+ */
+export async function changeMyPassword(currentPassword: string, newPassword: string): Promise<void> {
+	await api.patch('/api/users/me/password', { current_password: currentPassword, new_password: newPassword })
+}
