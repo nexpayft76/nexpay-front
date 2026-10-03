@@ -7,6 +7,7 @@ import Sidebar from './Sidebar'
 import { AlertsProvider } from '../../contexts/AlertsContext'
 import { PreferencesProvider } from '../../contexts/PreferencesContext'
 import NotificationToast from '../notifications/NotificationToast'
+import AssistantWidget from '../assistant/AssistantWidget'
 import './Layout.css'
 
 /** Mismo valor que el breakpoint de Layout.css. */
@@ -94,6 +95,8 @@ function Layout() {
               <Outlet />
             </Suspense>
           </main>
+          {/* Asistente con IA: disponible en todas las pantallas con sesión. */}
+          <AssistantWidget />
         </div>
       </AlertsProvider>
     </PreferencesProvider>
