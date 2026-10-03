@@ -48,6 +48,7 @@ function CloseAccountSection({ onClose }: CloseAccountSectionProps) {
   }
 
   async function handleConfirm() {
+    if (busy) return
     if (!password) {
       setError('Ingresa tu contraseña para confirmar.')
       return

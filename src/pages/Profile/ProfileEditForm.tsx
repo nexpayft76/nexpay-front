@@ -38,7 +38,9 @@ function ProfileEditForm({ user, onSave, onCancel }: ProfileEditFormProps) {
 
   const payload = changedFields(user, { name, email })
   const hasChanges = Object.keys(payload).length > 0
-  const canSubmit = hasChanges && validateProfileForm({ name, email }) === undefined && !emailTaken
+  const emailCheckPending = emailChanged && (!emailSettled || availability === 'checking')
+  const canSubmit =
+    hasChanges && validateProfileForm({ name, email }) === undefined && !emailTaken && !emailCheckPending
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -93,7 +95,10 @@ function ProfileEditForm({ user, onSave, onCancel }: ProfileEditFormProps) {
             id="profile-email"
             type="email"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) => {
+              setEmail(event.target.value)
+              setTouched((current) => ({ ...current, email: false }))
+            }}
             onBlur={() => setTouched((current) => ({ ...current, email: true }))}
             autoComplete="email"
             required
