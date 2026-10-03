@@ -10,6 +10,8 @@ const Layout = lazy(() => import('../components/layout/Layout'))
 const ComingSoon = lazy(() => import('../pages/ComingSoon/ComingSoon'))
 const Login = lazy(() => import('../pages/Login/Login'))
 const Register = lazy(() => import('../pages/Register/Register'))
+const ForgotPassword = lazy(() => import('../pages/Auth/ForgotPassword'))
+const ResetPassword = lazy(() => import('../pages/Auth/ResetPassword'))
 const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'))
 const DepositPage = lazy(() => import('../pages/Operations/DepositPage'))
 const ExchangePage = lazy(() => import('../pages/Operations/ExchangePage'))
@@ -35,6 +37,8 @@ function AppRouter() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Todo lo que está bajo /dashboard exige sesión y comparte el Layout (barra + menú lateral). */}
           <Route

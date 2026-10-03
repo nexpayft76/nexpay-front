@@ -123,6 +123,18 @@
   font-weight: 700;
 }
 
+.auth-forgot-password {
+  justify-self: end;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-forgot-password:hover {
+  text-decoration: underline;
+}
+
 .auth-field input[aria-invalid='true'] {
   border-color: var(--color-danger);
 }
