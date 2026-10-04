@@ -1,0 +1,118 @@
+/* P2P: mercado, publicar y mis ofertas. Mobile first; reutiliza los estilos de Operaciones. */
+
+.p2p-tabs {
+  margin-block: 0.5rem 1rem;
+}
+
+.p2p-panel {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  max-width: 40rem;
+  min-width: 0;
+}
+
+.p2p {
+  display: grid;
+  gap: 1rem;
+}
+
+.p2p__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.p2p__filters label {
+  display: grid;
+  gap: 0.25rem;
+  flex: 1 1 8rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.p2p__list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.p2p-offer {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+}
+
+.p2p-offer > .btn {
+  justify-self: start;
+}
+
+.p2p-offer__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.p2p-offer__main {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.p2p-offer .op-hint {
+  margin: 0;
+}
+
+.p2p__notice {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  background: var(--color-primary-soft);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.p2p-status {
+  padding: 0.125rem 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.p2p-status--open {
+  border-color: var(--color-border-strong);
+  color: var(--color-primary);
+}
+
+.p2p-status--completed {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.p2p-offer__seller {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Reputación: solo el número de intercambios completados. */
+.p2p-reputation {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}

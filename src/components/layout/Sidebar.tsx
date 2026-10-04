@@ -33,7 +33,7 @@ const MENU: MenuItem[] = [
       { to: '/dashboard/operaciones/compra', label: 'Compra', icon: 'cart' },
     ],
   },
-  { to: '/dashboard/p2p', label: 'P2P', icon: 'p2p', soon: true },
+  { to: '/dashboard/p2p', label: 'P2P', icon: 'p2p' },
   {
     label: 'Configuración',
     icon: 'settings',
