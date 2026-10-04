@@ -63,7 +63,7 @@ function P2PMyOffers({ onChanged }: { onChanged: () => void }) {
   }
 
   return (
-    <div className="p2p">
+    <div className="p2p-market">
       {error && (
         <p className="op-error" role="alert">
           {error}
@@ -72,7 +72,7 @@ function P2PMyOffers({ onChanged }: { onChanged: () => void }) {
       {state.offers.length === 0 ? (
         <p className="op-summary op-summary--empty">Todavía no publicaste ofertas.</p>
       ) : (
-        <ul className="p2p__list">
+        <ul className="p2p-market__list">
           {state.offers.map((offer) => (
             <li key={offer.id} className="p2p-offer">
               <div className="p2p-offer__head">

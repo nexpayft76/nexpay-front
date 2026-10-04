@@ -69,8 +69,8 @@ function P2PMarket({ onAccepted }: { onAccepted: () => void }) {
   }
 
   return (
-    <div className="p2p">
-      <div className="p2p__filters">
+    <div className="p2p-market">
+      <div className="p2p-market__filters">
         <label>
           <span>Se vende</span>
           <select className="op-input" value={sellFilter} onChange={(event) => reload(() => setSellFilter(event.target.value))}>
@@ -99,7 +99,7 @@ function P2PMarket({ onAccepted }: { onAccepted: () => void }) {
       </div>
 
       {notice && (
-        <p className={notice.kind === 'ok' ? 'p2p__notice' : 'op-error'} role={notice.kind === 'ok' ? 'status' : 'alert'}>
+        <p className={notice.kind === 'ok' ? 'p2p-market__notice' : 'op-error'} role={notice.kind === 'ok' ? 'status' : 'alert'}>
           {notice.text}
         </p>
       )}
@@ -118,7 +118,7 @@ function P2PMarket({ onAccepted }: { onAccepted: () => void }) {
         <p className="op-summary op-summary--empty">No hay ofertas abiertas con estos filtros. ¡Publica la tuya!</p>
       )}
       {state.status === 'ok' && state.offers.length > 0 && (
-        <ul className="p2p__list">
+        <ul className="p2p-market__list">
           {state.offers.map((offer) => (
             <li key={offer.id} className="p2p-offer">
               <div className="p2p-offer__head">
