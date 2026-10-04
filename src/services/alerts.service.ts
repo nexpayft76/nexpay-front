@@ -1,9 +1,34 @@
 import { ApiError, api } from './api'
 import type { AlertRule, CreateAlertInput, Notification } from '../types/alerts'
+import { logger } from '../utils/logger'
 
 const ALERTS_STORAGE_KEY = 'nexpay_alert_rules'
 const NOTIFICATIONS_STORAGE_KEY = 'nexpay_notifications'
 const LOCAL_ALERT_KINDS = new Set(['low_balance', 'deposit_received'])
+
+function notificationKey(
+  notification: Pick<Notification, 'alert_id' | 'type' | 'title' | 'message' | 'created_at'>,
+): string {
+  return JSON.stringify([
+    notification.alert_id ?? 'manual',
+    notification.type,
+    notification.title,
+    notification.message,
+    notification.created_at,
+  ])
+}
+
+function isLegacyDuplicate(serverNotification: Notification, localNotification: Notification): boolean {
+  const timeDifference = Math.abs(Date.parse(serverNotification.created_at) - Date.parse(localNotification.created_at))
+  return (
+    serverNotification.alert_id === localNotification.alert_id &&
+    serverNotification.type === localNotification.type &&
+    serverNotification.title === localNotification.title &&
+    serverNotification.message === localNotification.message &&
+    Number.isFinite(timeDifference) &&
+    timeDifference <= 60_000
+  )
+}
 
 function scopedKey(key: string, userId: string): string {
   return `${key}:${userId}`
@@ -121,10 +146,22 @@ export async function getNotifications(userId: string): Promise<Notification[]> 
     const response = await api.get<{ data: Notification[] }>('/api/notifications')
     const serverNotifications = unwrap(response.data)
     const local = localNotifications(userId)
-    const seen = new Set(serverNotifications.map((notification) => notification.id))
-    return [...serverNotifications, ...local.filter((notification) => !seen.has(notification.id))].sort((a, b) =>
-      b.created_at.localeCompare(a.created_at),
+    const seen = new Set(serverNotifications.map(notificationKey))
+    const localOnly = local.filter((notification) => {
+      if (seen.has(notificationKey(notification))) return false
+      return !serverNotifications.some((serverNotification) => isLegacyDuplicate(serverNotification, notification))
+    })
+    const retainedLocal = local.filter(
+      (notification) =>
+        notification.source_event_key !== undefined ||
+        localOnly.some((localNotification) => localNotification.id === notification.id),
     )
+    if (retainedLocal.length !== local.length) saveNotifications(userId, retainedLocal)
+    const serverWithSourceKeys = serverNotifications.map((notification) => {
+      const cached = local.find((item) => notificationKey(item) === notificationKey(notification))
+      return cached?.source_event_key ? { ...notification, source_event_key: cached.source_event_key } : notification
+    })
+    return [...serverWithSourceKeys, ...localOnly].sort((a, b) => b.created_at.localeCompare(a.created_at))
   } catch (error) {
     if (canUseLocalFallback(error)) return localNotifications(userId)
     throw error
@@ -144,32 +181,48 @@ export async function markNotificationRead(userId: string, id: string): Promise<
   }
 }
 
-export function createLocalNotification(userId: string, notification: Notification): Notification {
-  if (userId !== 'anonymous') {
+export async function createLocalNotification(userId: string, notification: Notification): Promise<Notification> {
+  const current = localNotifications(userId)
+  const key = notificationKey(notification)
+  const existing = current.find(
+    (item) => item.source_event_key === notification.id || notificationKey(item) === key,
+  )
+  if (existing) return existing
+
+  if (userId !== 'anonymous' && !notification.alert_id?.startsWith('local-')) {
     try {
-      const apiRequest = api.post<{ data: Notification }>('/api/notifications', {
+      const response = await api.post<{ data: Notification }>('/api/notifications', {
         type: notification.type,
         title: notification.title,
         message: notification.message,
         read: notification.read,
         alert_id: notification.alert_id ?? null,
       })
-      void apiRequest.then((response) => {
-        const created = unwrap(response.data)
-        const current = localNotifications(userId)
-        if (!current.some((item) => item.id === created.id)) {
-          saveNotifications(userId, [created, ...current])
-        }
-      }).catch(() => undefined)
-    } catch {
-      // El fallback local se usa si la API no está disponible.
+      const created = unwrap(response.data)
+      const saved = localNotifications(userId)
+      const cached = { ...created, source_event_key: notification.id }
+      if (!saved.some((item) => item.source_event_key === notification.id || notificationKey(item) === notificationKey(created))) {
+        saveNotifications(userId, [cached, ...saved])
+      }
+      return created
+    } catch (error) {
+      logger.warn('alertas', 'No se pudo guardar la notificación en el backend; se usará el respaldo local.', {
+        status: (error as ApiError).status,
+        error: error instanceof Error ? error.message : String(error),
+        notificationId: notification.id,
+      })
     }
   }
 
-  const current = localNotifications(userId)
-  if (current.some((item) => item.id === notification.id)) return notification
-  saveNotifications(userId, [notification, ...current])
-  return notification
+  const latest = localNotifications(userId)
+  const fallback = latest.find(
+    (item) => item.source_event_key === notification.id || notificationKey(item) === key,
+  )
+  if (fallback) return fallback
+
+  const localNotification = { ...notification, source_event_key: notification.id }
+  saveNotifications(userId, [localNotification, ...latest])
+  return localNotification
 }
 
 export async function deleteNotification(userId: string, id: string): Promise<void> {

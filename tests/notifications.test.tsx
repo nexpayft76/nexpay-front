@@ -66,7 +66,11 @@ describe('Notificaciones', () => {
       await Promise.resolve()
     })
     expect(screen.getByTestId('alert-count')).toHaveTextContent('1')
-    act(() => fireEvent.click(screen.getByRole('button', { name: 'Disparar aviso' })))
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Disparar aviso' }))
+      await Promise.resolve()
+      await Promise.resolve()
+    })
     expect(screen.getByRole('status')).toHaveTextContent('Recarga recibida en USD')
     act(() => vi.advanceTimersByTime(3_000))
     expect(screen.queryByRole('status')).not.toBeInTheDocument()

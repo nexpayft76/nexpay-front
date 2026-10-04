@@ -43,7 +43,10 @@ function Harness() {
     <>
       <span data-testid="notification-count">{context.notifications.length}</span>
       <span data-testid="alert-count">{context.alerts.length}</span>
-      <button onClick={() => context.recordDeposit({ transactionId: 'tx-deposit', currency: 'USD', amount: '500', newBalance: '500', createdAt: '2026-10-01T12:00:00.000Z' })}>Recarga de prueba</button>
+      <span data-testid="toast-id">{context.toastNotification?.id ?? ''}</span>
+      <span data-testid="toast-message">{context.toastNotification?.message ?? ''}</span>
+      <button onClick={() => context.recordDeposit({ transactionId: 'tx-deposit', currency: 'USD', amount: '500.1', newBalance: '500.1', createdAt: '2026-10-01T12:00:00.000Z' })}>Recarga de prueba</button>
+      <button onClick={() => context.recordDeposit({ transactionId: 'tx-deposit', currency: 'USD', amount: '500.1', newBalance: '500.1', createdAt: '2026-10-01T12:00:00.000Z' })}>Repetir recarga</button>
       <button onClick={() => context.recordExchange({ transactionId: 'tx-exchange', fromCurrency: 'EUR', fromBalance: '1.3', toCurrency: 'USD', toBalance: '500', createdAt: '2026-10-01T12:01:00.000Z' })}>Compra de prueba</button>
       <button onClick={() => context.addAlert({ kind: 'daily_change', currency: 'EUR', base_currency: 'USD', direction: 'up', threshold: 2, email_enabled: false })}>Crear regla</button>
       <button onClick={() => context.editAlert('alert-low-eur', { kind: 'low_balance', currency: 'EUR', base_currency: 'USD', direction: 'down', threshold: 5, email_enabled: false })}>Editar regla</button>
@@ -70,10 +73,50 @@ describe('AlertsContext', () => {
     await waitFor(() => expect(service.getAlerts).toHaveBeenCalled())
     await waitFor(() => expect(screen.getByTestId('alert-count')).toHaveTextContent('2'))
     await user.click(screen.getByRole('button', { name: 'Recarga de prueba' }))
-    expect(screen.getByTestId('notification-count')).toHaveTextContent('1')
+    await waitFor(() => expect(screen.getByTestId('notification-count')).toHaveTextContent('1'))
+    expect(screen.getByTestId('toast-message')).toHaveTextContent('Sumaste 500.10 USD a tu wallet.')
+    await user.click(screen.getByRole('button', { name: 'Repetir recarga' }))
+    expect(service.createLocalNotification).toHaveBeenCalledTimes(1)
 
     await user.click(screen.getByRole('button', { name: 'Compra de prueba' }))
     expect(service.createLocalNotification).toHaveBeenCalledTimes(2)
+    expect(screen.getByTestId('toast-message')).toHaveTextContent('Tu saldo quedó en 1.30 EUR.')
+  })
+
+  it('no vuelve a guardar ni mostrar el toast de un evento ya cargado tras remontar el provider', async () => {
+    const eventId = 'local-alert-deposit-usd-tx-deposit-deposit'
+    service.getNotifications.mockResolvedValue([{
+      id: 'server-notification-id',
+      source_event_key: eventId,
+      type: 'system',
+      title: 'Recarga recibida en USD',
+      message: 'Sumaste 500.10 USD a tu wallet.',
+      read: false,
+      created_at: '2026-10-01T12:00:01.000Z',
+      alert_id: depositAlert.id,
+    }])
+    const user = userEvent.setup()
+    render(<AlertsProvider><Harness /></AlertsProvider>)
+
+    await waitFor(() => expect(screen.getByTestId('notification-count')).toHaveTextContent('1'))
+    await user.click(screen.getByRole('button', { name: 'Recarga de prueba' }))
+
+    expect(service.createLocalNotification).not.toHaveBeenCalled()
+    expect(screen.getByTestId('notification-count')).toHaveTextContent('1')
+    expect(screen.getByTestId('toast-id')).toBeEmptyDOMElement()
+  })
+
+  it('muestra el aviso de saldo aunque falle el almacenamiento de la notificación', async () => {
+    service.createLocalNotification.mockRejectedValueOnce(new Error('network unavailable'))
+    const user = userEvent.setup()
+    render(<AlertsProvider><Harness /></AlertsProvider>)
+
+    await waitFor(() => expect(screen.getByTestId('alert-count')).toHaveTextContent('2'))
+    await user.click(screen.getByRole('button', { name: 'Compra de prueba' }))
+
+    await waitFor(() => expect(screen.getByTestId('notification-count')).toHaveTextContent('1'))
+    expect(screen.getByTestId('toast-id')).toHaveTextContent('local-alert-low-eur-tx-exchange-EUR-low')
+    expect(screen.getByTestId('toast-message')).toHaveTextContent('Tu saldo quedó en 1.30 EUR.')
   })
 
   it('expone las operaciones CRUD de reglas y elimina notificaciones', async () => {

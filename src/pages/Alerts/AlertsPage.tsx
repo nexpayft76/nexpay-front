@@ -18,17 +18,18 @@ const initialForm: CreateAlertInput = {
 }
 
 function formatRule(kind: AlertKind, currency: string, base: string, direction: AlertDirection, threshold: number) {
+  const formattedThreshold = threshold.toFixed(2)
   if (kind === 'daily_change') {
-    return `Avisarme si ${currency} ${direction === 'up' ? 'sube' : 'baja'} más del ${threshold}% frente a ayer.`
+    return `Avisarme si ${currency} ${direction === 'up' ? 'sube' : 'baja'} más del ${formattedThreshold}% frente a ayer.`
   }
   if (kind === 'target_rate') {
-    return `Avisarme si 1 ${base} ${direction === 'up' ? 'supera' : 'baja de'} ${threshold} ${currency}.`
+    return `Avisarme si 1 ${base} ${direction === 'up' ? 'supera' : 'baja de'} ${formattedThreshold} ${currency}.`
   }
   if (kind === 'low_balance') {
-    return `Avisarme si mi saldo en ${currency} baja de ${threshold} ${currency}.`
+    return `Avisarme si mi saldo en ${currency} baja de ${formattedThreshold} ${currency}.`
   }
   if (kind === 'stale_rates') {
-    return `Avisarme si las tasas de ${currency} llevan más de ${threshold} minutos sin actualizarse.`
+    return `Avisarme si las tasas de ${currency} llevan más de ${formattedThreshold} minutos sin actualizarse.`
   }
   return `Avisarme cada vez que reciba una recarga en ${currency}.`
 }
@@ -169,7 +170,7 @@ function AlertsPage() {
                 <input
                   type="number"
                   min={form.kind === 'target_rate' ? '0' : '0.01'}
-                  step={form.kind === 'target_rate' ? 'any' : '0.01'}
+                  step="0.01"
                   value={form.threshold}
                   onChange={(event) => updateForm('threshold', Number(event.target.value))}
                   required

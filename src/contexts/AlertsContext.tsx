@@ -11,8 +11,26 @@ import {
 } from '../services/alerts.service'
 import type { AlertRule, CreateAlertInput, Notification } from '../types/alerts'
 import { AuthContext } from '../context/AuthContext'
+import { logger } from '../utils/logger'
 
 const NOTIFICATION_POLL_MS = 15_000
+
+function notificationKey(
+  notification: Pick<Notification, 'alert_id' | 'type' | 'title' | 'message' | 'created_at'>,
+): string {
+  return JSON.stringify([
+    notification.alert_id ?? 'manual',
+    notification.type,
+    notification.title,
+    notification.message,
+    notification.created_at,
+  ])
+}
+
+function formatAlertAmount(value: string): string {
+  const amount = Number(value)
+  return Number.isFinite(amount) ? amount.toFixed(2) : value
+}
 
 interface DepositAlertEvent {
   transactionId: string
@@ -80,7 +98,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null)
   const [rateAlertsAvailable, setRateAlertsAvailable] = useState<boolean | null>(null)
   const [toastNotification, setToastNotification] = useState<Notification | null>(null)
-  const knownNotificationIds = useRef(new Set<string>())
+  const knownNotificationKeys = useRef(new Set<string>())
   const notificationsInitialized = useRef(false)
 
   useEffect(() => {
@@ -89,16 +107,21 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     setNotifications([])
     setToastNotification(null)
     setRateAlertsAvailable(null)
-    knownNotificationIds.current.clear()
+    knownNotificationKeys.current.clear()
     notificationsInitialized.current = false
     const loadNotifications = async () => {
       try {
         const nextNotifications = await getNotifications(userId)
         if (cancelled) return
         const newUnread = notificationsInitialized.current
-          ? nextNotifications.find((notification) => !notification.read && !knownNotificationIds.current.has(notification.id))
+          ? nextNotifications.find(
+              (notification) => !notification.read && !knownNotificationKeys.current.has(notificationKey(notification)),
+            )
           : undefined
-        nextNotifications.forEach((notification) => knownNotificationIds.current.add(notification.id))
+        nextNotifications.forEach((notification) => {
+          knownNotificationKeys.current.add(notificationKey(notification))
+          if (notification.source_event_key) knownNotificationKeys.current.add(notification.source_event_key)
+        })
         setNotifications(nextNotifications)
         if (newUnread) setToastNotification(newUnread)
       } catch {
@@ -118,7 +141,10 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     const notificationsRequest = getNotifications(userId).then((nextNotifications) => {
       if (cancelled) return
       setNotifications(nextNotifications)
-      nextNotifications.forEach((notification) => knownNotificationIds.current.add(notification.id))
+      nextNotifications.forEach((notification) => {
+        knownNotificationKeys.current.add(notificationKey(notification))
+        if (notification.source_event_key) knownNotificationKeys.current.add(notification.source_event_key)
+      })
       notificationsInitialized.current = true
     }).catch(() => !cancelled && setError('No pudimos cargar tus notificaciones. Inténtalo de nuevo.'))
     Promise.allSettled([alertsRequest, notificationsRequest]).finally(() => !cancelled && setLoading(false))
@@ -168,19 +194,33 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
     setNotifications((current) => current.filter((item) => item.id !== id))
   }
 
-  function addLocalNotification(notification: Notification) {
-    let created = notification
+  async function addLocalNotification(notification: Notification) {
+    const key = notificationKey(notification)
+    if (knownNotificationKeys.current.has(key) || knownNotificationKeys.current.has(notification.id)) return
+    knownNotificationKeys.current.add(key)
+    knownNotificationKeys.current.add(notification.id)
+
     try {
-      created = createLocalNotification(userId, notification)
-    } catch {
-      // Una falla de localStorage no debe interrumpir una operación ya confirmada.
+      const created = await createLocalNotification(userId, notification)
+      const createdKey = notificationKey(created)
+      knownNotificationKeys.current.add(createdKey)
+      setNotifications((current) => {
+        const withoutDuplicate = current.filter(
+          (item) => item.id !== created.id && notificationKey(item) !== key && notificationKey(item) !== createdKey,
+        )
+        return [created, ...withoutDuplicate]
+      })
+      setToastNotification(created)
+    } catch (error) {
+      logger.warn('alertas', 'No se pudo guardar la notificación', {
+        error: error instanceof Error ? error.message : String(error),
+      })
+      setNotifications((current) => {
+        if (current.some((item) => notificationKey(item) === key)) return current
+        return [notification, ...current]
+      })
+      setToastNotification(notification)
     }
-    setNotifications((current) => {
-      if (current.some((item) => item.id === created.id)) return current
-      knownNotificationIds.current.add(created.id)
-      return [created, ...current]
-    })
-    setToastNotification(created)
   }
 
   const dismissToast = useCallback(() => setToastNotification(null), [])
@@ -193,7 +233,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
           id: `local-${alert.id}-${event.transactionId}-deposit`,
           type: 'system',
           title: `Recarga recibida en ${event.currency}`,
-          message: `Sumaste ${event.amount} ${event.currency} a tu wallet.`,
+          message: `Sumaste ${formatAlertAmount(event.amount)} ${event.currency} a tu wallet.`,
           read: false,
           created_at: event.createdAt,
           alert_id: alert.id,
@@ -204,7 +244,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
           id: `local-${alert.id}-${event.transactionId}-low`,
           type: 'rate_alert',
           title: `Saldo bajo en ${event.currency}`,
-          message: `Tu saldo quedó en ${event.newBalance} ${event.currency}.`,
+          message: `Tu saldo quedó en ${formatAlertAmount(event.newBalance)} ${event.currency}.`,
           read: false,
           created_at: event.createdAt,
           alert_id: alert.id,
@@ -226,7 +266,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
             id: `local-${alert.id}-${event.transactionId}-${balance.currency}-low`,
             type: 'rate_alert',
             title: `Saldo bajo en ${balance.currency}`,
-            message: `Tu saldo quedó en ${balance.balance} ${balance.currency}.`,
+            message: `Tu saldo quedó en ${formatAlertAmount(balance.balance)} ${balance.currency}.`,
             read: false,
             created_at: event.createdAt,
             alert_id: alert.id,
