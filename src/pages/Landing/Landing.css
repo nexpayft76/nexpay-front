@@ -308,20 +308,20 @@
   inset: 0;
   pointer-events: none;
   will-change: opacity;
-  /* Arriba (donde empieza la Tierra) y abajo se funde con el fondo, como en TradingView. */
-  -webkit-mask-image: linear-gradient(transparent 36%, #fff 55%, #fff 80%, transparent);
-  mask-image: linear-gradient(transparent 36%, #fff 55%, #fff 80%, transparent);
 }
 
 /* Intro y loop superpuestos: el que no corre se oculta, así el cambio no se nota. */
 .hero-video__media {
   position: absolute;
-  top: 38%;
+  top: 6%;
   left: 0;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center top;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  /* Arriba y abajo el video se funde con el fondo, como en TradingView. */
+  -webkit-mask-image: linear-gradient(transparent, #fff 22%, #fff 68%, transparent);
+  mask-image: linear-gradient(transparent, #fff 22%, #fff 68%, transparent);
 }
 
 .hero-video__media--hidden {
@@ -380,9 +380,28 @@
   }
 
   .hero-video__media {
-    top: 45%;
-    object-fit: cover;
+    top: 22%;
+    left: -40%;
+    width: 180%;
   }
+}
+
+/* Los textos van encima de la Tierra: una sombra suave los separa del brillo del video. */
+.hero-stage h1,
+.hero-stage .chip {
+  text-shadow: 0 2px 18px rgb(0 0 0 / 0.85), 0 0 4px rgb(0 0 0 / 0.6);
+}
+
+/* El dorado es un degradado recortado al texto: la sombra iría por encima, así que va como filtro. */
+.hero-stage h1 .gold-text {
+  text-shadow: none;
+  filter: drop-shadow(0 2px 10px rgb(0 0 0 / 0.9));
+}
+
+.hero-stage .chip {
+  background: rgb(0 0 0 / 0.45);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 
 /* Texto de presentación, debajo del video. */
@@ -1111,8 +1130,14 @@
 }
 
 @media (max-width: 560px) {
-  .landing-header__actions .btn--ghost {
-    display: none;
+  /* En el celular se ven "Iniciar sesión" y "Crear cuenta", más compactos para que entren junto al logo. */
+  .landing-header__actions {
+    gap: 0.35rem;
+  }
+
+  .landing-header__actions .btn:not(.btn--icon) {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.8125rem;
   }
 
   .landing .brand {
