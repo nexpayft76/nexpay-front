@@ -7,7 +7,6 @@ import ProtectedRoute from './ProtectedRoute'
 // El resto se descarga recién al entrar a cada pantalla: así el index-*.js que baja al abrir el sitio
 // es mucho más liviano y la landing carga antes.
 const Layout = lazy(() => import('../components/layout/Layout'))
-const ComingSoon = lazy(() => import('../pages/ComingSoon/ComingSoon'))
 const Login = lazy(() => import('../pages/Login/Login'))
 const Register = lazy(() => import('../pages/Register/Register'))
 const ForgotPassword = lazy(() => import('../pages/Auth/ForgotPassword'))
@@ -15,6 +14,7 @@ const ResetPassword = lazy(() => import('../pages/Auth/ResetPassword'))
 const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'))
 const DepositPage = lazy(() => import('../pages/Operations/DepositPage'))
 const ExchangePage = lazy(() => import('../pages/Operations/ExchangePage'))
+const P2PPage = lazy(() => import('../pages/P2P/P2PPage'))
 const QuotePage = lazy(() => import('../pages/Quote/QuotePage'))
 const AlertsPage = lazy(() => import('../pages/Alerts/AlertsPage'))
 const PreferencesPage = lazy(() => import('../pages/Preferences/PreferencesPage'))
@@ -57,16 +57,7 @@ function AppRouter() {
               <Route path="recarga" element={<DepositPage />} />
               <Route path="compra" element={<ExchangePage />} />
             </Route>
-            <Route
-              path="p2p"
-              element={
-                <ComingSoon
-                  icon="p2p"
-                  title="P2P"
-                  description="Intercambia pesos colombianos y argentinos directamente con otros usuarios del corredor, con una comisión pequeña."
-                />
-              }
-            />
+            <Route path="p2p" element={<P2PPage />} />
             <Route path="configuracion">
               <Route index element={<Navigate to="alertas" replace />} />
               <Route path="alertas" element={<AlertsPage />} />
