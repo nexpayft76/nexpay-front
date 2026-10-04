@@ -1,10 +1,11 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import BackendStatus from '../../components/common/BackendStatus'
 import ThemeToggle from '../../components/common/ThemeToggle'
 import NexpayLogo from '../../components/common/NexpayLogo'
 import { useAuth } from '../../hooks/useAuth'
 import CurrencyQuote from './CurrencyQuote'
+import HeroVideo from './HeroVideo'
 import RateChart from './RateChart'
 import WalletPreview from './WalletPreview'
 import './Landing.css'
@@ -75,6 +76,7 @@ const FOOTER_CHIPS = [
 
 function Landing() {
   const { user, isLoading, logout } = useAuth()
+  const heroStageRef = useRef<HTMLElement>(null)
 
   function goToLandingTop() {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
@@ -131,13 +133,36 @@ function Landing() {
       </header>
 
       <main>
-        <section className="hero container">
-          <p className="chip">Billetera multimoneda · USD · EUR · COP · ARS</p>
-          <h1>
-            Cada cambio de moneda esconde un costo.
-            <br />
-            <em className="gold-text">Nosotros lo mostramos.</em>
-          </h1>
+        {/* Hero estilo TradingView: fondo espacial con la Tierra en video, que se desvanece al bajar. */}
+        <section ref={heroStageRef} className="hero-stage">
+          <HeroVideo stageRef={heroStageRef} />
+          <div className="hero container">
+            <p className="chip">Billetera multimoneda · USD · EUR · COP · ARS</p>
+            <h1>
+              Cada cambio de moneda esconde un costo.
+              <br />
+              <em className="gold-text">Nosotros lo mostramos.</em>
+            </h1>
+            <div className="hero__cta">
+              <a href="#cotizador" className="btn-gold">
+                Probar el cotizador
+              </a>
+              {!isLoading && !user && (
+                <>
+                  <Link to="/register" className="btn-outline">
+                    Crear cuenta gratis
+                  </Link>
+                  <Link to="/login" className="hero__login">
+                    Ya tengo cuenta
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Va debajo del video para que se lea bien (sobre la Tierra se perdía). */}
+        <section className="hero-intro container" aria-label="Qué es NexPay">
           <p className="hero__lead">
             NexPay es tu billetera en dólares, euros, pesos colombianos y pesos argentinos: compras,
             vendes e intercambias entre las 4 monedas viendo la tasa real antes de confirmar. Y si vives
@@ -145,21 +170,6 @@ function Landing() {
             con alguien que necesita hacer el camino contrario</strong>, sin pasar por dólares. Operaciones
             simuladas, sin dinero real.
           </p>
-          <div className="hero__cta">
-            <a href="#cotizador" className="btn-gold">
-              Probar el cotizador
-            </a>
-            {!isLoading && !user && (
-              <>
-                <Link to="/register" className="btn-outline">
-                  Crear cuenta gratis
-                </Link>
-                <Link to="/login" className="hero__login">
-                  Ya tengo cuenta
-                </Link>
-              </>
-            )}
-          </div>
         </section>
 
         <section id="billetera" className="band band--line" aria-labelledby="wallet-title">
