@@ -2,7 +2,11 @@
    Prefijo p2p-market: la landing ya usa .p2p y sus estilos son globales (chocaban). */
 
 .p2p-tabs {
+  /* 4 pestañas: en el celular pasan a una segunda fila en vez de salirse de la pantalla. */
+  display: inline-flex;
+  flex-wrap: wrap;
   margin-block: 0.5rem 1rem;
+  border-radius: var(--radius-lg);
 }
 
 .p2p-panel {

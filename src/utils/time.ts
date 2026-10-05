@@ -33,3 +33,10 @@ export function formatPublishedDay(isoDate: string, now: number): string {
   const label = published.toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: '2-digit' })
   return `del ${label}`
 }
+
+/** Fecha y hora local: "4 oct 2026, 14:32". */
+export function formatDateTime(iso: string): string {
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return ''
+  return date.toLocaleString('es-AR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+}

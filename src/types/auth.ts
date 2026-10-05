@@ -14,8 +14,14 @@ export interface AuthUser {
 	full_name: string
 	email: string
 	status: 'active' | 'suspended' | 'closed'
+	/** Solo dos roles: usuario común o superusuario. */
+	role: UserRole
+	/** true solo en la cuenta propietaria de NexPay (recibe las comisiones). */
+	is_owner: boolean
 	created_at: string
 }
+
+export type UserRole = 'user' | 'superuser'
 
 /** Respuesta del login/registro. El token también llega en una cookie HttpOnly: el front no lo guarda. */
 export interface AuthResult {
