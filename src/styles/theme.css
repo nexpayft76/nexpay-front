@@ -103,8 +103,9 @@ h3 {
   font-stretch: expanded;
   font-style: normal;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   line-height: 1.12;
+  overflow-wrap: anywhere;
 }
 
 /* Logo en texto */

@@ -1,12 +1,15 @@
 /* Confirmación antes de mover dinero (recarga, compra). Mobile first. */
 .confirm-dialog {
   width: min(92vw, 26rem);
-  padding: 1.5rem;
+  max-height: calc(100dvh - 2rem);
+  padding: clamp(1rem, 4vw, 1.5rem);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   color: var(--color-text);
   box-shadow: var(--shadow);
+  overflow: auto;
+  overscroll-behavior: contain;
   text-align: center;
 }
 
@@ -57,4 +60,15 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0.75rem;
+}
+
+@media (max-width: 420px) {
+  .confirm-dialog {
+    width: calc(100vw - 1rem);
+    border-radius: var(--radius);
+  }
+
+  .confirm-dialog__actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

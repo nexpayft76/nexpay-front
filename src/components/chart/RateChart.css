@@ -51,7 +51,7 @@
 }
 
 .pair-select select {
-  min-height: 2.5rem;
+  min-height: 2.75rem;
   padding: 0.375rem 0.625rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -69,8 +69,8 @@
 }
 
 .pair-select__swap {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border: 1px solid var(--color-border);
   border-radius: 50%;
   background: var(--color-surface);
@@ -93,7 +93,7 @@
 }
 
 .range-tabs__option {
-  min-height: 2.5rem;
+  min-height: 2.75rem;
   border: 0;
   border-radius: calc(var(--radius) - 2px);
   background: transparent;
@@ -298,6 +298,35 @@
 
   .rate-chart__chips strong {
     font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .pair-select {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pair-select__swap {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .range-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .rate-chart__chips {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rate-chart__footer {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 360px) {
+  .range-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

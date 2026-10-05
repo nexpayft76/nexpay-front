@@ -38,7 +38,7 @@ const Navbar = forwardRef<HTMLButtonElement, NavbarProps>(function Navbar(
 
       <Link to="/" className="navbar__brand">
         <NexpayLogo size={28} />
-        NEXPAY
+        <span className="navbar__brand-text">NEXPAY</span>
       </Link>
 
       <div className="navbar__end">

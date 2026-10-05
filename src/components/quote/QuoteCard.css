@@ -384,6 +384,7 @@
 .rate-sources__detail {
   color: var(--color-text-muted);
   font-size: 0.9375rem;
+  overflow-wrap: anywhere;
 }
 
 .rate-sources li.is-stale .rate-sources__detail {
@@ -412,4 +413,35 @@
 
 .quote-field__row--end select {
   flex: 1;
+}
+
+@media (max-width: 480px) {
+  .quote-field__row {
+    flex-wrap: wrap;
+  }
+
+  .quote-field__row select {
+    flex: 1 1 5.5rem;
+  }
+
+  .quote-suggestion .btn {
+    width: 100%;
+  }
+
+  .quote-compare li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+  }
+
+  .quote-compare__amount,
+  .quote-compare__diff {
+    overflow-wrap: anywhere;
+    text-align: left;
+  }
+}
+
+@media (max-width: 360px) {
+  .segmented {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
