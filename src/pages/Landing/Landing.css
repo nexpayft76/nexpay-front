@@ -475,6 +475,13 @@
   max-width: none;
 }
 
+@media (min-width: 768px) {
+  .landing .container {
+    width: 90%;
+    max-width: none;
+  }
+}
+
 .band__note,
 .band__text {
   color: var(--l-text);
@@ -1134,12 +1141,6 @@
     flex-direction: row;
     border-inline: 0;
     border-block: 1px solid var(--l-line);
-  }
-}
-
-@media (min-width: 768px) {
-  .landing .container--narrow {
-    width: 90%;
   }
 }
 
