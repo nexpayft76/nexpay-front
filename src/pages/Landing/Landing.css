@@ -472,7 +472,14 @@
 }
 
 .container--narrow {
-  max-width: 1040px;
+  max-width: none;
+}
+
+@media (min-width: 768px) {
+  .landing .container {
+    width: 95%;
+    max-width: none;
+  }
 }
 
 .band__note,
