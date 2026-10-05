@@ -115,9 +115,9 @@ function SuperuserUsersPage() {
                   const locked = u.is_owner || u.id === me?.id
                   return (
                     <tr key={u.id}>
-                      <td>{u.full_name}</td>
-                      <td>{u.email}</td>
-                      <td>
+                      <td data-label="Nombre">{u.full_name}</td>
+                      <td data-label="Correo">{u.email}</td>
+                      <td data-label="Rol">
                         {locked ? (
                           <span className="history-type">{u.is_owner ? 'Propietario' : ROLE_LABEL[u.role]}</span>
                         ) : (
@@ -132,11 +132,11 @@ function SuperuserUsersPage() {
                           </select>
                         )}
                       </td>
-                      <td>
+                      <td data-label="Estado">
                         <span className={`history-type history-type--${u.status}`}>{STATUS_LABEL[u.status]}</span>
                       </td>
-                      <td>{formatDateTime(u.created_at)}</td>
-                      <td>
+                      <td data-label="Registro">{formatDateTime(u.created_at)}</td>
+                      <td data-label="Acciones">
                         {!locked && u.status !== 'closed' && (
                           <button
                             type="button"

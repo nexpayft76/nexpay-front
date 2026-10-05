@@ -39,7 +39,7 @@
 }
 
 .total-estimate select {
-  min-height: 2.5rem;
+  min-height: 2.75rem;
   padding: 0.375rem 0.625rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -47,6 +47,17 @@
   color: var(--color-text);
   font: inherit;
   font-weight: 700;
+}
+
+@media (max-width: 420px) {
+  .total-estimate__row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .total-estimate select {
+    width: 100%;
+  }
 }
 
 .total-estimate select:focus-visible {

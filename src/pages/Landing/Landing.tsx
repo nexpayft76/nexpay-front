@@ -1,6 +1,5 @@
 import { lazy, Suspense, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import BackendStatus from '../../components/common/BackendStatus'
 import ThemeToggle from '../../components/common/ThemeToggle'
 import NexpayLogo from '../../components/common/NexpayLogo'
 import { useAuth } from '../../hooks/useAuth'
@@ -362,7 +361,6 @@ function Landing() {
               </p>
               <p className="landing-footer__muted">nexpay.team@gmail.com</p>
             </div>
-            <BackendStatus />
           </div>
         </div>
       </footer>

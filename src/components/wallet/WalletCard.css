@@ -30,6 +30,7 @@
 
 .wallet-card__select {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
   color: var(--color-text-muted);
@@ -37,7 +38,8 @@
 }
 
 .wallet-card__select select {
-  padding: 0.375rem 0.625rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.625rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   background: var(--color-bg);
@@ -200,5 +202,18 @@
 @media (prefers-reduced-motion: reduce) {
   .wallet-skeleton {
     animation: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .wallet-card__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .wallet-card__select,
+  .wallet-card__select select,
+  .wallet-card__error .btn {
+    width: 100%;
   }
 }

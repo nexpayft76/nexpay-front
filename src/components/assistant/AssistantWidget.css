@@ -2,8 +2,8 @@
 .assistant {
   position: fixed;
   z-index: 75;
-  right: 1rem;
-  bottom: 1rem;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
 .assistant__toggle {
@@ -27,7 +27,7 @@
 
 .assistant__panel {
   position: fixed;
-  inset: 4.5rem 0.75rem 5.25rem;
+  inset: calc(var(--navbar-h, 3.5rem) + 0.75rem) 0.75rem calc(4.75rem + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -73,8 +73,8 @@
 .assistant__icon-btn {
   display: grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border: 0;
   border-radius: var(--radius);
   background: transparent;
@@ -89,6 +89,7 @@
 /* Selector del modelo de IA (ranking + estado del cupo). */
 .assistant__model {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
@@ -99,6 +100,7 @@
 
 .assistant__model select {
   flex: 1;
+  flex-basis: 12rem;
   min-width: 0;
   padding: 0.3rem 0.5rem;
   border: 1px solid var(--color-border);
@@ -151,6 +153,7 @@
 
 .assistant__suggestions button {
   width: 100%;
+  min-height: 2.75rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -278,6 +281,21 @@
   background: var(--color-primary);
   color: #0a0a0a;
   cursor: pointer;
+}
+
+@media (max-width: 420px) {
+  .assistant__panel {
+    inset-inline: 0.5rem;
+    border-radius: var(--radius);
+  }
+
+  .assistant__header {
+    align-items: center;
+  }
+
+  .assistant__header p {
+    display: none;
+  }
 }
 
 .assistant__send:disabled {

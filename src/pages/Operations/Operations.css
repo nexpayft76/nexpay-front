@@ -7,7 +7,7 @@
   width: 100%;
   max-width: 40rem;
   min-width: 0;
-  padding: 1rem;
+  padding: clamp(1rem, 4vw, 1.5rem);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
@@ -28,12 +28,14 @@
 }
 
 .op-badge {
+  max-width: 100%;
   padding: 0.125rem 0.625rem;
   border: 1px dashed var(--color-border);
   border-radius: 999px;
   color: var(--color-text-muted);
   font-size: 0.875rem;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .op-field {
@@ -52,6 +54,7 @@
 }
 
 .op-input {
+  width: 100%;
   min-height: 3rem;
   padding: 0.5rem 0.875rem;
   border: 1px solid var(--color-border);
@@ -100,6 +103,10 @@
   gap: 0.5rem;
 }
 
+.op-quick .btn {
+  flex: 1 1 9rem;
+}
+
 .op-error {
   margin: 0;
   padding: 0.625rem 0.875rem;
@@ -133,6 +140,11 @@
   font: inherit;
   font-weight: 800;
   cursor: pointer;
+}
+
+.currency-picker__code {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .currency-picker__option--active {
@@ -259,16 +271,18 @@
 
 /* Selector de dos opciones (tipo de dólar). */
 .op-segmented {
-  display: inline-grid;
-  grid-auto-flow: column;
+  display: inline-flex;
+  flex-wrap: wrap;
   justify-self: start;
+  max-width: 100%;
   padding: 0.25rem;
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: var(--color-bg);
 }
 
 .op-segmented__option {
+  flex: 1 1 7rem;
   min-height: 2.25rem;
   padding: 0 1rem;
   border: 0;
@@ -277,6 +291,9 @@
   color: var(--color-text-muted);
   font: inherit;
   font-weight: 700;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 
@@ -363,4 +380,31 @@
   color: var(--color-primary);
   font-size: 0.9375rem;
   font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .op-card__header,
+  .op-hint--row,
+  .op-summary dl > div {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .op-hint--row .btn,
+  .op-success__actions .btn,
+  .op-segmented,
+  .op-submit {
+    width: 100%;
+  }
+
+  .op-summary dd {
+    justify-items: start;
+    text-align: left;
+  }
+}
+
+@media (max-width: 380px) {
+  .currency-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

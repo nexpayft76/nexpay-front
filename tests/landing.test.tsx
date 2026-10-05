@@ -14,10 +14,6 @@ vi.mock('../src/services/auth.service', () => ({
   register: vi.fn(),
 }))
 
-vi.mock('../src/components/common/BackendStatus', () => ({
-  default: () => null,
-}))
-
 const mockedGetSession = vi.mocked(getSession)
 const mockedLogout = vi.mocked(logout)
 
