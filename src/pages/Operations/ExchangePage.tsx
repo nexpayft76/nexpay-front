@@ -16,7 +16,8 @@ import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { useOptionalAlerts } from '../../contexts/AlertsContext'
 
-const TYPE_LABEL: Record<ExchangeType, string> = { BUY: 'Compra', SELL: 'Venta', EXCHANGE: 'Intercambio' }
+// Compra, venta e intercambio son la misma operación para el usuario: un intercambio de balance.
+const TYPE_LABEL: Record<ExchangeType, string> = { BUY: 'Intercambio', SELL: 'Intercambio', EXCHANGE: 'Intercambio' }
 
 const ARS_OPTIONS: { value: ExchangeArsRate; label: string }[] = [
   { value: 'mep', label: 'MEP' },
@@ -47,9 +48,9 @@ function toInputText(value: number): string {
   return value.toLocaleString('es-AR', { maximumFractionDigits: 2 })
 }
 
-/** Operaciones → Compra: comprar, vender o intercambiar monedas con el saldo de la billetera. */
+/** Operaciones → Intercambio de balance: cambiar una moneda por otra con el saldo de la billetera. */
 function ExchangePage() {
-  useDocumentTitle('Comprar monedas')
+  useDocumentTitle('Intercambio de balance')
   const [from, setFrom] = useState('COP')
   const [to, setTo] = useState('USD')
   const [arsRate, setArsRate] = useState<ExchangeArsRate>('mep')
@@ -156,8 +157,8 @@ function ExchangePage() {
   return (
     <section className="dashboard-content" aria-labelledby="exchange-title">
       <p className="dashboard-eyebrow">Operaciones</p>
-      <h1 id="exchange-title">Comprar monedas</h1>
-      <p>Compra, vende o intercambia monedas con el saldo de tu billetera, a la tasa del momento.</p>
+      <h1 id="exchange-title">Intercambio de balance</h1>
+      <p>Cambia una moneda por otra con el saldo de tu billetera, a la tasa del momento.</p>
 
       <div className="op-layout">
         {result ? (
@@ -278,7 +279,7 @@ function ExchangePage() {
       {quote.status === 'ok' && (
         <ConfirmDialog
           open={confirming}
-          title={`¿Confirmas la ${TYPE_LABEL[quote.quote.type].toLowerCase()}?`}
+          title={`¿Confirmas el ${TYPE_LABEL[quote.quote.type].toLowerCase()}?`}
           confirmLabel="Sí, confirmar"
           busy={submitting}
           onConfirm={confirmExchange}
@@ -363,7 +364,7 @@ function ExchangeSuccess({ result, onAnother }: { result: ExchangeResult; onAnot
       <span className="op-success__icon" aria-hidden="true">
         ✓
       </span>
-      <h2>{TYPE_LABEL[result.type]} exitosa</h2>
+      <h2>{TYPE_LABEL[result.type]} exitoso</h2>
       <p>
         Pagaste <strong>{formatCurrency(Number(result.from_amount), result.from_currency)}</strong> y recibiste{' '}
         <strong>{formatCurrency(Number(result.to_amount), result.to_currency)}</strong>.

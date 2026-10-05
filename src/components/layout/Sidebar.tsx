@@ -1,5 +1,6 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef, useContext, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { AuthContext } from '../../context/AuthContext'
 import Icon, { type IconName } from '../common/Icon'
 
 interface MenuLink {
@@ -10,7 +11,7 @@ interface MenuLink {
   soon?: boolean
 }
 
-/** Ítem con submenú (ej. Operaciones → Compra). Se abre solo si estás en una de sus pantallas. */
+/** Ítem con submenú (ej. Operaciones → Intercambio de balance). Se abre solo si estás en una de sus pantallas. */
 interface MenuGroup {
   label: string
   icon: IconName
@@ -27,10 +28,10 @@ const MENU: MenuItem[] = [
     label: 'Operaciones',
     icon: 'transactions',
     basePath: '/dashboard/operaciones',
-    // Más adelante: Venta, Intercambio e Historial.
     children: [
       { to: '/dashboard/operaciones/recarga', label: 'Recarga', icon: 'plus' },
-      { to: '/dashboard/operaciones/compra', label: 'Compra', icon: 'cart' },
+      { to: '/dashboard/operaciones/intercambio', label: 'Intercambio de balance', icon: 'transactions' },
+      { to: '/dashboard/operaciones/historial', label: 'Historial', icon: 'history' },
     ],
   },
   { to: '/dashboard/p2p', label: 'P2P', icon: 'p2p' },
@@ -45,6 +46,19 @@ const MENU: MenuItem[] = [
     ],
   },
 ]
+
+/** Solo para superusuarios: ven y gestionan todo el sistema. */
+const SUPERUSER_MENU: MenuGroup = {
+  label: 'Superusuario',
+  icon: 'shield',
+  basePath: '/dashboard/superusuario',
+  children: [
+    { to: '/dashboard/superusuario/comisiones', label: 'Comisiones', icon: 'coins' },
+    { to: '/dashboard/superusuario/usuarios', label: 'Usuarios', icon: 'user' },
+    { to: '/dashboard/superusuario/transacciones', label: 'Transacciones', icon: 'transactions' },
+    { to: '/dashboard/superusuario/p2p', label: 'P2P del sistema', icon: 'p2p' },
+  ],
+}
 
 function isGroup(item: MenuItem): item is MenuGroup {
   return 'children' in item
@@ -69,6 +83,9 @@ const Sidebar = forwardRef<HTMLButtonElement, SidebarProps>(function Sidebar(
   closeButtonRef,
 ) {
   const collapsed = isDesktop && !isOpen
+  // Sin AuthProvider (algunos tests) el menú es el de un usuario común.
+  const isSuperuser = useContext(AuthContext)?.user?.role === 'superuser'
+  const menu = isSuperuser ? [...MENU, SUPERUSER_MENU] : MENU
 
   return (
     <>
@@ -91,7 +108,7 @@ const Sidebar = forwardRef<HTMLButtonElement, SidebarProps>(function Sidebar(
 
         <nav aria-label="Menú principal" className="sidebar__nav">
           <ul>
-            {MENU.map((item) =>
+            {menu.map((item) =>
               isGroup(item) ? (
                 <SidebarGroup
                   key={item.basePath}

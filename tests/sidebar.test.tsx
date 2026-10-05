@@ -22,7 +22,7 @@ describe('Sidebar', () => {
 
     await user.click(screen.getByRole('button', { name: 'Operaciones' }))
     expect(screen.getByRole('link', { name: 'Recarga' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Compra' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Intercambio de balance' })).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Configuración' }))
     expect(screen.getByRole('link', { name: 'Alertas' })).toBeInTheDocument()

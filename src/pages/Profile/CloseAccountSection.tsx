@@ -88,7 +88,7 @@ function CloseAccountSection({ onClose }: CloseAccountSectionProps) {
               ))}
             </ul>
           )}
-          <Link to="/dashboard/operaciones/compra">Ir a Compra para convertir tus fondos</Link>
+          <Link to="/dashboard/operaciones/intercambio">Ir a Intercambio de balance para convertir tus fondos</Link>
         </div>
       )}
 

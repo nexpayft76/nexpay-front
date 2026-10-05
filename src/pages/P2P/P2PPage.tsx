@@ -6,13 +6,15 @@ import P2PBalances from './P2PBalances'
 import P2PMarket from './P2PMarket'
 import P2PMyOffers from './P2PMyOffers'
 import P2PPublish from './P2PPublish'
+import P2PTrades from './P2PTrades'
 
-type Tab = 'market' | 'publish' | 'mine'
+type Tab = 'market' | 'publish' | 'mine' | 'history'
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'market', label: 'Mercado' },
   { id: 'publish', label: 'Publicar' },
   { id: 'mine', label: 'Mis ofertas' },
+  { id: 'history', label: 'Historial' },
 ]
 
 /** P2P: vende tus monedas a otros usuarios a la tasa que elijas (±10% del mercado). */
@@ -62,6 +64,7 @@ function P2PPage() {
           />
         )}
         {tab === 'mine' && <P2PMyOffers onChanged={refreshWallet} />}
+        {tab === 'history' && <P2PTrades />}
       </div>
     </section>
   )

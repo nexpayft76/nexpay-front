@@ -37,7 +37,7 @@ function renderPage() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<p>Pantalla de login</p>} />
-          <Route path="/dashboard/operaciones/compra" element={<p>Pantalla de compra</p>} />
+          <Route path="/dashboard/operaciones/intercambio" element={<p>Pantalla de intercambio</p>} />
           <Route
             path="/dashboard/configuracion/usuario"
             element={<ProtectedRoute><ProfilePage /></ProtectedRoute>}
@@ -263,7 +263,7 @@ describe('Usuario: cerrar cuenta', () => {
     expect(await screen.findByText('Pantalla de login')).toBeInTheDocument()
   })
 
-  it('si tiene saldo explica el motivo, lista los fondos con saldo y enlaza a Compra', async () => {
+  it('si tiene saldo explica el motivo, lista los fondos con saldo y enlaza a Intercambio de balance', async () => {
     vi.mocked(userService.closeMyAccount).mockRejectedValue(
       new ApiError('http', 'No se puede cerrar la cuenta mientras tengas saldo.', 409),
     )
@@ -280,8 +280,8 @@ describe('Usuario: cerrar cuenta', () => {
     expect(list).toHaveTextContent('25,50 USD')
     expect(list).not.toHaveTextContent('COP')
 
-    await user.click(screen.getByRole('link', { name: /Ir a Compra/ }))
-    expect(await screen.findByText('Pantalla de compra')).toBeInTheDocument()
+    await user.click(screen.getByRole('link', { name: /Ir a Intercambio de balance/ }))
+    expect(await screen.findByText('Pantalla de intercambio')).toBeInTheDocument()
   })
 
   it('si tiene saldo pero no se pudo consultar la billetera, igual explica el motivo', async () => {
@@ -294,7 +294,7 @@ describe('Usuario: cerrar cuenta', () => {
 
     expect(await screen.findByText('Todavía tienes saldo.')).toBeInTheDocument()
     expect(screen.queryByRole('list', { name: 'Saldos pendientes' })).not.toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Ir a Compra/ })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Ir a Intercambio de balance/ })).toBeInTheDocument()
   })
 
   it('con la contraseña correcta cierra la cuenta y manda al login', async () => {
