@@ -20,9 +20,47 @@ la tasa real y el costo antes de confirmar.
 | Rutas | React Router 7 (pantallas cargadas bajo demanda) |
 | HTTP | axios (cliente único con manejo de errores y logger) |
 | Gráficos | Recharts (se descarga solo al entrar al dashboard) |
-| Tests | Vitest + Testing Library |
+| Tests | Vitest + Testing Library (unitarios y de componentes) · Playwright (end to end) |
 | Lint | oxlint |
 | Deploy | Vercel |
+
+---
+
+## Tests end to end (Playwright)
+
+**284 tests** en 18 archivos (`e2e/tests/*.e2e.ts`). Corren en un Chromium real contra el front y **simulan el backend**
+(`e2e/support/mock-api.ts`, con datos en memoria que sí cambian), así que no necesitan `nexpay-back` ni internet.
+
+```bash
+npx playwright install chromium   # solo la primera vez
+npm run test:e2e                  # toda la suite (levanta Vite solo)
+npm run test:e2e:ui               # modo interactivo
+npm run test:e2e:report           # abre el último reporte HTML
+npx playwright test p2p           # solo un área
+```
+
+| Área | Componentes | Tests |
+|---|---|---:|
+| Registro | `Register`, `PasswordInput`, email disponible | 13 |
+| Inicio y cierre de sesión | `Login`, `AuthProvider`, 401 | 14 |
+| Recuperar contraseña | `ForgotPassword`, `ResetPassword` | 9 |
+| Rutas y permisos | `AppRouter`, `ProtectedRoute`, `SuperuserRoute` | 19 |
+| Navegación | `Layout`, `Navbar`, `Sidebar`, `ThemeToggle` | 15 |
+| Mi wallet | `Dashboard`, `TotalEstimate`, `WalletCard`, `RateChart` | 13 |
+| Cotizador | `QuoteCard`, `RateSources` | 18 |
+| Recarga | `DepositPage`, `ConfirmDialog` | 17 |
+| Intercambio de balance | `ExchangePage` | 19 |
+| Historial | `HistoryPage`, `Pagination` | 9 |
+| P2P | Mercado, Publicar, Mis ofertas, Historial | 25 |
+| Alertas | `AlertsPage`, `AlertsContext` | 14 |
+| Notificaciones | `NotificationBell`, `NotificationToast` | 13 |
+| Preferencias | `PreferencesPage`, `PreferencesContext` | 11 |
+| Usuario | editar datos, cambiar contraseña, cerrar cuenta | 22 |
+| Superusuario | Comisiones, Usuarios, Transacciones, P2P | 19 |
+| Landing | `Landing`, `CurrencyQuote`, `WalletPreview` | 19 |
+| Asistente Nexa | `AssistantWidget`, `useAssistantChat` | 15 |
+
+El detalle de cada test (grupo y qué valida) está en [`e2e/COBERTURA.md`](e2e/COBERTURA.md).
 
 ---
 
