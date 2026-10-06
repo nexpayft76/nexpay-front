@@ -28,7 +28,7 @@ la tasa real y el costo antes de confirmar.
 
 ## Tests end to end (Playwright)
 
-**27 tests** en 2 archivos (`e2e/tests/*.e2e.ts`). Corren en un Chromium real contra el front y **simulan el backend**
+**70 tests** en 5 archivos (`e2e/tests/*.e2e.ts`). Corren en un Chromium real contra el front y **simulan el backend**
 (`e2e/support/mock-api.ts`, con datos en memoria que sí cambian), así que no necesitan `nexpay-back` ni internet.
 También corren en GitHub Actions (`.github/workflows/ci.yml`) en cada PR.
 
@@ -44,6 +44,9 @@ npx playwright test p2p           # solo un área
 |---|---|---:|
 | Registro | `Register`, `PasswordInput`, `useEmailAvailability`, `validators` | 13 |
 | Inicio y cierre de sesión | `Login`, `AuthProvider`, interceptor 401 de `api`, botones de cerrar sesión de `Navbar` y `Sidebar` | 14 |
+| Recuperar contraseña | `ForgotPassword`, `ResetPassword` | 9 |
+| Rutas y permisos | `AppRouter`, `ProtectedRoute`, `SuperuserRoute` | 19 |
+| Estructura de la app con sesión | `Layout`, `Navbar`, `Sidebar`, `ThemeToggle` | 15 |
 
 El detalle de cada test (grupo y qué valida) está en [`e2e/COBERTURA.md`](e2e/COBERTURA.md).
 
