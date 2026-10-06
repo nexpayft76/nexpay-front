@@ -1,6 +1,6 @@
 # Cobertura de los tests end to end
 
-**27 tests** en 2 archivos, ejecutados con Playwright (Chromium real) sobre la app levantada con Vite. El backend se simula en `e2e/support/mock-api.ts` (datos en memoria que sí cambian: una recarga suma saldo, un intercambio mueve dinero, cerrar sesión borra la sesión), así que los tests no dependen de `nexpay-back`, de la base de datos ni de internet.
+**70 tests** en 5 archivos, ejecutados con Playwright (Chromium real) sobre la app levantada con Vite. El backend se simula en `e2e/support/mock-api.ts` (datos en memoria que sí cambian: una recarga suma saldo, un intercambio mueve dinero, cerrar sesión borra la sesión), así que los tests no dependen de `nexpay-back`, de la base de datos ni de internet.
 
 ## Cómo correrlos
 
@@ -19,7 +19,10 @@ La primera vez hay que descargar el navegador: `npx playwright install chromium`
 |---|---|---|---|---:|
 | `e2e/tests/auth-registro.e2e.ts` | Registro | `Register`, `PasswordInput`, `useEmailAvailability`, `validators` | `/register` | 13 |
 | `e2e/tests/auth-login.e2e.ts` | Inicio y cierre de sesión | `Login`, `AuthProvider`, interceptor 401 de `api`, botones de cerrar sesión de `Navbar` y `Sidebar` | `/login` | 14 |
-| | **Total** | | | **27** |
+| `e2e/tests/recuperar-contrasena.e2e.ts` | Recuperar contraseña | `ForgotPassword`, `ResetPassword` | `/forgot-password, /reset-password` | 9 |
+| `e2e/tests/rutas-protegidas.e2e.ts` | Rutas y permisos | `AppRouter`, `ProtectedRoute`, `SuperuserRoute` | `todas` | 19 |
+| `e2e/tests/navegacion-layout.e2e.ts` | Estructura de la app con sesión | `Layout`, `Navbar`, `Sidebar`, `ThemeToggle` | `/dashboard` | 15 |
+| | **Total** | | | **70** |
 
 ## Detalle de cada test
 
@@ -67,6 +70,73 @@ Cada fila es un test. La columna *Qué valida* es el nombre del test, escrito co
 | 12 | Sesión | cerrar sesión desde la barra superior termina la sesión y bloquea el dashboard |
 | 13 | Sesión | cerrar sesión desde el menú lateral también funciona |
 | 14 | Sesión | si el servidor rechaza la sesión (401), cierra la sesión y el login explica que expiró |
+
+### Recuperar contraseña — `recuperar-contrasena.e2e.ts`
+
+**Componentes:** `ForgotPassword`, `ResetPassword`  
+**Ruta:** `/forgot-password, /reset-password`
+
+| # | Grupo | Qué valida |
+|---:|---|---|
+| 1 | Pedir el enlace de recuperación | desde el login, "¿Olvidaste tu contraseña?" lleva al formulario conservando el email escrito |
+| 2 | Pedir el enlace de recuperación | valida el email antes de enviar |
+| 3 | Pedir el enlace de recuperación | al enviar muestra siempre el mismo aviso (no revela si el email existe) |
+| 4 | Pedir el enlace de recuperación | si el servidor falla, muestra el error y deja reintentar |
+| 5 | Crear la nueva contraseña | un enlace sin token se informa como inválido y ofrece pedir otro |
+| 6 | Crear la nueva contraseña | el botón se habilita solo cuando la contraseña cumple las reglas y coincide |
+| 7 | Crear la nueva contraseña | con un token válido cambia la contraseña y ofrece iniciar sesión |
+| 8 | Crear la nueva contraseña | con un token vencido muestra el error del servidor y no confirma el cambio |
+| 9 | Crear la nueva contraseña | después de cambiarla se puede iniciar sesión con la nueva contraseña |
+
+### Rutas y permisos — `rutas-protegidas.e2e.ts`
+
+**Componentes:** `AppRouter`, `ProtectedRoute`, `SuperuserRoute`  
+**Ruta:** `todas`
+
+| # | Grupo | Qué valida |
+|---:|---|---|
+| 1 | Sin sesión | /dashboard redirige al login |
+| 2 | Sin sesión | /dashboard/cotizador redirige al login |
+| 3 | Sin sesión | /dashboard/operaciones/recarga redirige al login |
+| 4 | Sin sesión | /dashboard/operaciones/intercambio redirige al login |
+| 5 | Sin sesión | /dashboard/operaciones/historial redirige al login |
+| 6 | Sin sesión | /dashboard/p2p redirige al login |
+| 7 | Sin sesión | /dashboard/configuracion/alertas redirige al login |
+| 8 | Sin sesión | /dashboard/configuracion/preferencias redirige al login |
+| 9 | Sin sesión | /dashboard/configuracion/usuario redirige al login |
+| 10 | Sin sesión | las pantallas públicas (landing, login, registro, recuperar contraseña) son accesibles |
+| 11 | Sin sesión | una ruta que no existe vuelve a la landing |
+| 12 | Con sesión | /dashboard/operaciones redirige a la recarga |
+| 13 | Con sesión | /dashboard/configuracion redirige a las alertas |
+| 14 | Con sesión | el enlace viejo /operaciones/compra sigue funcionando y lleva al intercambio |
+| 15 | Con sesión | una ruta inexistente vuelve a la landing |
+| 16 | Con sesión | un usuario común que entra a una pantalla de superusuario vuelve a su billetera |
+| 17 | Con sesión | un usuario común no ve el menú de Superusuario |
+| 18 | Superusuario | /dashboard/superusuario redirige a Comisiones |
+| 19 | Superusuario | el menú lateral incluye el grupo Superusuario |
+
+### Estructura de la app con sesión — `navegacion-layout.e2e.ts`
+
+**Componentes:** `Layout`, `Navbar`, `Sidebar`, `ThemeToggle`  
+**Ruta:** `/dashboard`
+
+| # | Grupo | Qué valida |
+|---:|---|---|
+| 1 | Menú lateral en desktop | arranca contraído (solo íconos) y se expande con la hamburguesa |
+| 2 | Menú lateral en desktop | marca como activa la pantalla actual |
+| 3 | Menú lateral en desktop | el grupo Operaciones se abre y muestra Recarga, Intercambio de balance e Historial |
+| 4 | Menú lateral en desktop | el grupo Configuración lleva a Alertas, Preferencias y Usuario |
+| 5 | Menú lateral en desktop | entrar directo a una subpantalla deja abierto su grupo |
+| 6 | Menú lateral en desktop | con el menú contraído, tocar un grupo expande la barra y abre sus opciones |
+| 7 | Menú lateral en desktop | el logo de la barra superior lleva a la landing |
+| 8 | Menú lateral en celular | arranca cerrado y no se puede navegar con el teclado |
+| 9 | Menú lateral en celular | se abre como panel, enfoca "Cerrar menú" y se cierra con Escape devolviendo el foco |
+| 10 | Menú lateral en celular | tocar un enlace navega y cierra el panel |
+| 11 | Menú lateral en celular | tocar el fondo oscuro cierra el panel |
+| 12 | Menú lateral en celular | no hay scroll horizontal en 390 px de ancho |
+| 13 | Modo claro / oscuro | el botón de la barra alterna el tema, cambia su etiqueta y lo guarda en el servidor |
+| 14 | Modo claro / oscuro | el modo elegido se mantiene al recargar |
+| 15 | Modo claro / oscuro | si el servidor guardó "claro" para el usuario, se aplica al entrar |
 
 ## Qué no cubren (a propósito)
 
