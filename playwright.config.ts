@@ -11,6 +11,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  // En CI hay pocos núcleos: menos tests en paralelo evita falsos fallos por lentitud.
+  workers: process.env.CI ? 2 : undefined,
   reporter: [['list'], ['html', { outputFolder: 'e2e/.report', open: 'never' }]],
   use: {
     baseURL: `http://localhost:${PORT}`,
