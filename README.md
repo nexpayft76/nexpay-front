@@ -28,7 +28,7 @@ la tasa real y el costo antes de confirmar.
 
 ## Tests end to end (Playwright)
 
-**70 tests** en 5 archivos (`e2e/tests/*.e2e.ts`). Corren en un Chromium real contra el front y **simulan el backend**
+**284 tests** en 18 archivos (`e2e/tests/*.e2e.ts`). Corren en un Chromium real contra el front y **simulan el backend**
 (`e2e/support/mock-api.ts`, con datos en memoria que sí cambian), así que no necesitan `nexpay-back` ni internet.
 También corren en GitHub Actions (`.github/workflows/ci.yml`) en cada PR.
 
@@ -47,6 +47,19 @@ npx playwright test p2p           # solo un área
 | Recuperar contraseña | `ForgotPassword`, `ResetPassword` | 9 |
 | Rutas y permisos | `AppRouter`, `ProtectedRoute`, `SuperuserRoute` | 19 |
 | Estructura de la app con sesión | `Layout`, `Navbar`, `Sidebar`, `ThemeToggle` | 15 |
+| Mi wallet | `Dashboard`, `TotalEstimate`, `WalletCard`, `RateChart` | 13 |
+| Cotizador | `QuoteCard`, `QuotePage`, `RateSources`, `AmountInput`, `useQuote` | 18 |
+| Recarga | `DepositPage`, `CurrencyPicker`, `AmountInput`, `ConfirmDialog`, `WalletCard` | 17 |
+| Intercambio de balance | `ExchangePage`, `CurrencyPicker`, `AmountInput`, `ConfirmDialog`, `useExchangeQuote` | 19 |
+| Historial | `HistoryPage`, `Pagination`, `usePagedList` | 9 |
+| P2P | `P2PPage`, `P2PMarket`, `P2PPublish`, `P2PMyOffers`, `P2PTrades`, `useP2PQuote` | 25 |
+| Alertas | `AlertsPage`, `AlertsContext` (reglas) | 14 |
+| Notificaciones | `NotificationBell`, `NotificationToast`, `AlertsContext` (avisos) | 13 |
+| Preferencias | `PreferencesPage`, `PreferencesContext` | 11 |
+| Usuario | `ProfilePage`, `ProfileDetails`, `ProfileEditForm`, `ChangePasswordSection`, `CloseAccountSection` | 22 |
+| Superusuario | `SuperuserFeesPage`, `FeeSettingsForm`, `SuperuserUsersPage`, `SuperuserTransactionsPage`, `SuperuserP2PPage` | 19 |
+| Landing pública | `Landing`, `CurrencyQuote`, `WalletPreview` | 19 |
+| Asistente Nexa | `AssistantWidget`, `useAssistantChat` | 15 |
 
 El detalle de cada test (grupo y qué valida) está en [`e2e/COBERTURA.md`](e2e/COBERTURA.md).
 
