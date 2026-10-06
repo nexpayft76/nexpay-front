@@ -20,9 +20,32 @@ la tasa real y el costo antes de confirmar.
 | Rutas | React Router 7 (pantallas cargadas bajo demanda) |
 | HTTP | axios (cliente único con manejo de errores y logger) |
 | Gráficos | Recharts (se descarga solo al entrar al dashboard) |
-| Tests | Vitest + Testing Library |
+| Tests | Vitest + Testing Library (unitarios y de componentes) · Playwright (end to end) |
 | Lint | oxlint |
 | Deploy | Vercel |
+
+---
+
+## Tests end to end (Playwright)
+
+**27 tests** en 2 archivos (`e2e/tests/*.e2e.ts`). Corren en un Chromium real contra el front y **simulan el backend**
+(`e2e/support/mock-api.ts`, con datos en memoria que sí cambian), así que no necesitan `nexpay-back` ni internet.
+También corren en GitHub Actions (`.github/workflows/ci.yml`) en cada PR.
+
+```bash
+npx playwright install chromium   # solo la primera vez
+npm run test:e2e                  # toda la suite (levanta Vite solo)
+npm run test:e2e:ui               # modo interactivo
+npm run test:e2e:report           # abre el último reporte HTML
+npx playwright test p2p           # solo un área
+```
+
+| Área | Componentes | Tests |
+|---|---|---:|
+| Registro | `Register`, `PasswordInput`, `useEmailAvailability`, `validators` | 13 |
+| Inicio y cierre de sesión | `Login`, `AuthProvider`, interceptor 401 de `api`, botones de cerrar sesión de `Navbar` y `Sidebar` | 14 |
+
+El detalle de cada test (grupo y qué valida) está en [`e2e/COBERTURA.md`](e2e/COBERTURA.md).
 
 ---
 
