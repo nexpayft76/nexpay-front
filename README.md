@@ -220,5 +220,5 @@ API_PROXY_TARGET=https://nexpay-back-production.up.railway.app
 | --- | --- |
 | William Coral | Líder técnico · integración front ↔ back, dashboard, operaciones, P2P, panel del superusuario, Nexa y video del hero; revisión |
 | Tamara | Diseño visual (landing, tema negro y dorado, tipografía), perfil de usuario y tests end to end |
-| Raúl Alejandro Carmona (Alejo) | Conexión front ↔ back, sesión, navegación, responsive y tests |
+| Raúl Alejandro Carmona (Alejo) | Conexión front ↔ back, autenticación y sesión, navegación y rutas protegidas, responsive, alertas y notificaciones, tests y calidad del código. |
 | Nelson Arzuza | Back · emails, notificaciones y recuperación de contraseña (también en el front) |
